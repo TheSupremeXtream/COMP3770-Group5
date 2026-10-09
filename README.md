@@ -3,7 +3,7 @@
 - Abel Tola.
   - Player and Rail Movement.
   - Gameplay.
-- Taha Hammoud.
+- Taha Hammoud (ID: 110131196)
   - Weapons and combat.
 - Ronit Mahajan (Student ID: 110036557).
   - UI.
