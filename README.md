@@ -1,7 +1,18 @@
 # COMP3770 Group 5
 
-- Abel Tola (Player & Rail Movement).
-- Taha Hammoud (Weapons and Combat).
-- Ronit Mahajan (UI, Audio, Scoring, Story, and Game Management).
-- Khaled Alhabbash (Level Design, Waves, and Boss).
-- Leonardo Sato (Enemy behaviour).
+•  Abel Tola.
+  – Player and Rail Movement.
+  – Gameplay.
+•  Taha Hammoud.
+  – Weapons and combat.
+•  Ronit Mahajan.
+  – UI.
+  – Audio scoring.
+  – Game management.
+  – Story concepts and narrative scenario.
+•  Khaled Alhabbash.
+  – Level Design.
+  – Enemy Waves
+  – Bosses
+•  Leonardo Sato.
+  – Enemy behaviour.
