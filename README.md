@@ -5,7 +5,7 @@
   - Gameplay.
 - Taha Hammoud.
   - Weapons and combat.
-- Ronit Mahajan.
+- Ronit Mahajan (Student ID: 110036557).
   - UI.
   - Audio scoring.
   - Game management.
