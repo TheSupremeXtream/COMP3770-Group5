@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -11,12 +12,15 @@ public class PlayerController : MonoBehaviour
     private InputAction moveinput;
 
     
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         charController = GetComponent<CharacterController>();
         moveinput = InputSystem.actions.FindAction("Move");
+
+        
     }
 
     // Update is called once per frame
@@ -30,8 +34,11 @@ public class PlayerController : MonoBehaviour
     void HandleMovement(Vector2 moveVal)
     {
 
-        Vector3 newVec = new Vector3(moveVal.x*speed, 0, moveVal.y * speed);
+        Vector3 newVec = transform.TransformVector(moveVal.x*speed, 0, moveVal.y * speed);
 
+        Vector3 localPosition = transform.localPosition;
+
+        
         charController.Move(newVec);
     }
 }
