@@ -149,6 +149,7 @@ public class MovementAndAudioTests
                         string label = $"{m.name} {wave.label} {p} x0={x0}";
                         Vector2 heading = m.Heading;
                         float lastTurn = 0f, t = 0f, maxSide = 0f;
+                        var trace = new System.Text.StringBuilder();
                         bool exited = false;
                         while (t < m.MaxLifetime + 10f)
                         {
@@ -179,12 +180,17 @@ public class MovementAndAudioTests
                                 Assert.LessOrEqual(Vector2.Angle(heading, Vector2.down), 30f, label + ": crosses the player's zone at a shallow angle");
                             }
                             lastTurn = turn;
+                            if (Mathf.Repeat(t, 0.5f) < dt)
+                            {
+                                trace.Append($" [{t:F1}s ({pos.x:F1},{pos.z:F1}) wp{m.WaypointIndex} av{m.AngularVelocity:F0}]");
+                            }
                             if (heading.y > 0.2f)
                             {
                                 lowestRetreat = Mathf.Min(lowestRetreat, pos.z);
                             }
                             maxSide = Mathf.Max(maxSide, Mathf.Abs(pos.x - x0));
-                            Assert.LessOrEqual(Mathf.Abs(pos.x), m.LaneLimitX + 2f, label + ": left the play area sideways");
+                            Assert.LessOrEqual(Mathf.Abs(pos.x), m.LaneLimitX + 2f, label + $": left the play area sideways at {pos} (t {t:F2}, heading {m.Heading}, route " +
+                                string.Join(" ", m.Route) + ") trace" + trace);
                             Assert.LessOrEqual(pos.z, 10.6f, label + ": flew back off the top");
                             if (pos.z < -12f)
                             {
@@ -354,7 +360,7 @@ public class MovementAndAudioTests
         Assert.Greater(flankers, 0, "Wave 3 interceptors should flank");
         Assert.GreaterOrEqual(retreats, 5, "Pass-and-retreat ships (two groups in wave 2, one in wave 3) should actually retreat");
         Assert.GreaterOrEqual(minGap, profile.minEscapeGap, "A free lane wide enough to dodge into must always remain");
-        Assert.LessOrEqual(longest, Load<GameObject>(Fighter).GetComponent<TestEnemyMover>().MaxLifetime + 6f);
+        Assert.LessOrEqual(longest, Load<GameObject>(Fighter).GetComponent<TestEnemyMover>().MaxLifetime + 10f, "After Max Lifetime a ship leaves straight down (a slow heavy needs up to ~10 s)");
         Assert.AreEqual(0, TestEnemyMover.Active.Count, "No enemies left behind");
         yield return SceneManager.UnloadSceneAsync(scene);
     }

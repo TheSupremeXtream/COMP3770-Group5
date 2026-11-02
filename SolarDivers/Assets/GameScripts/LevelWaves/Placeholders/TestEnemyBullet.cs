@@ -8,7 +8,7 @@ using UnityEngine;
 public class TestEnemyBullet : MonoBehaviour
 {
     [SerializeField] private float lifetime = 4f;
-    [Tooltip("Removed when it leaves this world-space area.")]
+    [Tooltip("Removed when it leaves this area (relative to the shot's parent, i.e. the attack director, so it follows a moving rig).")]
     [SerializeField] private Bounds area = new Bounds(new Vector3(0f, 0f, 0f), new Vector3(36f, 10f, 32f));
 
     private float age;
@@ -25,7 +25,8 @@ public class TestEnemyBullet : MonoBehaviour
     {
         age += Time.deltaTime;
         transform.position += Velocity * Time.deltaTime;
-        if (age > lifetime || !area.Contains(transform.position))
+        Vector3 p = transform.parent != null ? transform.parent.InverseTransformPoint(transform.position) : transform.position;
+        if (age > lifetime || !area.Contains(p))
         {
             Destroy(gameObject);
         }

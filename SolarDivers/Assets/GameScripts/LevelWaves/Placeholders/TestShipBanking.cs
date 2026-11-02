@@ -26,6 +26,9 @@ public class TestShipBanking : MonoBehaviour
     private float roll;
     private float yaw;
     private float pitch;
+    // The model's own rotation (e.g. a teammate's FBX that is turned upright); banking is applied on top of it.
+    private Quaternion baseRotation = Quaternion.identity;
+    private bool baseCaptured;
 
     public float Roll => roll;
     public float Yaw => yaw;
@@ -38,7 +41,12 @@ public class TestShipBanking : MonoBehaviour
         roll = yaw = pitch = 0f;
         if (model != null)
         {
-            model.localRotation = Quaternion.identity;
+            if (!baseCaptured)
+            {
+                baseRotation = model.localRotation;
+                baseCaptured = true;
+            }
+            model.localRotation = baseRotation;
         }
     }
 
@@ -73,6 +81,6 @@ public class TestShipBanking : MonoBehaviour
         roll = Mathf.Lerp(roll, targetRoll, blend);
         yaw = Mathf.Lerp(yaw, targetYaw, blend);
         pitch = Mathf.Lerp(pitch, targetPitch, blend);
-        model.localRotation = Quaternion.Euler(pitch, yaw, roll);
+        model.localRotation = Quaternion.Euler(pitch, yaw, roll) * baseRotation;
     }
 }

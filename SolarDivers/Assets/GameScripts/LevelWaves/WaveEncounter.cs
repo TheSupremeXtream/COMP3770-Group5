@@ -33,8 +33,12 @@ public class WaveEncounter : MonoBehaviour
     [Tooltip("Optional parent for spawned enemies. Leave empty to spawn at the scene root.")]
     [SerializeField] private Transform spawnParent;
 
-    [Tooltip("World-space play area. Enemies outside it are counted as escaped and removed.")]
+    [Tooltip("Play area. Enemies outside it are counted as escaped and removed. World space, or relative to Bounds Space if set.")]
     [SerializeField] private Bounds encounterBounds = new Bounds(new Vector3(0f, 0f, 1f), new Vector3(24f, 10f, 26f));
+
+    [Tooltip("Optional: the bounds move and turn with this transform (e.g. the rail camera rig). Empty = world space. " +
+             "Parent the Spawn Origin and Spawn Parent to the same rig so spawns follow it too.")]
+    [SerializeField] private Transform boundsSpace;
 
     [SerializeField] private bool autoStart = true;
 
@@ -65,6 +69,9 @@ public class WaveEncounter : MonoBehaviour
     public float StateTimer { get; private set; }
     public float ElapsedTime { get; private set; }
 
+    /// <summary>The configured waves (read-only list; the waves themselves can be tuned from code, e.g. by a scene builder).</summary>
+    public IReadOnlyList<EnemyWave> Waves => waves;
+
     public EnemyWave CurrentWave =>
         (CurrentWaveIndex >= 0 && CurrentWaveIndex < waves.Count) ? waves[CurrentWaveIndex] : null;
 
@@ -76,6 +83,21 @@ public class WaveEncounter : MonoBehaviour
         spawnParent = parent;
         encounterBounds = bounds;
         autoStart = startAutomatically;
+    }
+
+    /// <summary>Makes the bounds relative to 'space' (e.g. a moving rail rig). Null = world space.</summary>
+    public void SetBoundsSpace(Transform space)
+    {
+        boundsSpace = space;
+    }
+
+    public Transform BoundsSpace => boundsSpace;
+
+    /// <summary>Whether a world position is inside the encounter bounds (following Bounds Space if set).</summary>
+    public bool IsInsideBounds(Vector3 worldPosition)
+    {
+        Vector3 p = boundsSpace != null ? boundsSpace.InverseTransformPoint(worldPosition) : worldPosition;
+        return encounterBounds.Contains(p);
     }
 
     void Start()
@@ -180,7 +202,7 @@ public class WaveEncounter : MonoBehaviour
             Debug.LogWarning("[WaveEncounter] Spawn Origin is not assigned; using this object's transform.", this);
             spawnOrigin = transform;
         }
-        if (!encounterBounds.Contains(spawnOrigin.position))
+        if (!IsInsideBounds(spawnOrigin.position))
         {
             Debug.LogWarning("[WaveEncounter] Spawn Origin is outside the encounter bounds, so enemies will count as escaped immediately.", this);
         }
@@ -230,7 +252,7 @@ public class WaveEncounter : MonoBehaviour
                 activeEnemies.RemoveAt(i);
                 DestroyedCount++;
             }
-            else if (!encounterBounds.Contains(enemy.transform.position))
+            else if (!IsInsideBounds(enemy.transform.position))
             {
                 activeEnemies.RemoveAt(i);
                 EscapedCount++;
@@ -415,7 +437,13 @@ public class WaveEncounter : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = new Color(1f, 0.6f, 0f, 0.8f);
+        Matrix4x4 previous = Gizmos.matrix;
+        if (boundsSpace != null)
+        {
+            Gizmos.matrix = boundsSpace.localToWorldMatrix;
+        }
         Gizmos.DrawWireCube(encounterBounds.center, encounterBounds.size);
+        Gizmos.matrix = previous;
 
         if (waves == null)
         {

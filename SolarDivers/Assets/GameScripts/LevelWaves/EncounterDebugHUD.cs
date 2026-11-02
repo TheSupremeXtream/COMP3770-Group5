@@ -25,6 +25,15 @@ public class EncounterDebugHUD : MonoBehaviour
     [Tooltip("Red screen-edge flash when the player is hit.")]
     [SerializeField] private bool damageFlash = true;
 
+    [Header("Mission text (optional, for a demo)")]
+    [Tooltip("Shown as the banner before wave 1 instead of the wave name. Empty = wave name.")]
+    [SerializeField] private string missionTitle = "";
+    [Tooltip("Shown under the hull/wave panel for the whole encounter. Empty = hidden.")]
+    [SerializeField] private string objective = "";
+    [SerializeField] private string clearedTitle = "ENCOUNTER CLEARED";
+    [Tooltip("Extra line on the cleared panel (e.g. what happens next). Empty = none.")]
+    [SerializeField] private string clearedMessage = "";
+
     public const float ReferenceWidth = 1920f;
     public const float ReferenceHeight = 1080f;
 
@@ -48,6 +57,7 @@ public class EncounterDebugHUD : MonoBehaviour
     private Text hitPopup;
     private Text waveText;
     private Text bannerText;
+    private Text objectiveText;
     private GameObject debugPanel;
     private Text debugText;
     private GameObject resultPanel;
@@ -66,6 +76,9 @@ public class EncounterDebugHUD : MonoBehaviour
 
     public bool DebugVisible => showDebugCounters;
     public bool ResultVisible => resultPanel != null && resultPanel.activeSelf;
+    public string ResultTitle => resultTitle != null ? resultTitle.text : "";
+    public string ObjectiveShown => objectiveText != null ? objective : "";
+    public string BannerShown => bannerText != null && bannerText.gameObject.activeSelf ? bannerText.text : "";
     public float DamageFlashAlpha => edgeFlash != null ? edgeFlash.color.a : 0f;
     public float CurrentScale => scaler != null ? scaler.scaleFactor : 1f;
     public Canvas HudCanvas => canvas;
@@ -233,7 +246,9 @@ public class EncounterDebugHUD : MonoBehaviour
         bannerText.gameObject.SetActive(incoming);
         if (incoming)
         {
-            bannerText.text = $"WAVE {encounter.CurrentWaveIndex + 1}  -  {name.ToUpperInvariant()}";
+            bannerText.text = encounter.CurrentWaveIndex == 0 && !string.IsNullOrEmpty(missionTitle)
+                ? missionTitle.ToUpperInvariant()
+                : $"WAVE {encounter.CurrentWaveIndex + 1}  -  {name.ToUpperInvariant()}";
             Color c = Amber;
             c.a = 0.75f + 0.25f * Mathf.Sin(Time.time * 5f);
             bannerText.color = c;
@@ -251,11 +266,15 @@ public class EncounterDebugHUD : MonoBehaviour
         const string restart = "\n\n<color=#FFFFFF><b>R</b></color>  <color=#B8C6D8>restart</color>";
         if (encounter.IsCompleted)
         {
-            resultTitle.text = "ENCOUNTER CLEARED";
+            resultTitle.text = clearedTitle;
             resultTitle.color = Good;
             string verdict = encounter.AllEnemiesDestroyed
                 ? "<color=#80F29A>ALL ENEMIES DESTROYED</color>"
                 : "<color=#B8C6D8>Some enemies got past (no penalty yet)</color>";
+            if (!string.IsNullOrEmpty(clearedMessage))
+            {
+                verdict += "\n" + clearedMessage;
+            }
             resultBody.text =
                 $"Destroyed   {encounter.DestroyedCount} / {encounter.SpawnedCount}\n" +
                 $"Escaped   {encounter.EscapedCount}" + (encounter.TimedOutCount > 0 ? $"     Timed out   {encounter.TimedOutCount}" : "") + "\n" +
@@ -350,6 +369,15 @@ public class EncounterDebugHUD : MonoBehaviour
         waveText = Label(hud, "", 30, TextAnchor.MiddleLeft, TextColour, new Vector2(24f, -70f), new Vector2(520f, 44f));
         hitPopup = Label(root, "", 34, TextAnchor.MiddleLeft, Bad, new Vector2(608f, -42f), new Vector2(240f, 48f), bold: true, outline: true);
         hitPopup.gameObject.SetActive(false);
+
+        // Optional objective line, bottom-left above the controls (kept clear of the top edge where enemies enter).
+        if (!string.IsNullOrEmpty(objective))
+        {
+            RectTransform objectivePanel = Panel(root, "ObjectivePanel", new Vector2(0f, 0f), new Vector2(32f, 94f), new Vector2(560f, 52f), PanelColour);
+            objectiveText = Label(objectivePanel, $"<color=#FFC74D><b>OBJECTIVE</b></color>   {objective}", 28, TextAnchor.MiddleLeft, TextColour,
+                new Vector2(24f, -4f), new Vector2(1400f, 44f));
+            objectivePanel.sizeDelta = new Vector2(objectiveText.preferredWidth + 48f, 52f);
+        }
 
         // Top-centre banner (only while a wave is incoming).
         bannerText = Label(root, "", 52, TextAnchor.MiddleCenter, Amber, Vector2.zero, new Vector2(1200f, 72f), bold: true, outline: true);

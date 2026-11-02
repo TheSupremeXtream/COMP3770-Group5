@@ -20,6 +20,10 @@ public class EncounterTestHarness : MonoBehaviour
     [SerializeField] private TestAttackDirector attackDirector;
     [Tooltip("Optional engine / flyby sound; every loop is stopped on restart.")]
     [SerializeField] private TestFlightAudio flightAudio;
+    [Tooltip("Extra components turned off on defeat and back on at restart, e.g. a teammate's player controller.")]
+    [SerializeField] private Behaviour[] disableOnDefeat = new Behaviour[0];
+    [Tooltip("Called first on every restart (R), before the ship and encounter reset, e.g. to put a rail rig back at its start.")]
+    public UnityEngine.Events.UnityEvent onRestart = new UnityEngine.Events.UnityEvent();
     [Range(0f, 1f)] [SerializeField] private float damageShake = 0.55f;
     [Range(0f, 1f)] [SerializeField] private float defeatShake = 0.9f;
 
@@ -94,14 +98,33 @@ public class EncounterTestHarness : MonoBehaviour
         {
             playerShip.enabled = false;
         }
+        SetExtraControls(false);
         if (encounter != null)
         {
             encounter.FailEncounter("player defeated");
         }
     }
 
+    /// <summary>Used by the demo scene builder: components switched off on defeat and back on at restart.</summary>
+    public void SetDisableOnDefeat(params Behaviour[] behaviours)
+    {
+        disableOnDefeat = behaviours ?? new Behaviour[0];
+    }
+
+    private void SetExtraControls(bool on)
+    {
+        foreach (Behaviour b in disableOnDefeat)
+        {
+            if (b != null)
+            {
+                b.enabled = on;
+            }
+        }
+    }
+
     public void RestartAll()
     {
+        onRestart.Invoke();
         if (fx != null)
         {
             fx.ClearAll();
@@ -127,6 +150,7 @@ public class EncounterTestHarness : MonoBehaviour
             playerShip.ResetShip();
             playerShip.enabled = true;
         }
+        SetExtraControls(true);
         if (playerHealth != null)
         {
             playerHealth.ResetHealth();

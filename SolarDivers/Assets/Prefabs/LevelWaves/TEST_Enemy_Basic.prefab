@@ -2648,7 +2648,7 @@ MonoBehaviour:
   flankWidth: 2.2
   sweepWidth: 6
   sweepZ: 6.5
-  diveZ: 4.6
+  diveZ: 4.8
   retreatZ: 7
   retreatShift: 1.6
   straightBelowZ: 1.5

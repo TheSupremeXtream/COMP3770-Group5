@@ -11,6 +11,9 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class TestPlayerShip : MonoBehaviour
 {
+    [Tooltip("Off = weapon only: another component moves the ship (the integrated demo uses Abel's PlayerController); " +
+             "this one only fires and resets the position on restart.")]
+    [SerializeField] private bool handleMovement = true;
     [Tooltip("Top speed (units/s). Raised 20% from 8 after playtesting; crossing the 18-unit-wide play area takes about 2 s.")]
     [SerializeField] private float speed = 9.6f;
     [Tooltip("Units/s gained per second while steering. 75 reaches top speed in ~0.13 s.")]
@@ -70,10 +73,23 @@ public class TestPlayerShip : MonoBehaviour
         }
     }
 
+    public bool HandlesMovement => handleMovement;
+
     /// <summary>Back to the start position, at rest, with no shots in flight.</summary>
     public void ResetShip()
     {
+        // A CharacterController keeps its own position (auto-sync transforms is off), so it must be off while teleporting.
+        var controller = GetComponent<CharacterController>();
+        bool controllerWasOn = controller != null && controller.enabled;
+        if (controllerWasOn)
+        {
+            controller.enabled = false;
+        }
         transform.position = startPosition;
+        if (controllerWasOn)
+        {
+            controller.enabled = true;
+        }
         velocity = Vector3.zero;
         ClearProjectiles();
         cooldown = 0f;
@@ -123,12 +139,15 @@ public class TestPlayerShip : MonoBehaviour
             return;
         }
 
-        Vector2 move = Vector2.zero;
-        if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) move.x -= 1f;
-        if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) move.x += 1f;
-        if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) move.y -= 1f;
-        if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) move.y += 1f;
-        Step(move, Time.deltaTime);
+        if (handleMovement)
+        {
+            Vector2 move = Vector2.zero;
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) move.x -= 1f;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) move.x += 1f;
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) move.y -= 1f;
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) move.y += 1f;
+            Step(move, Time.deltaTime);
+        }
 
         cooldown -= Time.deltaTime;
         bool fire = keyboard.spaceKey.isPressed || (Mouse.current != null && Mouse.current.leftButton.isPressed);

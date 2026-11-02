@@ -77,7 +77,9 @@ public class TestAttackDirector : MonoBehaviour
         {
             return false;
         }
-        if (from.z < profile.fireWindowZ.x || from.z > profile.fireWindowZ.y || Mathf.Abs(from.x) > profile.fireWindowX)
+        // The fire window is measured in this object's space, so it follows a moving rig if the director is parented to it.
+        Vector3 local = transform.InverseTransformPoint(from);
+        if (local.z < profile.fireWindowZ.x || local.z > profile.fireWindowZ.y || Mathf.Abs(local.x) > profile.fireWindowX)
         {
             return false;
         }

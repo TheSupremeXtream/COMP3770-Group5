@@ -22,6 +22,8 @@ public class TestFlightAudio : MonoBehaviour
 
     [Header("Player engine")]
     [Range(0f, 1f)] [SerializeField] private float engineVolume = 0.3f;
+    [Tooltip("Player speed (units/s) that counts as full thrust.")]
+    [SerializeField] private float fullThrustSpeed = 9.6f;
     [Tooltip("Engine level at rest, as a fraction of Engine Volume.")]
     [Range(0f, 1f)] [SerializeField] private float idleLevel = 0.55f;
     [Range(0.8f, 1.2f)] [SerializeField] private float idlePitch = 0.95f;
@@ -80,6 +82,9 @@ public class TestFlightAudio : MonoBehaviour
     private float throttle;
     private float engineFade;
     private float previousSpeed;
+    private Vector3 playerVelocity;
+    private Vector3 lastPlayerPosition;
+    private bool hasLastPlayerPosition;
     private bool engineRunning;
     private float lastFlybyTime = float.NegativeInfinity;
     private int lastFlybyClip = -1;
@@ -182,6 +187,7 @@ public class TestFlightAudio : MonoBehaviour
         }
         engineRunning = false;
         throttle = engineFade = previousSpeed = 0f;
+        hasLastPlayerPosition = false;
         foreach (FlybyVoice v in flybys)
         {
             StopVoice(v);
@@ -198,19 +204,37 @@ public class TestFlightAudio : MonoBehaviour
             return;
         }
         float master = TestFxManager.Active != null ? TestFxManager.Active.MasterVolume : 1f;
+        MeasurePlayer(dt);
         UpdateEngine(dt, master);
         StartFlybys();
         UpdateFlybys(dt, master);
     }
 
+    // The player's velocity from how its transform actually moved, so this works with any controller
+    // (the test ship or Abel's PlayerController). Teleports (restart) are ignored.
+    private void MeasurePlayer(float dt)
+    {
+        if (player == null)
+        {
+            playerVelocity = Vector3.zero;
+            hasLastPlayerPosition = false;
+            return;
+        }
+        Vector3 position = player.transform.position;
+        Vector3 v = hasLastPlayerPosition ? (position - lastPlayerPosition) / dt : Vector3.zero;
+        playerVelocity = v.sqrMagnitude > 2500f ? Vector3.zero : v;
+        lastPlayerPosition = position;
+        hasLastPlayerPosition = true;
+    }
+
     private void UpdateEngine(float dt, float master)
     {
         bool shipActive = PlayerFlying && sounds != null && sounds.playerEngineLoop != null;
-        float speedNow = shipActive ? player.Velocity.magnitude : 0f;
+        float speedNow = shipActive ? playerVelocity.magnitude : 0f;
         float accel = (speedNow - previousSpeed) / dt;
         previousSpeed = speedNow;
         float target = shipActive
-            ? Mathf.Clamp01(speedNow / Mathf.Max(0.1f, player.MaxSpeed) + accelerationBoost * Mathf.Clamp01(accel / 40f))
+            ? Mathf.Clamp01(speedNow / Mathf.Max(0.1f, fullThrustSpeed) + accelerationBoost * Mathf.Clamp01(accel / 40f))
             : 0f;
         float tau = target > throttle ? spoolUpSeconds : spoolDownSeconds;
         throttle += (target - throttle) * (1f - Mathf.Exp(-dt / Mathf.Max(0.01f, tau)));
@@ -266,7 +290,7 @@ public class TestFlightAudio : MonoBehaviour
             {
                 continue;
             }
-            if (PredictPass(enemy.transform.position, enemy.Velocity, p, player.Velocity, out float t, out float d) &&
+            if (PredictPass(enemy.transform.position, enemy.Velocity, p, playerVelocity, out float t, out float d) &&
                 t <= lead + 0.25f && d <= passDistance && d < bestDistance)
             {
                 best = enemy;
@@ -323,7 +347,7 @@ public class TestFlightAudio : MonoBehaviour
     private void UpdateFlybys(float dt, float master)
     {
         Vector3 p = player != null ? player.transform.position : Vector3.zero;
-        Vector3 pv = player != null ? player.Velocity : Vector3.zero;
+        Vector3 pv = playerVelocity;
         foreach (FlybyVoice v in flybys)
         {
             if (!v.busy)

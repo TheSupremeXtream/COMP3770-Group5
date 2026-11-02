@@ -53,7 +53,10 @@ public class TestEntryWarnings : MonoBehaviour
             return;
         }
         float w = width + 2f; // a little wider than the group's outer ships
-        GameObject go = Instantiate(markerPrefab, new Vector3(centre.x, 0f, markerZ), markerPrefab.transform.rotation, transform);
+        // Placed in this object's space, so the strip stays at the top of the view if this object rides a rail rig.
+        GameObject go = Instantiate(markerPrefab, transform);
+        go.transform.localPosition = new Vector3(transform.InverseTransformPoint(centre).x, 0f, markerZ);
+        go.transform.localRotation = markerPrefab.transform.localRotation;
         Vector3 scale = go.transform.localScale;
         go.transform.localScale = new Vector3(w, scale.y, scale.z);
         go.SetActive(true);

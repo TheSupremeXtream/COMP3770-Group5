@@ -13,7 +13,7 @@ using UnityEngine.Rendering.Universal;
 /// The only external content is the edited CC0 sound clips in Assets/Audio/LevelWaves (see CREDITS.md there);
 /// the builder sets their import options and collects them into TEST_SoundBank.
 /// </summary>
-public static class WaveTestSceneBuilder
+public static partial class WaveTestSceneBuilder
 {
     public const string ScenePath = "Assets/Scenes/LevelWaves_Encounter01_Test.unity";
     const string PrefabFolder = "Assets/Prefabs/LevelWaves";
@@ -510,17 +510,28 @@ public static class WaveTestSceneBuilder
     // ---- Prefabs ----
 
     static GameObject BuildEnemy(string name, Mesh mesh, Material[] mats, Vector3 hitbox, EnemyClassSettings settings,
-        Material exhaustMat, Color exhaustColour, Vector3[] nozzles, float explosionScale, Material aimLineMat, float muzzleZ)
+        Material exhaustMat, Color exhaustColour, Vector3[] nozzles, float explosionScale, Material aimLineMat, float muzzleZ,
+        GameObject visualPrefab = null, bool triggerHitbox = false, string folder = PrefabFolder)
     {
         var root = new GameObject(name);
         // Gameplay hitbox on the root, sized to the ship; the model below has no colliders.
+        // Trigger hitboxes (integrated demo) let a CharacterController player pass through instead of being blocked;
+        // shots and contact damage still work because those objects carry kinematic rigidbodies.
         var box = root.AddComponent<BoxCollider>();
         box.size = hitbox;
-        Transform model = MakeModel(root.transform, mesh, mats);
-        model.localScale = Vector3.one * settings.modelScale;
+        box.isTrigger = triggerHitbox;
+        Transform model = visualPrefab != null
+            ? NestedVisual(root.transform, visualPrefab, hitbox.x * settings.modelScale)
+            : MakeModel(root.transform, mesh, mats);
+        if (visualPrefab == null)
+        {
+            model.localScale = Vector3.one * settings.modelScale;
+        }
+        // A nested teammate model has its own rotation and scale, so its exhaust hangs off the ship root instead.
+        Transform exhaustParent = visualPrefab != null ? root.transform : model;
         foreach (Vector3 nozzle in nozzles)
         {
-            BuildExhaust(model, nozzle, exhaustMat, exhaustColour, 0.22f);
+            BuildExhaust(exhaustParent, nozzle, exhaustMat, exhaustColour, 0.22f);
         }
         var mover = root.AddComponent<TestEnemyMover>();
         var moverSo = new SerializedObject(mover);
@@ -567,7 +578,7 @@ public static class WaveTestSceneBuilder
         SetObject(shooter, "muzzle", muzzle);
         SetObject(shooter, "aimLine", line);
         SetObject(shooter, "model", model);
-        return SavePrefab(root);
+        return SavePrefab(root, folder);
     }
 
     // Enemy shot: hot orange core + star flare + short trail; trigger + kinematic body; hurts via TestContactDamage.
@@ -1139,9 +1150,9 @@ public static class WaveTestSceneBuilder
         return existing;
     }
 
-    static GameObject SavePrefab(GameObject root)
+    static GameObject SavePrefab(GameObject root, string folder = PrefabFolder)
     {
-        string path = PrefabFolder + "/" + root.name + ".prefab";
+        string path = folder + "/" + root.name + ".prefab";
         var prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
         Object.DestroyImmediate(root);
         return prefab;

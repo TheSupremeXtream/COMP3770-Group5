@@ -41,6 +41,8 @@ public enum TestMovePattern
 /// some classes) a flank pass beside the player's last observed position that tracks for at most Tracking Seconds.
 /// Reactions are shrunk if they would close the last escape lane (see LargestGap). Per-wave settings come from the
 /// TestDifficultyProfile entry for the enemy's wave.
+/// All positions are in the parent's space (the encounter's Spawn Parent), so if that parent rides a moving rail rig
+/// the routes, lanes and safety heights move with it. With no parent this is plain world space.
 /// </summary>
 public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
 {
@@ -68,7 +70,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     [Tooltip("Height of the sideways part of a Side Sweep.")]
     [SerializeField] private float sweepZ = 6.5f;
     [Tooltip("Pass And Retreat: how far down the first pass goes before pulling back up.")]
-    [SerializeField] private float diveZ = 4.6f;
+    [SerializeField] private float diveZ = 4.8f;
     [Tooltip("Pass And Retreat: how far back up the retreat goes.")]
     [SerializeField] private float retreatZ = 7f;
     [Tooltip("Pass And Retreat: sideways offset of the retreat and the second pass.")]
@@ -92,6 +94,10 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     private readonly List<Vector2> route = new List<Vector2>();
     private int waypoint;
     private bool waypointWasAhead;
+    // Index of the retreat waypoint (Pass And Retreat), which starts behind the ship and must not be skipped; -1 = none.
+    private int retreatWaypoint = -1;
+    // Time spent heading for the current waypoint; after one full circle at the turn rate the ship moves on.
+    private float waypointTime;
     private Vector2 heading;
     private float angularVelocity;
     private float currentSpeed;
@@ -124,7 +130,15 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     public float HalfWidth => halfWidth;
     public float Side => side;
     public float Travelled => travelled;
-    public Vector3 Velocity => new Vector3(heading.x, 0f, heading.y) * currentSpeed;
+    /// <summary>Velocity relative to the parent, as a world-space direction (excludes the parent's own motion).</summary>
+    public Vector3 Velocity
+    {
+        get
+        {
+            var local = new Vector3(heading.x, 0f, heading.y) * currentSpeed;
+            return transform.parent != null ? transform.parent.TransformDirection(local) : local;
+        }
+    }
     public Vector2 Heading => heading;
     public float AngularVelocity => angularVelocity;
     /// <summary>x of the final straight descent (where the ship will cross the player's zone).</summary>
@@ -136,11 +150,17 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     public bool IsTracking => flanking && trackTimer > 0f;
     public bool EverRetreated => everRetreated;
     public IReadOnlyList<Vector2> Route => route;
+    public int WaypointIndex => waypoint;
+
+    // The last turn of every route ends above this height, so the ship (fast ones need longer) has room to line up
+    // for its straight descent before Straight Below Z.
+    private float DescendZ => straightBelowZ + Mathf.Max(lineUpBand, 2f * Speed / Mathf.Max(1f, TurnRate * Mathf.Deg2Rad));
 
     void OnEnable()
     {
         active.Add(this);
-        heading = new Vector2(transform.forward.x, transform.forward.z);
+        Vector3 forward = transform.localRotation * Vector3.forward;
+        heading = new Vector2(forward.x, forward.z);
         heading = heading.sqrMagnitude > 1e-4f ? heading.normalized : Vector2.down;
         angularVelocity = 0f;
         travelled = age = 0f;
@@ -149,9 +169,9 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         reacted = flanking = retreating = everRetreated = false;
         trackTimer = 0f;
         // Spawned without an encounter (e.g. dropped in the scene): curve towards the centre.
-        side = Mathf.Abs(transform.position.x) > 0.5f ? -Mathf.Sign(transform.position.x) : 1f;
+        side = Mathf.Abs(transform.localPosition.x) > 0.5f ? -Mathf.Sign(transform.localPosition.x) : 1f;
         currentSpeed = Speed;
-        PlanRoute(pattern, transform.position.x, transform.position.x, transform.position.x);
+        PlanRoute(pattern, transform.localPosition.x, transform.localPosition.x, transform.localPosition.x);
     }
 
     void OnDisable()
@@ -165,8 +185,8 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         TestWaveDifficulty wave = profile != null ? profile.ForWave(info.waveIndex) : null;
 
         // Formation slot -> world x. The spawn origin faces down the screen, so its right is world -X.
-        float rightX = transform.right.x;
-        float originX = transform.position.x - rightX * (info.slotOffsetX + info.groupShift);
+        float rightX = (transform.localRotation * Vector3.right).x;
+        float originX = transform.localPosition.x - rightX * (info.slotOffsetX + info.groupShift);
         float a = originX + rightX * info.groupMinX;
         float b = originX + rightX * info.groupMaxX;
         float groupMin = Mathf.Min(a, b);
@@ -203,7 +223,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             ApplyDifficulty(wave);
         }
         currentSpeed = Speed;
-        PlanRoute(chosen, transform.position.x, groupMin, groupMax);
+        PlanRoute(chosen, transform.localPosition.x, groupMin, groupMax);
     }
 
     /// <summary>Speed, turn rate, widths and reactions for this wave. Used by OnWaveSpawn and tests.</summary>
@@ -222,33 +242,36 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     {
         activePattern = chosen;
         route.Clear();
+        retreatWaypoint = -1;
         waypoint = 0;
         waypointWasAhead = false;
-        float z0 = transform.position.z;
+        waypointTime = 0f;
+        float z0 = transform.localPosition.z;
         if (heading.y > -0.7f)
         {
             // The route shapes assume the test scene (spawned at the top, flying down the screen).
             // Spawned any other way, just fly straight ahead.
-            Vector2 ahead = new Vector2(transform.position.x, z0) + heading * 60f;
+            Vector2 ahead = new Vector2(transform.localPosition.x, z0) + heading * 60f;
             route.Add(ahead);
-            laneX = plannedLaneX = transform.position.x;
+            laneX = plannedLaneX = transform.localPosition.x;
             return;
         }
         float upper = Mathf.Min(z0 - 1.5f, sweepZ + 1f);
+        float descendZ = DescendZ;
         switch (chosen)
         {
             case TestMovePattern.CurvedPass:
             {
                 float x1 = x0 + side * curveWidth * widthMultiplier;
                 route.Add(new Vector2(x0 + side * curveWidth * widthMultiplier * 0.35f, upper));
-                route.Add(new Vector2(x1, straightBelowZ + lineUpBand + 1.2f));
+                route.Add(new Vector2(x1, descendZ + 1.2f));
                 break;
             }
             case TestMovePattern.FlankWeave:
             {
                 float w = flankWidth * widthMultiplier;
                 route.Add(new Vector2(x0 + side * w, upper));
-                route.Add(new Vector2(x0 + side * w * 0.25f, straightBelowZ + lineUpBand + 1.5f));
+                route.Add(new Vector2(x0 + side * w * 0.25f, descendZ + 1.5f));
                 break;
             }
             case TestMovePattern.SideSweep:
@@ -258,7 +281,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
                 float shift = side * Mathf.Clamp(sweepWidth * widthMultiplier, 0f, Mathf.Max(0f, room));
                 route.Add(new Vector2(x0 + shift * 0.15f, sweepZ + 0.8f));
                 route.Add(new Vector2(x0 + shift * 0.85f, sweepZ));
-                route.Add(new Vector2(x0 + shift, straightBelowZ + lineUpBand + 1.2f));
+                route.Add(new Vector2(x0 + shift, descendZ + 1.2f));
                 break;
             }
             case TestMovePattern.PassAndRetreat:
@@ -266,17 +289,20 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
                 float s = retreatShift * widthMultiplier * side;
                 route.Add(new Vector2(x0, diveZ));
                 route.Add(new Vector2(x0 + s * 0.6f, retreatZ));
-                route.Add(new Vector2(x0 + s, diveZ - 0.4f));
-                route.Add(new Vector2(x0 + s, straightBelowZ + lineUpBand + 0.6f));
+                retreatWaypoint = route.Count - 1; // starts behind the ship on purpose
+                route.Add(new Vector2(x0 + s, Mathf.Max(diveZ - 0.4f, descendZ + 0.8f))); // second pass
                 break;
             }
             default:
-                route.Add(new Vector2(x0, straightBelowZ + lineUpBand + 1f));
+                route.Add(new Vector2(x0, descendZ + 1f));
                 break;
         }
+        // Slow turners overshoot a waypoint by about one turning radius, so their targets stay that much further inside.
+        float turnRadius = Speed / Mathf.Max(1f, TurnRate * Mathf.Deg2Rad);
+        float limit = laneLimitX - Mathf.Clamp(turnRadius - 0.5f, 0f, 2f);
         for (int i = 0; i < route.Count; i++)
         {
-            route[i] = new Vector2(Mathf.Clamp(route[i].x, -laneLimitX, laneLimitX), route[i].y);
+            route[i] = new Vector2(Mathf.Clamp(route[i].x, -limit, limit), route[i].y);
         }
         laneX = route[route.Count - 1].x;
         plannedLaneX = laneX;
@@ -297,57 +323,68 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         }
         int steps = Mathf.CeilToInt(dt / SubStep);
         float h = dt / steps;
-        Vector3 p = transform.position;
+        Vector3 p = transform.localPosition;
         var pos = new Vector2(p.x, p.z);
         for (int i = 0; i < steps; i++)
         {
             pos = SubStepMove(pos, h);
         }
-        transform.position = new Vector3(pos.x, p.y, pos.y);
+        transform.localPosition = new Vector3(pos.x, p.y, pos.y);
         if (heading.sqrMagnitude > 1e-6f)
         {
-            transform.rotation = Quaternion.LookRotation(new Vector3(heading.x, 0f, heading.y), Vector3.up);
+            transform.localRotation = Quaternion.LookRotation(new Vector3(heading.x, 0f, heading.y), Vector3.up);
         }
     }
 
     private Vector2 SubStepMove(Vector2 pos, float h)
     {
         age += h;
+        waypointTime += h;
         React(pos, h);
         if (age > maxLifetime && waypoint < route.Count - 1)
         {
             // Safety net: leave straight down from here.
             route.Clear();
+            retreatWaypoint = -1;
             route.Add(new Vector2(Mathf.Clamp(pos.x, -laneLimitX, laneLimitX), ExitZ));
             laneX = plannedLaneX = route[0].x;
             waypoint = 0;
             waypointWasAhead = false;
+            waypointTime = 0f;
         }
 
-        // Next waypoint once the ship is close to it, or once it has flown past it (it was ahead and is now behind, within
-        // a few turning radii), so a slow-turning ship never orbits a waypoint it cannot reach. A waypoint that starts out
-        // behind (a retreat) is kept until the ship has turned towards it. The final exit point is never "reached": the
-        // encounter removes the ship first.
+        // Next waypoint once the ship is close to it, or once it is well off the nose (behind, or alongside) within a few
+        // turning radii: the ship can no longer reach it without circling, so it moves on instead of orbiting it.
+        // The retreat waypoint starts behind the ship on purpose, so it only counts as passed after the ship has turned
+        // towards it. The final exit point is never "reached": the encounter removes the ship first.
         float turnRadius = currentSpeed / Mathf.Max(1f, TurnRate * Mathf.Deg2Rad);
         while (waypoint < route.Count - 1)
         {
             Vector2 toTarget = route[waypoint] - pos;
             float distance = toTarget.magnitude;
-            bool ahead = Vector2.Dot(toTarget, heading) > 0f;
-            waypointWasAhead |= ahead;
-            bool passed = !ahead && waypointWasAhead && distance < 2.5f * turnRadius;
+            float offNose = Vector2.Angle(heading, toTarget);
+            waypointWasAhead |= offNose < 45f;
+            bool circledOnce = waypointTime > 360f / Mathf.Max(1f, TurnRate);
+            if (waypoint == retreatWaypoint && !waypointWasAhead && !circledOnce)
+            {
+                break; // keep the retreat point until the ship has turned towards it, however close it is
+            }
+            bool passed = circledOnce || ((waypoint != retreatWaypoint || waypointWasAhead) && offNose > 60f && distance < 2.5f * turnRadius);
             if (distance >= Mathf.Max(0.6f, currentSpeed * 0.3f) && !passed)
             {
                 break;
             }
             waypoint++;
             waypointWasAhead = false;
+            waypointTime = 0f;
         }
         Vector2 target = route[waypoint];
         Vector2 desired = target - pos;
         desired = desired.sqrMagnitude > 1e-6f ? desired.normalized : heading;
         bool descending = heading.y < 0f;
-        if (descending && pos.y < straightBelowZ + lineUpBand && waypoint >= route.Count - 1)
+        // Faster ships need a longer run-up to finish turning before the straight zone.
+        float lineUp = Mathf.Max(lineUpBand, 2f * turnRadius);
+        if (descending && pos.y < straightBelowZ + lineUp && waypoint >= route.Count - 1)
         {
             desired = Vector2.down; // line up for the straight descent
         }
@@ -383,7 +420,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         if (flanking && trackTimer > 0f)
         {
             trackTimer = pos.y < straightBelowZ + lineUpBand + 1f ? 0f : trackTimer - h;
-            SetFlankLane(director.PlayerPosition.x, pos);
+            SetFlankLane(PlayerLocalX(director), pos);
             return;
         }
         if (reacted || travelled < difficulty.reactAfterDistance || pos.y < straightBelowZ + lineUpBand + 1f)
@@ -391,7 +428,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             return;
         }
         reacted = true;
-        float playerX = director.PlayerPosition.x;
+        float playerX = PlayerLocalX(director);
         if ((difficulty.flankingClasses & ToMask(enemyClass)) != 0)
         {
             // Flank the player's last observed position: descend beside it, on the side this ship is already on.
@@ -416,10 +453,12 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         if (Mathf.Abs(x - laneX) > 0.01f || route.Count != 2)
         {
             route.Clear();
-            route.Add(new Vector2(x, Mathf.Min(pos.y - 0.5f, straightBelowZ + lineUpBand + 1.2f)));
+            retreatWaypoint = -1;
+            route.Add(new Vector2(x, Mathf.Min(pos.y - 0.5f, DescendZ + 1.2f)));
             route.Add(new Vector2(x, ExitZ));
             waypoint = 0;
             waypointWasAhead = false;
+            waypointTime = 0f;
             laneX = x;
         }
     }
@@ -448,7 +487,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         var lanes = new List<Vector2>();
         foreach (TestEnemyMover other in active)
         {
-            if (other != this && other.transform.position.z > -9f && Mathf.Abs(other.transform.position.z - transform.position.z) < 6f)
+            if (other != this && other.transform.localPosition.z > -9f && Mathf.Abs(other.transform.localPosition.z - transform.localPosition.z) < 6f)
             {
                 lanes.Add(new Vector2(other.laneX, other.halfWidth));
             }
@@ -490,6 +529,13 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             edge = Mathf.Max(edge, lane.x + lane.y);
         }
         return Mathf.Max(best, maxX - edge);
+    }
+
+    // The player's x in this ship's parent space (the same space as its route).
+    private float PlayerLocalX(TestAttackDirector director)
+    {
+        Vector3 p = director.PlayerPosition;
+        return transform.parent != null ? transform.parent.InverseTransformPoint(p).x : p.x;
     }
 
     private static Vector2 Rotate(Vector2 v, float degrees)

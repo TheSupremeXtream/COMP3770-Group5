@@ -11,6 +11,9 @@ using UnityEngine.TestTools;
 public class PresentationTests
 {
     private const string ScenePath = "Assets/Scenes/LevelWaves_Encounter01_Test.unity";
+    // Reference fields that are optional and intentionally empty in the test scene.
+    private static readonly string[] OptionalReferences = { "WaveEncounter.boundsSpace" };
+
     private static readonly string[] Prefabs =
     {
         "Assets/Prefabs/LevelWaves/TEST_PlayerShip.prefab", "Assets/Prefabs/LevelWaves/TEST_Enemy_Basic.prefab",
@@ -77,7 +80,11 @@ public class PresentationTests
                 while (p.NextVisible(true))
                 {
                     // Every reference in our prototype components is expected to be set; null = unassigned or missing.
-                    if (p.propertyType == SerializedPropertyType.ObjectReference && p.objectReferenceValue == null)
+                    // Exceptions: fields documented as optional and empty on purpose in the test scene
+                    // (WaveEncounter.boundsSpace: empty = world-space bounds).
+                    string field = mb.GetType().Name + "." + p.propertyPath;
+                    bool optionalEmpty = System.Array.IndexOf(OptionalReferences, field) >= 0;
+                    if (p.propertyType == SerializedPropertyType.ObjectReference && p.objectReferenceValue == null && !optionalEmpty)
                     {
                         problems.Add(where + ": unassigned/missing reference " + mb.GetType().Name + "." + p.propertyPath);
                     }
