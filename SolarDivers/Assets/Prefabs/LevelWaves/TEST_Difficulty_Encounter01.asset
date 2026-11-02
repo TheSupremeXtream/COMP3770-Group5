@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbfba0886e516d43bc13ce9280cf5cd, type: 3}
+  m_Name: TEST_Difficulty_Encounter01
+  m_EditorClassIdentifier: SolarDivers.LevelWaves::TestDifficultyProfile
+  waves:
+  - label: Wave 1 - curved approaches, one left/right sweep
+    speedMultiplier: 1
+    turnRateMultiplier: 1
+    pathWidthMultiplier: 1
+    alternateFlanks: 0
+    groupPatterns: 010000000100000003000000i
+    keepOwnPattern: 0
+    reactAfterDistance: 2.5
+    laneSeekDistance: 0
+    flankingClasses: 0
+    flankOffset: 2.4
+    trackingSeconds: 0.6
+    maxReposition: 4
+    aimedShooterEveryNth: 0
+    telegraphSeconds: 0.9
+    shotSpeed: 8
+  - label: Wave 2 - pass and retreat, lane shift, first interceptors
+    speedMultiplier: 1.05
+    turnRateMultiplier: 1
+    pathWidthMultiplier: 1.1
+    alternateFlanks: 1
+    groupPatterns: 040000000100000004000000i
+    keepOwnPattern: 0
+    reactAfterDistance: 2.5
+    laneSeekDistance: 1.8
+    flankingClasses: 0
+    flankOffset: 2.4
+    trackingSeconds: 0.6
+    maxReposition: 4
+    aimedShooterEveryNth: 0
+    telegraphSeconds: 0.9
+    shotSpeed: 8
+  - label: Wave 3 - mixed classes, flanking interceptors, aimed shots
+    speedMultiplier: 1.1
+    turnRateMultiplier: 1.1
+    pathWidthMultiplier: 1
+    alternateFlanks: 1
+    groupPatterns: 010000000400000003000000i
+    keepOwnPattern: 1
+    reactAfterDistance: 2.5
+    laneSeekDistance: 1.2
+    flankingClasses: 4
+    flankOffset: 2.4
+    trackingSeconds: 0.6
+    maxReposition: 4
+    aimedShooterEveryNth: 3
+    telegraphSeconds: 0.9
+    shotSpeed: 8
+  minEscapeGap: 2.6
+  maxShotsInFlight: 2
+  minSecondsBetweenAttacks: 1.4
+  minFireDistance: 7
+  fireWindowZ: {x: 3, y: 8.5}
+  fireWindowX: 9.5
+  aimLockSeconds: 0.3
+  holdFireWhilePlayerRecovers: 1
