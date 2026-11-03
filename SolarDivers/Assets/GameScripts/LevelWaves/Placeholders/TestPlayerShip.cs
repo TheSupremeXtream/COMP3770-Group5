@@ -23,6 +23,18 @@ public class TestPlayerShip : MonoBehaviour
     [SerializeField] private Vector2 xLimits = new Vector2(-9f, 9f);
     [SerializeField] private Vector2 zLimits = new Vector2(-8f, 0f);
     [SerializeField] private GameObject projectilePrefab;
+
+
+    // Taha Hammoud, added Nov-03
+    // Adding the Plasma weapon settings, after this we have 2/3 weapons
+    // Has its own projectile, cooldown, and limited ammo
+    // We'll use these when switching between laser and plasma
+    [SerializeField] private GameObject plasmaProjectilePrefab;
+    [SerializeField] private float plasmaFireCooldown = 0.5f;
+    [SerializeField] private int plasmaAmmo = 33;
+    private bool usingPlasma = false;
+
+
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireCooldown = 0.2f;
     [Tooltip("Presentation only: brief flash object at the fire point (starts inactive).")]
@@ -148,6 +160,25 @@ public class TestPlayerShip : MonoBehaviour
             if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) move.y += 1f;
             Step(move, Time.deltaTime);
         }
+
+
+
+        // Switching from weapons using 1 and 2 on MNK, eventually 3 for missils. 
+        // Reset the firing timer so switching feels responsive
+        // place holder, need to ADD CONTROLER SUPPORT - done - Taha
+        // The top face button on a controller toggles weapons (Y on Xbox, X on Nintendo, Square on PlayStation)
+        // Reset the cooldown when switching
+        Gamepad gamepad = Gamepad.current;
+        if (keyboard.digit1Key.wasPressedThisFrame)
+            usingPlasma = false;
+        if (keyboard.digit2Key.wasPressedThisFrame)
+            usingPlasma = true;
+        if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
+            usingPlasma = !usingPlasma;
+
+
+
+
 
         cooldown -= Time.deltaTime;
         bool fire = keyboard.spaceKey.isPressed || (Mouse.current != null && Mouse.current.leftButton.isPressed);
