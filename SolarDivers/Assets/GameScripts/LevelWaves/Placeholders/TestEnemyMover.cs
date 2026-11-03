@@ -30,7 +30,9 @@ public enum TestMovePattern
     // Crosses the upper screen sideways (left/right sweep), then descends on the far side.
     SideSweep,
     // Dives to mid-screen, pulls back up for a brief retreat, then makes a second pass down a nearby lane.
-    PassAndRetreat
+    PassAndRetreat,
+    // The group dives spread out, pulls back up into a tighter formation (regroups), then makes a second pass together.
+    DiveRegroup
 }
 
 /// <summary>
@@ -117,6 +119,9 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     private float plannedLaneX;
     private bool retreating;
     private bool everRetreated;
+    private bool pursuing;
+    // Bounded run-to-run variation of the dive depth (units), from the run seed.
+    private float diveOffset;
 
     public TestEnemyClass Class => enemyClass;
     public TestMovePattern Pattern => pattern;
@@ -146,8 +151,11 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     /// <summary>Sideways change of the descent lane made by a reaction (lane shift or flank).</summary>
     public float SeekShift => laneX - plannedLaneX;
     public bool SeekRead => reacted;
-    public bool IsFlanking => flanking;
+    public bool IsFlanking => flanking && !pursuing;
     public bool IsTracking => flanking && trackTimer > 0f;
+    public bool IsPursuing => pursuing;
+    public float WidthMultiplier => widthMultiplier;
+    public float DiveOffset => diveOffset;
     public bool EverRetreated => everRetreated;
     public IReadOnlyList<Vector2> Route => route;
     public int WaypointIndex => waypoint;
@@ -166,7 +174,8 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         travelled = age = 0f;
         speedMultiplier = turnMultiplier = widthMultiplier = 1f;
         difficulty = null;
-        reacted = flanking = retreating = everRetreated = false;
+        reacted = flanking = retreating = everRetreated = pursuing = false;
+        diveOffset = 0f;
         trackTimer = 0f;
         // Spawned without an encounter (e.g. dropped in the scene): curve towards the centre.
         side = Mathf.Abs(transform.localPosition.x) > 0.5f ? -Mathf.Sign(transform.localPosition.x) : 1f;
@@ -197,6 +206,25 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         bool centreGroup = Mathf.Abs(info.groupShift) < 0.01f;
         bool alternate = wave != null && wave.alternateFlanks;
         float alternateSide = info.groupIndex % 2 == 0 ? 1f : -1f;
+
+        // Bounded run-to-run variation from the run seed: the whole group shares its width, dive depth and (centre
+        // groups) sweep side; each ship varies its speed slightly. Same seed = same paths.
+        float v = wave != null ? wave.variation : 0f;
+        float groupWidth = 1f, shipSpeed = 1f;
+        diveOffset = 0f;
+        if (v > 0f && TestAttackDirector.Active != null)
+        {
+            int seed = TestAttackDirector.Active.RunSeed;
+            var groupRandom = new System.Random(Hash(seed, info.waveIndex, info.groupIndex));
+            var shipRandom = new System.Random(Hash(seed, info.waveIndex, info.groupIndex, info.slotIndex + 101));
+            groupWidth = 1f + v * (float)(groupRandom.NextDouble() * 2.0 - 1.0);
+            diveOffset = v * 2f * (float)(groupRandom.NextDouble() * 2.0 - 1.0);
+            if (centreGroup && groupRandom.NextDouble() < 0.5)
+            {
+                alternateSide = -alternateSide;
+            }
+            shipSpeed = 1f + v / 3f * (float)(shipRandom.NextDouble() * 2.0 - 1.0);
+        }
         float towardsCentre = Mathf.Abs(groupCentre) > 0.5f ? -Mathf.Sign(groupCentre) : alternateSide;
 
         TestMovePattern chosen = pattern;
@@ -221,9 +249,24 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         if (wave != null)
         {
             ApplyDifficulty(wave);
+            widthMultiplier *= groupWidth;
+            speedMultiplier *= shipSpeed;
         }
         currentSpeed = Speed;
         PlanRoute(chosen, transform.localPosition.x, groupMin, groupMax);
+    }
+
+    private static int Hash(params int[] values)
+    {
+        unchecked
+        {
+            int h = 17;
+            foreach (int x in values)
+            {
+                h = h * 31 + x;
+            }
+            return h;
+        }
     }
 
     /// <summary>Speed, turn rate, widths and reactions for this wave. Used by OnWaveSpawn and tests.</summary>
@@ -287,10 +330,25 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             case TestMovePattern.PassAndRetreat:
             {
                 float s = retreatShift * widthMultiplier * side;
-                route.Add(new Vector2(x0, diveZ));
+                float dive = diveZ + diveOffset;
+                route.Add(new Vector2(x0, dive));
                 route.Add(new Vector2(x0 + s * 0.6f, retreatZ));
                 retreatWaypoint = route.Count - 1; // starts behind the ship on purpose
-                route.Add(new Vector2(x0 + s, Mathf.Max(diveZ - 0.4f, descendZ + 0.8f))); // second pass
+                route.Add(new Vector2(x0 + s, Mathf.Max(dive - 0.4f, descendZ + 0.8f))); // second pass
+                break;
+            }
+            case TestMovePattern.DiveRegroup:
+            {
+                // Spread out on the way down, pull back up into a tighter formation around the group's centre,
+                // then come down again together, shifted to one side.
+                float centre = (groupMin + groupMax) * 0.5f;
+                float slotX = x0 - centre;
+                float s = retreatShift * widthMultiplier * side;
+                float dive = diveZ + diveOffset;
+                route.Add(new Vector2(x0 + slotX * 0.35f, dive));
+                route.Add(new Vector2(centre + slotX * 0.45f + s * 0.6f, retreatZ + 0.3f));
+                retreatWaypoint = route.Count - 1; // the regroup point starts behind the ship on purpose
+                route.Add(new Vector2(centre + slotX * 0.45f + s, Mathf.Max(dive - 0.4f, descendZ + 0.8f)));
                 break;
             }
             default:
@@ -435,6 +493,16 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             flanking = true;
             trackTimer = difficulty.trackingSeconds;
             flankSide = Mathf.Abs(pos.x - playerX) > 0.5f ? Mathf.Sign(pos.x - playerX) : (playerX > 0f ? -1f : 1f);
+            SetFlankLane(playerX, pos);
+        }
+        else if ((difficulty.pursuitClasses & ToMask(enemyClass)) != 0 && difficulty.pursuitSeconds > 0f)
+        {
+            // Short pursuit: follow the player's x for at most Pursuit Seconds, then commit to that lane. It ends high
+            // above the player's zone, so the final straight descent can still be read and side-stepped.
+            flanking = true;
+            pursuing = true;
+            trackTimer = difficulty.pursuitSeconds;
+            flankSide = 0f;
             SetFlankLane(playerX, pos);
         }
         else if (difficulty.laneSeekDistance > 0f)

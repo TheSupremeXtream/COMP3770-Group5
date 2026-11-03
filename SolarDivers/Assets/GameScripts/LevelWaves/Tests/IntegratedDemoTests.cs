@@ -141,8 +141,12 @@ public class IntegratedDemoTests
         Assert.AreEqual(3, classes.Count, "Heavy, fighter and interceptor all appear");
 
         // Everything that follows the camera is under the rail rig, and the bounds use it.
-        var rail = Find<TestRailScroll>();
-        Assert.IsNotNull(rail);
+        var rail = Find<RailPathFollower>();
+        Assert.IsNotNull(rail, "The rig should follow the rail path");
+        Behaviour levelCamera = FindByTypeName("LevelCamera");
+        Assert.IsNotNull(levelCamera, "Abel's LevelCamera drives the rail");
+        Assert.AreSame(levelCamera.transform, rail.Path, "The rig follows the object Abel's LevelCamera moves");
+        Assert.IsNotNull(FindByTypeName("KeyFrame"), "Abel's KeyFrame objects define the path");
         Assert.AreSame(rail.transform, encounter.BoundsSpace, "Encounter bounds should follow the rail rig");
         Assert.IsTrue(controller.transform.IsChildOf(rail.transform), "Player should ride the rail rig");
         Assert.IsTrue(Camera.main.transform.IsChildOf(rail.transform), "Camera should ride the rail rig");
@@ -277,12 +281,15 @@ public class IntegratedDemoTests
     {
         yield return LoadDemo();
         WaveEncounter encounter = Find<WaveEncounter>();
-        TestRailScroll rail = Find<TestRailScroll>();
+        RailPathFollower rail = Find<RailPathFollower>();
+        Behaviour levelCamera = FindByTypeName("LevelCamera");
         EncounterTestHarness harness = Find<EncounterTestHarness>();
         Find<TestPlayerHealth>().enabled = false;
         Transform player = Find<TestPlayerShip>().transform;
         Vector3 playerLocal = rail.transform.InverseTransformPoint(player.position);
-        rail.Speed = 3f;
+        var cameraSettings = new SerializedObject(levelCamera); // Abel's own speed setting, raised for the test
+        cameraSettings.FindProperty("cameraSpeed").floatValue = 3f;
+        cameraSettings.ApplyModifiedPropertiesWithoutUndo();
 
         var seen = new HashSet<TestEnemyMover>();
         float worstX = 0f;
@@ -417,6 +424,125 @@ public class IntegratedDemoTests
         Time.timeScale = 1f;
         yield return WaitGame(0.5f);
         yield return Shot(cam, uiCam, dir, "demo_05_route_clear.png");
+    }
+
+    // Renders Leonardo's model (as nested in the demo's fighter) from the demo's top-down camera and from the angle of
+    // his own TestScene camera (behind and above, pitched 30 degrees), to explain how the enemies look.
+    [UnityTest, Explicit("Writes enemy appearance renders; run on demand with SOLAR_CAPTURE_DIR set.")]
+    public IEnumerator CaptureEnemyAppearance()
+    {
+        string dir = System.Environment.GetEnvironmentVariable("SOLAR_CAPTURE_DIR");
+        if (string.IsNullOrEmpty(dir))
+        {
+            Assert.Ignore("SOLAR_CAPTURE_DIR not set");
+        }
+        System.IO.Directory.CreateDirectory(dir);
+        yield return LoadDemo();
+        Find<WaveEncounter>().StopEncounter();
+        GameObject prefab = Find<WaveEncounter>().Waves[0].enemyPrefabs[0];
+        Vector3 at = new Vector3(400f, 0f, 400f);
+        GameObject enemy = Object.Instantiate(prefab, at, Quaternion.Euler(0f, 180f, 0f));
+        foreach (MonoBehaviour b in enemy.GetComponentsInChildren<MonoBehaviour>())
+        {
+            b.enabled = false;
+        }
+        var camGo = new GameObject("AppearanceCamera");
+        var cam = camGo.AddComponent<Camera>();
+        cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.backgroundColor = new Color(0.03f, 0.042f, 0.08f);
+        cam.fieldOfView = 30f;
+        var views = new (string name, Vector3 offset, Quaternion rotation)[]
+        {
+            ("enemy_top_down_as_in_demo.png", new Vector3(0f, 5f, 0f), Quaternion.Euler(90f, 0f, 0f)),
+            // Leonardo's TestScene camera: rotation (0, 0.966, -0.259, 0) = turned 180 degrees and pitched 30 degrees down.
+            ("enemy_leonardo_scene_angle.png", new Vector3(0f, 2.5f, -4.3f), new Quaternion(0f, 0.9659258f, -0.2588191f, 0f) * Quaternion.Euler(0f, 180f, 0f)),
+            ("enemy_side.png", new Vector3(5f, 0f, 0f), Quaternion.Euler(0f, -90f, 0f))
+        };
+        foreach (var view in views)
+        {
+            camGo.transform.SetPositionAndRotation(at + view.offset, view.rotation);
+            if (view.name.Contains("leonardo"))
+            {
+                camGo.transform.LookAt(at);
+            }
+            var rt = new RenderTexture(512, 512, 24);
+            cam.targetTexture = rt;
+            cam.Render();
+            RenderTexture.active = rt;
+            var tex = new Texture2D(512, 512, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, 512, 512), 0, 0);
+            tex.Apply();
+            RenderTexture.active = null;
+            cam.targetTexture = null;
+            System.IO.File.WriteAllBytes(System.IO.Path.Combine(dir, view.name), tex.EncodeToPNG());
+            Object.Destroy(tex);
+            rt.Release();
+            yield return null;
+        }
+        // What the model actually is: renderers, meshes, materials and their colours.
+        var info = new System.Text.StringBuilder();
+        Transform model = enemy.transform.Find("Model (Enemy_model)");
+        info.AppendLine($"model local rotation {model.localEulerAngles}, local scale {model.localScale}");
+        foreach (Renderer r in enemy.GetComponentsInChildren<Renderer>())
+        {
+            var filter = r.GetComponent<MeshFilter>();
+            info.AppendLine($"{r.name}: mesh {(filter != null && filter.sharedMesh != null ? filter.sharedMesh.name + " " + filter.sharedMesh.bounds.size : "-")}, " +
+                            $"materials {string.Join(", ", System.Array.ConvertAll(r.sharedMaterials, m => m == null ? "none" : $"{m.name} [{m.shader.name}] base {(m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor").ToString() : "-")}"))}");
+        }
+        System.IO.File.WriteAllText(System.IO.Path.Combine(dir, "enemy_model_info.txt"), info.ToString());
+        Debug.Log("[Appearance]\n" + info);
+        Object.Destroy(enemy);
+        Object.Destroy(camGo);
+    }
+
+    // Frame times while the demo plays (auto-fire, ship weaving), rendering at 1920x1080 into a texture.
+    [UnityTest, Explicit("Measures frame times; run on demand.")]
+    public IEnumerator MeasureDemoPerformance()
+    {
+        yield return LoadDemo();
+        Find<TestPlayerHealth>().enabled = false;
+        TestPlayerShip weapon = Find<TestPlayerShip>();
+        Camera cam = Camera.main;
+        var rt = new RenderTexture(1920, 1080, 24);
+        cam.targetTexture = rt;
+        foreach (Camera c in Object.FindObjectsByType<Camera>(FindObjectsInactive.Exclude))
+        {
+            if (c != cam && c.name.Contains("UICamera"))
+            {
+                c.targetTexture = rt;
+            }
+        }
+        var frames = new List<float>();
+        float nextShot = 0f;
+        float end = Time.realtimeSinceStartup + 45f;
+        yield return WaitGame(2f); // skip loading hitches
+        while (Time.realtimeSinceStartup < end && !Find<WaveEncounter>().IsCompleted)
+        {
+            if (Time.time >= nextShot)
+            {
+                weapon.Fire();
+                nextShot = Time.time + 0.2f;
+            }
+            yield return null;
+            frames.Add(Time.unscaledDeltaTime * 1000f);
+        }
+        cam.targetTexture = null;
+        rt.Release();
+        frames.Sort();
+        float mean = 0f;
+        foreach (float f in frames) mean += f;
+        mean /= Mathf.Max(1, frames.Count);
+        float p95 = frames[Mathf.Clamp((int)(frames.Count * 0.95f), 0, frames.Count - 1)];
+        string summary = $"[Performance] {frames.Count} frames: mean {mean:F1} ms ({1000f / mean:F0} fps), median {frames[frames.Count / 2]:F1} ms, " +
+                         $"95th percentile {p95:F1} ms, worst {frames[frames.Count - 1]:F1} ms (frame cap 60 fps in the demo)";
+        Debug.Log(summary);
+        string dir = System.Environment.GetEnvironmentVariable("SOLAR_CAPTURE_DIR");
+        if (!string.IsNullOrEmpty(dir))
+        {
+            System.IO.Directory.CreateDirectory(dir);
+            System.IO.File.WriteAllText(System.IO.Path.Combine(dir, "performance.txt"), summary);
+        }
+        Assert.Greater(frames.Count, 100);
     }
 
     [UnityTest]

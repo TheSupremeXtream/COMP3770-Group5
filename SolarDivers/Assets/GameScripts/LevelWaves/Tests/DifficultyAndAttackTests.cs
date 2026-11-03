@@ -76,31 +76,40 @@ public class DifficultyAndAttackTests
         Assert.IsNotNull(profile);
         Assert.AreEqual(3, profile.waves.Count, "One entry per wave of this encounter");
         TestWaveDifficulty w1 = profile.waves[0], w2 = profile.waves[1], w3 = profile.waves[2];
-        // Patterns are introduced gradually.
-        foreach (TestMovePattern p in w1.groupPatterns)
-        {
-            Assert.IsTrue(p == TestMovePattern.CurvedPass || p == TestMovePattern.SideSweep || p == TestMovePattern.Straight,
-                "Wave 1: only curved approaches and sweeps, not " + p);
-        }
-        CollectionAssert.Contains(w1.groupPatterns, TestMovePattern.SideSweep, "Wave 1 introduces the left/right sweep");
-        CollectionAssert.Contains(w2.groupPatterns, TestMovePattern.PassAndRetreat, "Wave 2 introduces pass-and-retreat");
-        Assert.GreaterOrEqual(new HashSet<TestMovePattern>(w3.groupPatterns).Count, 3, "Wave 3 mixes the patterns");
-        // Reactions are introduced gradually and stay limited.
+        // Wave 1 introduces the patterns, one per group, with no reactions and only single, slow, unleading shots.
+        Assert.AreEqual(3, new HashSet<TestMovePattern>(w1.groupPatterns).Count, "Wave 1 shows three different patterns");
         Assert.AreEqual(0f, w1.laneSeekDistance, "Wave 1: no repositioning");
-        Assert.AreEqual(TestEnemyClassMask.None, w1.flankingClasses, "Wave 1: no flanking");
-        Assert.AreEqual(0, w1.aimedShooterEveryNth, "Wave 1: no attacks");
-        Assert.IsTrue(w2.alternateFlanks, "Wave 2: alternating flanks");
-        Assert.Greater(w2.laneSeekDistance, 0f, "Wave 2: limited repositioning towards the player's lane");
-        Assert.LessOrEqual(w2.laneSeekDistance, 2f);
-        Assert.AreEqual(TestEnemyClassMask.None, w2.flankingClasses, "Wave 2: no flanking yet");
-        Assert.AreEqual(0, w2.aimedShooterEveryNth, "Wave 2: still no attacks");
+        Assert.AreEqual(TestEnemyClassMask.None, w1.flankingClasses | w1.pursuitClasses, "Wave 1: no flanking or pursuit");
+        Assert.AreEqual(1, w1.shotsPerBurst, "Wave 1: single shots only");
+        Assert.AreEqual(0f, w1.leadFactor, "Wave 1: no prediction");
+        Assert.IsTrue(w1.rocketClasses == TestEnemyClassMask.None && !w1.groupLeaderRocket, "Wave 1: no rockets");
+        Assert.GreaterOrEqual(w1.telegraphSeconds, 0.9f, "Wave 1: long, readable warnings");
+        // Wave 2 combines them and introduces bursts, a little lead, pursuit and the first rockets.
+        CollectionAssert.Contains(w2.groupPatterns, TestMovePattern.DiveRegroup, "Wave 2 adds dive-and-regroup");
+        Assert.Greater(new HashSet<TestMovePattern>(w2.groupPatterns).Count, 1, "Wave 2 combines patterns");
+        Assert.IsTrue(w2.laneSeekDistance > 0f && w2.laneSeekDistance <= 2f, "Wave 2: limited lane shift");
+        Assert.AreNotEqual(TestEnemyClassMask.None, w2.pursuitClasses, "Wave 2: short pursuit");
+        Assert.LessOrEqual(w2.pursuitSeconds, 1f, "Pursuit is short");
+        Assert.Greater(w2.shotsPerBurst, 1, "Wave 2: bursts");
+        Assert.IsTrue(w2.leadFactor > 0f && w2.leadFactor <= 0.5f, "Wave 2: limited prediction");
+        Assert.IsTrue(w2.groupLeaderRocket && w2.rocketClasses == TestEnemyClassMask.None, "Wave 2: one rocket per group (the leader)");
+        // Wave 3 puts on more pressure, still within readable limits.
         Assert.AreNotEqual(TestEnemyClassMask.None, w3.flankingClasses & TestEnemyClassMask.Interceptor, "Wave 3: interceptors flank");
+        Assert.AreNotEqual(TestEnemyClassMask.None, w3.pursuitClasses, "Wave 3: pursuit");
         Assert.GreaterOrEqual(w3.flankOffset, 2f, "Flankers pass beside the player, not over it");
-        Assert.LessOrEqual(w3.trackingSeconds, 1f, "Tracking is brief");
-        Assert.Greater(w3.aimedShooterEveryNth, 0, "Wave 3: occasional aimed attacks");
-        Assert.GreaterOrEqual(w3.aimedShooterEveryNth, 2, "Only some ships shoot ('occasional')");
-        Assert.GreaterOrEqual(w3.telegraphSeconds, 0.6f, "Attacks need a readable warning");
-        Assert.LessOrEqual(w3.shotSpeed, 10f, "Shots must be slow enough to dodge");
+        Assert.LessOrEqual(Mathf.Max(w3.trackingSeconds, w3.pursuitSeconds), 1f, "Tracking is brief");
+        Assert.GreaterOrEqual(w3.shotsPerBurst, w2.shotsPerBurst, "Wave 3 bursts at least as long");
+        Assert.IsTrue(w3.leadFactor >= w2.leadFactor && w3.leadFactor <= 0.8f, "Wave 3 leads more, but never fully");
+        Assert.AreNotEqual(TestEnemyClassMask.None, w3.rocketClasses, "Wave 3: heavies carry rockets");
+        Assert.GreaterOrEqual(w3.aimedShooterEveryNth, 2, "Only some ships shoot");
+        foreach (TestWaveDifficulty w in profile.waves)
+        {
+            Assert.GreaterOrEqual(w.telegraphSeconds, 0.6f, w.label + ": attacks need a readable warning");
+            Assert.GreaterOrEqual(w.rocketWarningSeconds, 0.8f, w.label + ": rockets need a readable warning");
+            Assert.LessOrEqual(w.shotSpeed, 10f, w.label + ": shots must be slow enough to dodge");
+            Assert.LessOrEqual(w.maxLead, 2f, w.label + ": prediction is capped");
+            Assert.IsTrue(w.variation > 0f && w.variation <= 0.3f, w.label + ": some bounded variation between runs");
+        }
         Assert.LessOrEqual(w1.speedMultiplier, w2.speedMultiplier);
         Assert.LessOrEqual(w2.speedMultiplier, w3.speedMultiplier);
         Assert.LessOrEqual(w3.speedMultiplier, 1.25f, "Difficulty comes from behaviour, not raw speed");
@@ -108,7 +117,11 @@ public class DifficultyAndAttackTests
         Assert.LessOrEqual(profile.maxShotsInFlight, 3);
         Assert.GreaterOrEqual(profile.minSecondsBetweenAttacks, 1f);
         Assert.GreaterOrEqual(profile.minFireDistance, 6f);
+        Assert.LessOrEqual(profile.maxRocketsInFlight, 2, "At most two rockets at once");
+        Assert.GreaterOrEqual(profile.minSecondsBetweenRockets, 2.5f, "Rockets are spaced out");
+        Assert.GreaterOrEqual(profile.minRocketDistance, 7f, "Rockets launch from far enough away to react");
         Assert.GreaterOrEqual(profile.fireWindowZ.x, 2f, "No attacks start inside the player's zone");
+        Assert.AreEqual(0, profile.fixedSeed, "The game varies between runs (tests fix the seed themselves)");
         Assert.Greater(profile.aimLockSeconds, 0.1f);
         yield return null;
     }
@@ -190,7 +203,7 @@ public class DifficultyAndAttackTests
     }
 
     [UnityTest]
-    public IEnumerator Encounter_AimedAttacks_OnlyInWave3_FollowFairnessRules_AndRestartClearsThem()
+    public IEnumerator Encounter_Attacks_GrowWaveByWave_FollowFairnessRules_AndRestartClearsThem()
     {
         yield return EditorSceneManagerLoad();
         TestAttackDirector director = Find<TestAttackDirector>();
@@ -201,51 +214,77 @@ public class DifficultyAndAttackTests
         TestDifficultyProfile profile = director.Profile;
         health.enabled = false; // survive the whole run; the player sits still at its start position
 
-        var attacks = new List<(float time, int wave, Vector3 from, float distance)>();
-        var shots = new List<(float time, Vector3 from, Vector3 dir, Vector3 aim)>();
-        director.AttackStarted += from => attacks.Add((Time.time, encounter.CurrentWaveIndex, from, Vector3.Distance(from, health.transform.position)));
-        director.ShotFired += (from, dir, aim) => shots.Add((Time.time, from, dir, aim));
-        int maxBusy = 0;
+        var attacks = new List<(float time, int wave, float distance)>();
+        var shots = new List<(int wave, Vector3 from, Vector3 dir, Vector3 aim)>();
+        var rockets = new List<(float time, int wave, float distance)>();
+        director.AttackStarted += from => attacks.Add((Time.time, encounter.CurrentWaveIndex, Vector3.Distance(from, health.transform.position)));
+        director.ShotFired += (from, dir, aim) => shots.Add((encounter.CurrentWaveIndex, from, dir, aim));
+        director.RocketWarningStarted += from => rockets.Add((Time.time, encounter.CurrentWaveIndex, Vector3.Distance(from, health.transform.position)));
+        int maxBusy = 0, maxRockets = 0;
 
-        float end = Time.realtimeSinceStartup + 90f;
+        float end = Time.realtimeSinceStartup + 120f;
         while (!encounter.IsCompleted && Time.realtimeSinceStartup < end)
         {
-            Time.timeScale = encounter.CurrentWaveIndex < 2 ? 8f : 2f;
-            maxBusy = Mathf.Max(maxBusy, director.ActiveShotCount + director.PendingAttacks);
+            Time.timeScale = 4f;
+            maxBusy = Mathf.Max(maxBusy, director.BusyAttacks);
+            maxRockets = Mathf.Max(maxRockets, director.ActiveRocketCount + director.PendingRockets);
             yield return null;
         }
         Time.timeScale = 1f;
         Assert.IsTrue(encounter.IsCompleted);
-        Debug.Log($"[Attacks] {attacks.Count} attacks, {shots.Count} shots, max busy {maxBusy}");
+        int[] perWave = new int[3], shotsPerWave = new int[3], rocketsPerWave = new int[3];
+        foreach (var a in attacks) perWave[a.wave]++;
+        foreach (var s in shots) shotsPerWave[s.wave]++;
+        foreach (var r in rockets) rocketsPerWave[r.wave]++;
+        Debug.Log($"[Attacks] gun attacks per wave {perWave[0]}/{perWave[1]}/{perWave[2]}, shots {shotsPerWave[0]}/{shotsPerWave[1]}/{shotsPerWave[2]}, " +
+                  $"rockets {rocketsPerWave[0]}/{rocketsPerWave[1]}/{rocketsPerWave[2]}; at most {maxBusy} gun attacks and {maxRockets} rockets busy at once");
 
-        Assert.Greater(attacks.Count, 0, "Wave 3 should attack");
-        Assert.AreEqual(attacks.Count, shots.Count, "Every warning ends in exactly one shot (no hidden shots)");
-        float telegraph = profile.waves[2].telegraphSeconds;
+        Assert.Greater(perWave[0], 0, "Wave 1 has a few single shots");
+        Assert.AreEqual(perWave[0], shotsPerWave[0], "Wave 1: one shot per attack");
+        Assert.AreEqual(0, rocketsPerWave[0], "No rockets in wave 1");
+        Assert.Greater(rocketsPerWave[1], 0, "Rockets are introduced in wave 2");
+        Assert.Greater(rocketsPerWave[2], 0, "Rockets in wave 3");
+        Assert.Greater(shotsPerWave[1] + shotsPerWave[2], perWave[1] + perWave[2], "Later waves fire bursts");
+        Assert.Greater(shots.Count, 0);
+        foreach (var s in shots)
+        {
+            Vector3 toAim = s.aim - s.from;
+            toAim.y = 0f;
+            Assert.Less(Vector3.Angle(s.dir, toAim), 0.5f, "Every shot flies along its locked aim line");
+            // The player stands still, so limited prediction must aim exactly at it.
+            Assert.Less(Vector3.Distance(s.aim, health.transform.position), 0.01f, "Prediction adds nothing when the player is still");
+        }
         for (int i = 0; i < attacks.Count; i++)
         {
-            Assert.AreEqual(2, attacks[i].wave, "Only wave 3 attacks");
             Assert.GreaterOrEqual(attacks[i].distance, profile.minFireDistance - 0.01f, "Attack started too close to the player");
-            Assert.GreaterOrEqual(attacks[i].from.z, profile.fireWindowZ.x - 0.01f);
-            Assert.GreaterOrEqual(shots[i].time - attacks[i].time, telegraph - 0.05f, "Shot fired before its warning finished");
-            Vector3 toAim = shots[i].aim - shots[i].from;
-            toAim.y = 0f;
-            Assert.Less(Vector3.Angle(shots[i].dir, toAim), 0.5f, "Shot must go where the locked aim line pointed");
-            Assert.Less(Vector3.Distance(shots[i].aim, health.transform.position), 0.01f, "Aim is the player's position");
             if (i > 0)
             {
                 Assert.GreaterOrEqual(attacks[i].time - attacks[i - 1].time, profile.minSecondsBetweenAttacks - 0.02f, "Attacks too close together");
             }
         }
-        Assert.LessOrEqual(maxBusy, profile.maxShotsInFlight, "Too many shots at once");
-        Assert.IsFalse(director.TryBeginAttack(new Vector3(0f, 0f, 6f)), "No attacks after the encounter is over");
+        for (int i = 0; i < rockets.Count; i++)
+        {
+            Assert.GreaterOrEqual(rockets[i].distance, profile.minRocketDistance - 0.01f, "Rocket launched too close");
+            if (i > 0)
+            {
+                Assert.GreaterOrEqual(rockets[i].time - rockets[i - 1].time, profile.minSecondsBetweenRockets - 0.02f, "Rockets too close together");
+            }
+        }
+        Assert.LessOrEqual(maxBusy, profile.maxShotsInFlight, "Too many gun attacks at once");
+        Assert.LessOrEqual(maxRockets, profile.maxRocketsInFlight, "Too many rockets at once");
+        Assert.AreEqual(0, director.TryBeginAttack(new Vector3(0f, 0f, 6f)), "No attacks after the encounter is over");
+        Assert.IsFalse(director.TryBeginRocket(new Vector3(0f, 0f, 7f)), "No rockets after the encounter is over");
 
-        // Restart removes enemy shots and silences charge/shot sounds.
+        // Restart removes enemy shots and rockets and silences sounds.
         director.Fire(new Vector3(0f, 0f, 6f), health.transform.position, 8f);
+        director.LaunchRocket(new Vector3(2f, 0f, 7f), Vector3.back);
         Assert.AreEqual(1, director.ActiveShotCount);
+        Assert.AreEqual(1, director.ActiveRocketCount);
         harness.RestartAll();
         yield return null;
         Assert.AreEqual(0, director.ActiveShotCount, "Restart should remove enemy shots");
-        Assert.AreEqual(0, director.PendingAttacks);
+        Assert.AreEqual(0, director.ActiveRocketCount, "Restart should remove rockets (and their engine sound)");
+        Assert.AreEqual(0, director.PendingAttacks + director.PendingRockets);
         Assert.AreEqual(0, fx.ActiveVoiceCount());
         yield return SceneManager.UnloadSceneAsync(scene);
     }

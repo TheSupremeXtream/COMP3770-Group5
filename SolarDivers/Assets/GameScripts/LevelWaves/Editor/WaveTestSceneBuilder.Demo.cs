@@ -21,7 +21,7 @@ using Object = UnityEngine.Object;
 ///   test health and test HUD stay, and are labelled as such.
 /// - Rail: everything that should follow the camera sits under one "RailRig" object (camera, player, boundaries,
 ///   spawn origin, spawned enemies, attack director, warnings, backdrop) and the encounter bounds are relative to it.
-///   Abel's LevelCamera does not move yet, so the rig is static; TestRailScroll (speed 0) can move it for testing.
+///   Abel's LevelCamera (with his KeyFrame objects) moves a path object forward; RailPathFollower makes the rig follow it.
 /// Teammates' scripts are attached by type name because they live in Assembly-CSharp, which this editor assembly
 /// cannot reference. Nothing in their scripts or prefabs is modified.
 /// </summary>
@@ -40,6 +40,9 @@ public static partial class WaveTestSceneBuilder
     // Leonardo's model faces a different axis than the test ships; this yaw turns its nose down the screen.
     // Confirmed from a runtime screenshot of the demo scene.
     const float LeonardoModelYaw = 0f;
+    // Abel's LevelCamera moves the rail path forward at this speed (units/s) between two keyframes this far apart.
+    const float RailSpeed = 1.5f;
+    const float RailLength = 1200f;
 
     [MenuItem("Solar Divers/Level Waves/Rebuild Integrated Demo Scene")]
     static void BuildDemoFromMenu()
@@ -116,9 +119,9 @@ public static partial class WaveTestSceneBuilder
         }
         EditorUtility.SetDirty(encounter);
 
-        // ---- Rail rig: everything that follows the camera ----
+        // ---- Rail rig: everything that follows the camera, driven by Abel's LevelCamera ----
         var rig = new GameObject("RailRig (follows the rail camera)").transform;
-        var rail = rig.gameObject.AddComponent<TestRailScroll>();
+        UnityEngine.Events.UnityAction resetRail = BuildAbelRail(rig);
         foreach (string objectName in new[] { "Main Camera", "PLACEHOLDER_UICamera (HUD only, no post-processing)", "PLACEHOLDER_Background (decor only)",
                      "SpawnedEnemies", "PLACEHOLDER_AttackDirector", "PLACEHOLDER_EntryWarnings" })
         {
@@ -141,10 +144,11 @@ public static partial class WaveTestSceneBuilder
         BuildBoundaries(rig);
 
         director.Configure(director.Profile, player.transform, health, encounter,
-            AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder + "/TEST_EnemyShot.prefab"));
+            AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder + "/TEST_EnemyShot.prefab"),
+            AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder + "/TEST_HomingRocket.prefab"));
         harness.Configure(encounter, health, weapon, fx, shake, warnings, director, flight);
         harness.SetDisableOnDefeat(movement);
-        UnityEventTools.AddVoidPersistentListener(harness.onRestart, rail.ResetToStart);
+        UnityEventTools.AddVoidPersistentListener(harness.onRestart, resetRail);
         harness.gameObject.AddComponent<DemoFrameRateCap>();
         SetObject(hud, "playerHealth", health);
         SetString(hud, "missionTitle", MissionTitle);
@@ -160,6 +164,38 @@ public static partial class WaveTestSceneBuilder
         AssetDatabase.SaveAssets();
         Debug.Log("[WaveTestSceneBuilder] Built " + DemoScenePath + (leonardo != null ? " (Leonardo's enemy model)" : "") +
                   (movement != null && movement.GetType().Name == "PlayerController" ? " (Abel's PlayerController)" : " (test ship movement)"));
+    }
+
+    // Abel's rail: a path object carrying his LevelCamera, moving along his KeyFrame objects (his components, set up
+    // only through their serialized fields), and RailPathFollower on the rig to follow it and keep the
+    // CharacterController in sync. Falls back to the static TestRailScroll stand-in if his scripts are missing.
+    // Returns the restart action for the rail.
+    static UnityEngine.Events.UnityAction BuildAbelRail(Transform rig)
+    {
+        Type cameraType = Type.GetType("LevelCamera, Assembly-CSharp");
+        Type keyFrameType = Type.GetType("KeyFrame, Assembly-CSharp");
+        if (cameraType == null || keyFrameType == null)
+        {
+            Debug.LogWarning("[WaveTestSceneBuilder] Abel's LevelCamera / KeyFrame not found; the demo rail stays static (TestRailScroll).");
+            return rig.gameObject.AddComponent<TestRailScroll>().ResetToStart;
+        }
+        var keys = new GameObject("RailKeyFrames (Abel's KeyFrame)").transform;
+        for (int i = 0; i < 2; i++)
+        {
+            var key = new GameObject("KeyFrame" + i);
+            key.transform.SetParent(keys, false);
+            key.transform.position = rig.position + Vector3.forward * (i * RailLength);
+            Component keyFrame = key.AddComponent(keyFrameType);
+            SetVector(keyFrame, "position", key.transform.position); // also set before his Start runs
+        }
+        var path = new GameObject("RailPath (Abel's LevelCamera)").transform;
+        path.position = rig.position;
+        Component levelCamera = path.gameObject.AddComponent(cameraType);
+        SetFloat(levelCamera, "cameraSpeed", RailSpeed);
+        SetObject(levelCamera, "keyFrames", keys.gameObject);
+        var follower = rig.gameObject.AddComponent<RailPathFollower>();
+        follower.Configure(path);
+        return follower.ResetToStart;
     }
 
     // Same gameplay as the test enemy, with Leonardo's model as the visual and a trigger hitbox (so Abel's

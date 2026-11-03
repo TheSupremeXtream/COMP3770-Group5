@@ -35,13 +35,37 @@ public class TestWaveDifficulty
     [Min(0f)] public float trackingSeconds = 0.6f;
     [Tooltip("Largest sideways change a flanker may make to its planned lane.")]
     [Min(0f)] public float maxReposition = 4f;
+    [Tooltip("These classes make a short pursuit: they follow the player's x for Pursuit Seconds, then commit to that lane.")]
+    public TestEnemyClassMask pursuitClasses;
+    [Tooltip("Longest pursuit (seconds). Pursuit always ends high above the player's zone.")]
+    [Min(0f)] public float pursuitSeconds = 1f;
+
+    [Header("Run-to-run variation (bounded)")]
+    [Tooltip("0 = identical every run. 0.2 = path widths, dive depth and speed vary by up to +/-20% (and centre groups may pick the other side).")]
+    [Range(0f, 0.3f)] public float variation;
 
     [Header("Aimed shots")]
-    [Tooltip("Every Nth ship of a group carries one aimed shot (0 = no shots).")]
+    [Tooltip("Every Nth ship of a group carries a gun (0 = no shots).")]
     [Min(0)] public int aimedShooterEveryNth;
-    [Tooltip("Warning time before an aimed shot (glow + aim line).")]
+    [Tooltip("Warning time before a shot or burst (glow + aim line).")]
     [Min(0.3f)] public float telegraphSeconds = 0.9f;
     [Min(1f)] public float shotSpeed = 8f;
+    [Tooltip("Shots per attack (1 = single aimed shot, 3+ = burst). Interceptors always fire a single quick shot.")]
+    [Min(1)] public int shotsPerBurst = 1;
+    [Tooltip("Seconds between the shots of a burst.")]
+    [Min(0.05f)] public float burstInterval = 0.14f;
+    [Tooltip("Limited prediction: aim this fraction of the way to where the player is heading (0 = at the player). ")]
+    [Range(0f, 0.8f)] public float leadFactor;
+    [Tooltip("The predicted aim point is never more than this far from the player.")]
+    [Min(0f)] public float maxLead = 1.5f;
+
+    [Header("Homing rockets")]
+    [Tooltip("These classes carry one homing rocket instead of a gun.")]
+    public TestEnemyClassMask rocketClasses;
+    [Tooltip("Also arm the leader (slot 0) of every group with a rocket (introduces rockets before the heavies arrive).")]
+    public bool groupLeaderRocket;
+    [Tooltip("Warning time before a rocket launch (red pulse + lock tone).")]
+    [Min(0.5f)] public float rocketWarningSeconds = 1f;
 }
 
 /// <summary>
@@ -72,6 +96,18 @@ public class TestDifficultyProfile : ScriptableObject
     [Min(0f)] public float aimLockSeconds = 0.3f;
     [Tooltip("No new attacks while the player is invulnerable after a hit.")]
     public bool holdFireWhilePlayerRecovers = true;
+
+    [Header("Homing rocket fairness (all waves)")]
+    [Tooltip("Rockets in flight plus rockets being readied, at most.")]
+    [Min(1)] public int maxRocketsInFlight = 2;
+    [Tooltip("Minimum time between two rocket launches, across all enemies.")]
+    [Min(0f)] public float minSecondsBetweenRockets = 3f;
+    [Tooltip("No rocket is launched closer to the player than this.")]
+    [Min(0f)] public float minRocketDistance = 8f;
+
+    [Header("Run seed")]
+    [Tooltip("0 = a new random seed every run (paths vary). Any other value = the same variation every run (tests, tuning).")]
+    public int fixedSeed;
 
     public TestWaveDifficulty ForWave(int waveIndex)
     {

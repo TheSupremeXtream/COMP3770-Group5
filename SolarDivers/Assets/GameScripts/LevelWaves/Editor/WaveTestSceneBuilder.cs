@@ -102,6 +102,7 @@ public static partial class WaveTestSceneBuilder
         Material enemyShotCore = Transparent("TEST_FX_EnemyShotCore", "Universal Render Pipeline/Unlit", softDot, new Color(2.6f, 1.3f, 0.6f, 1f), true);
         Material enemyShotFlare = Transparent("TEST_FX_EnemyShotFlare", "Universal Render Pipeline/Unlit", flareTex, new Color(2.2f, 0.55f, 0.2f, 1f), true);
         Material debrisMat = Debris("TEST_FX_Debris");
+        Material rocketBeacon = Transparent("TEST_FX_RocketBeacon", "Universal Render Pipeline/Unlit", flareTex, new Color(2.6f, 0.3f, 0.25f, 1f), true);
 
         // Ship materials: light enough to read against space; low metallic because there is no environment to reflect.
         Material[] playerMats =
@@ -171,12 +172,13 @@ public static partial class WaveTestSceneBuilder
         GameObject ship = BuildPlayerShip(playerMesh, playerMats, projectile, additive, muzzle);
         TestDifficultyProfile difficulty = DifficultyProfile();
         TestSoundBank soundBank = SoundBank();
+        GameObject rocket = BuildHomingRocket(boltMesh, additive, rocketBeacon, soundBank);
 
         var backdrop = new Backdrop
         {
             additive = additive, planet = planetMat, moon = moonMat, sun = sunMat, nebulaA = nebulaMatA, nebulaB = nebulaMatB
         };
-        BuildScene(basic, weaver, interceptor, ship, hitSpark, playerHit, explosion, warning, backdrop, enemyShot, difficulty, soundBank);
+        BuildScene(basic, weaver, interceptor, ship, hitSpark, playerHit, explosion, warning, backdrop, enemyShot, difficulty, soundBank, rocket);
         AssetDatabase.SaveAssets();
         Debug.Log("[WaveTestSceneBuilder] Built " + ScenePath);
     }
@@ -233,7 +235,11 @@ public static partial class WaveTestSceneBuilder
         bank.enemyExplosions = Clips("LW_Explosion_A", "LW_Explosion_B", "LW_Explosion_C");
         bank.playerDestroyed = Clips("LW_PlayerDestroyed");
         bank.enemyCharge = Clips("LW_EnemyCharge");
-        bank.enemyCannon = Clips("LW_EnemyCannon");
+        bank.enemyGun = Clips("LW_EnemyGun_A", "LW_EnemyGun_B", "LW_EnemyGun_C");
+        bank.rocketLaunch = Clips("LW_RocketLaunch");
+        bank.rocketBlast = Clips("LW_EnemyCannon"); // the shortened ship-cannon report works as a small rocket detonation
+        AudioClip[] rocketLoop = Clips("LW_RocketLoop");
+        bank.rocketLoop = rocketLoop.Length > 0 ? rocketLoop[0] : null;
         bank.flybys = Clips("LW_Flyby_A", "LW_Flyby_B", "LW_Flyby_C", "LW_Flyby_D");
         AudioClip[] loop = Clips("LW_Engine_PlayerLoop");
         bank.playerEngineLoop = loop.Length > 0 ? loop[0] : null;
@@ -261,11 +267,11 @@ public static partial class WaveTestSceneBuilder
     }
 
     /// <summary>
-    /// Per-wave difficulty for this encounter (PLACEHOLDER enemies). Harder through movement and reactions, not health.
-    /// Patterns are introduced gradually: wave 1 curved approaches and one left/right sweep (fighters only);
-    /// wave 2 pass-and-retreat dives, a one-off lane shift towards the player and the first fast interceptors;
-    /// wave 3 all three classes, slow heavy sweeps, interceptors flanking the player's last seen position and
-    /// occasional telegraphed aimed shots (from the heavies).
+    /// Per-wave difficulty for this encounter (PLACEHOLDER enemies). Harder through movement and attacks, not health.
+    /// Wave 1 introduces the patterns one per group with single slow shots; wave 2 combines them with a lane shift,
+    /// interceptor pursuit, 3-shot bursts with a little lead and the first rocket per group (the V leader); wave 3 adds
+    /// pressure with all classes, flanks, fighter pursuit, 4-shot bursts with more lead and rockets from the heavies.
+    /// Paths vary a little between runs (bounded, seeded per run).
     /// </summary>
     static TestDifficultyProfile DifficultyProfile()
     {
@@ -278,43 +284,65 @@ public static partial class WaveTestSceneBuilder
         }
         profile.waves = new List<TestWaveDifficulty>
         {
+            // Wave 1 introduces one pattern per group (sweep, curved pass, dive-and-retreat) and the first aimed shots:
+            // one single, slow, unleading shot per group with a long warning. No reactions, no rockets.
             new TestWaveDifficulty
             {
-                label = "Wave 1 - curved approaches, one left/right sweep", speedMultiplier = 1f, turnRateMultiplier = 1f, pathWidthMultiplier = 1f,
-                groupPatterns = new[] { TestMovePattern.CurvedPass, TestMovePattern.CurvedPass, TestMovePattern.SideSweep }
+                label = "Wave 1 - sweep, curved pass, dive and retreat", speedMultiplier = 1f, turnRateMultiplier = 1f, pathWidthMultiplier = 1f,
+                groupPatterns = new[] { TestMovePattern.SideSweep, TestMovePattern.CurvedPass, TestMovePattern.PassAndRetreat },
+                variation = 0.15f,
+                aimedShooterEveryNth = 4, telegraphSeconds = 1f, shotSpeed = 7f, shotsPerBurst = 1, leadFactor = 0f
             },
+            // Wave 2 combines them: dive-and-regroup, sweeps and retreats in one wave, a one-off lane shift, short
+            // pursuit by the interceptors, 3-shot bursts with a little lead, and the first rocket (the V leader).
             new TestWaveDifficulty
             {
-                label = "Wave 2 - pass and retreat, lane shift, first interceptors", speedMultiplier = 1.05f, turnRateMultiplier = 1f,
+                label = "Wave 2 - combined patterns, bursts, first rockets", speedMultiplier = 1.05f, turnRateMultiplier = 1f,
                 pathWidthMultiplier = 1.1f, alternateFlanks = true,
-                groupPatterns = new[] { TestMovePattern.PassAndRetreat, TestMovePattern.CurvedPass, TestMovePattern.PassAndRetreat },
-                reactAfterDistance = 2.5f, laneSeekDistance = 1.8f
+                groupPatterns = new[] { TestMovePattern.DiveRegroup, TestMovePattern.SideSweep, TestMovePattern.PassAndRetreat },
+                reactAfterDistance = 2.5f, laneSeekDistance = 1.5f,
+                pursuitClasses = TestEnemyClassMask.Interceptor, pursuitSeconds = 0.8f,
+                variation = 0.2f,
+                aimedShooterEveryNth = 3, telegraphSeconds = 0.9f, shotSpeed = 8f, shotsPerBurst = 3, burstInterval = 0.14f,
+                leadFactor = 0.35f, maxLead = 1.5f,
+                groupLeaderRocket = true, rocketWarningSeconds = 1.1f
             },
+            // Wave 3 adds pressure: all three classes, heavies sweep and carry rockets, interceptors flank, fighters
+            // make short pursuits, 4-shot bursts with more lead.
             new TestWaveDifficulty
             {
-                label = "Wave 3 - mixed classes, flanking interceptors, aimed shots", speedMultiplier = 1.1f, turnRateMultiplier = 1.1f,
+                label = "Wave 3 - pressure: flanks, pursuit, bursts and rockets", speedMultiplier = 1.1f, turnRateMultiplier = 1.1f,
                 pathWidthMultiplier = 1f, alternateFlanks = true,
-                groupPatterns = new[] { TestMovePattern.CurvedPass, TestMovePattern.PassAndRetreat, TestMovePattern.SideSweep },
+                groupPatterns = new[] { TestMovePattern.DiveRegroup, TestMovePattern.CurvedPass, TestMovePattern.SideSweep },
                 keepOwnPattern = TestEnemyClassMask.Heavy,
                 reactAfterDistance = 2.5f, laneSeekDistance = 1.2f,
                 flankingClasses = TestEnemyClassMask.Interceptor, flankOffset = 2.4f, trackingSeconds = 0.6f, maxReposition = 4f,
-                aimedShooterEveryNth = 3, telegraphSeconds = 0.9f, shotSpeed = 8f
+                pursuitClasses = TestEnemyClassMask.Fighter, pursuitSeconds = 0.8f,
+                variation = 0.2f,
+                aimedShooterEveryNth = 2, telegraphSeconds = 0.85f, shotSpeed = 8.5f, shotsPerBurst = 4, burstInterval = 0.13f,
+                leadFactor = 0.5f, maxLead = 1.8f,
+                rocketClasses = TestEnemyClassMask.Heavy, rocketWarningSeconds = 1f
             }
         };
         profile.minEscapeGap = 2.6f;
         profile.maxShotsInFlight = 2;
-        profile.minSecondsBetweenAttacks = 1.4f;
+        profile.minSecondsBetweenAttacks = 1.2f;
         profile.minFireDistance = 7f;
         profile.fireWindowZ = new Vector2(3f, 8.5f);
         profile.fireWindowX = 9.5f;
         profile.aimLockSeconds = 0.3f;
         profile.holdFireWhilePlayerRecovers = true;
+        profile.maxRocketsInFlight = 2;
+        profile.minSecondsBetweenRockets = 3f;
+        profile.minRocketDistance = 8f;
+        profile.fixedSeed = 0;
         EditorUtility.SetDirty(profile);
         return profile;
     }
 
     static void BuildScene(GameObject basic, GameObject weaver, GameObject interceptor, GameObject ship, GameObject hitSpark, GameObject playerHit,
-        GameObject explosion, Material warningMat, Backdrop backdrop, GameObject enemyShot, TestDifficultyProfile difficulty, TestSoundBank soundBank)
+        GameObject explosion, Material warningMat, Backdrop backdrop, GameObject enemyShot, TestDifficultyProfile difficulty, TestSoundBank soundBank,
+        GameObject rocket)
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         RenderSettings.ambientMode = AmbientMode.Flat;
@@ -441,7 +469,7 @@ public static partial class WaveTestSceneBuilder
 
         var directorGo = new GameObject("PLACEHOLDER_AttackDirector");
         var director = directorGo.AddComponent<TestAttackDirector>();
-        director.Configure(difficulty, shipInstance.transform, shipInstance.GetComponent<TestPlayerHealth>(), encounter, enemyShot);
+        director.Configure(difficulty, shipInstance.transform, shipInstance.GetComponent<TestPlayerHealth>(), encounter, enemyShot, rocket);
 
         var harnessGo = new GameObject("PLACEHOLDER_TestHarness");
         harnessGo.AddComponent<EncounterTestHarness>().Configure(encounter, shipInstance.GetComponent<TestPlayerHealth>(),
@@ -611,6 +639,64 @@ public static partial class WaveTestSceneBuilder
         trail.colorGradient = g;
         trail.shadowCastingMode = ShadowCastingMode.Off;
         trail.alignment = LineAlignment.View;
+        return SavePrefab(root);
+    }
+
+    // Homing rocket: dark metal body with a red nose, a blinking red beacon, an orange engine flame and a grey smoke
+    // trail, so it reads differently from the round orange shots. Trigger + kinematic body; can be shot down (10 HP).
+    static GameObject BuildHomingRocket(Mesh bodyMesh, Material additive, Material beaconMat, TestSoundBank sounds)
+    {
+        var root = new GameObject("TEST_HomingRocket");
+        var sphere = root.AddComponent<SphereCollider>();
+        sphere.isTrigger = true;
+        sphere.radius = 0.3f;
+        var rb = root.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
+        Material body = Lit("TEST_Rocket_Body", new Color(0.32f, 0.33f, 0.36f), 0.3f, 0.55f, new Color(0.02f, 0.02f, 0.02f));
+        Material nose = Lit("TEST_Rocket_Nose", new Color(0.9f, 0.15f, 0.12f), 0.1f, 0.5f, new Color(0.6f, 0.05f, 0.03f));
+        Transform model = MakeModel(root.transform, bodyMesh, new[] { body });
+        model.localScale = new Vector3(2.2f, 2.2f, 1.6f);
+        Transform tip = MakeModel(root.transform, bodyMesh, new[] { nose });
+        tip.name = "Nose";
+        tip.localPosition = new Vector3(0f, 0.02f, 0.32f);
+        tip.localScale = new Vector3(1.6f, 1.6f, 0.45f);
+        GameObject beacon = Quad("Beacon", beaconMat, 4);
+        beacon.transform.SetParent(root.transform, false);
+        beacon.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+        beacon.transform.localScale = Vector3.one * 0.75f;
+        BuildExhaust(root.transform, new Vector3(0f, 0f, -0.45f), additive, new Color(1f, 0.55f, 0.15f), 0.3f);
+        var trail = root.AddComponent<TrailRenderer>();
+        trail.sharedMaterial = additive;
+        trail.time = 0.6f;
+        trail.minVertexDistance = 0.08f;
+        trail.widthCurve = AnimationCurve.Linear(0f, 0.28f, 1f, 0.05f);
+        var g = new Gradient();
+        g.SetKeys(new[] { new GradientColorKey(new Color(0.75f, 0.72f, 0.7f), 0f), new GradientColorKey(new Color(0.4f, 0.4f, 0.42f), 1f) },
+            new[] { new GradientAlphaKey(0.55f, 0f), new GradientAlphaKey(0f, 1f) });
+        trail.colorGradient = g;
+        trail.shadowCastingMode = ShadowCastingMode.Off;
+        trail.alignment = LineAlignment.View;
+
+        var audioGo = new GameObject("EngineLoop");
+        audioGo.transform.SetParent(root.transform, false);
+        var loop = audioGo.AddComponent<AudioSource>();
+        loop.playOnAwake = false;
+        loop.loop = true;
+        loop.spatialBlend = 0f;
+        loop.dopplerLevel = 0f;
+        loop.clip = sounds != null ? sounds.rocketLoop : null;
+
+        var rocket = root.AddComponent<TestHomingRocket>();
+        SetObject(rocket, "beacon", beacon);
+        SetObject(rocket, "loop", loop);
+        root.AddComponent<TestContactDamage>();
+        var hp = root.AddComponent<TestEnemyHealth>();
+        var hpSo = new SerializedObject(hp);
+        hpSo.FindProperty("maxHealth").intValue = 10;
+        hpSo.FindProperty("visualRoot").objectReferenceValue = model;
+        hpSo.FindProperty("explosionScale").floatValue = 0.55f;
+        hpSo.ApplyModifiedPropertiesWithoutUndo();
         return SavePrefab(root);
     }
 

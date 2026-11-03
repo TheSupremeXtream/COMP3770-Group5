@@ -18,7 +18,9 @@ public class TestFxManager : MonoBehaviour
         PlayerHit,
         PlayerDestroyed,
         EnemyCharge,
-        EnemyShot
+        EnemyShot,
+        RocketLaunch,
+        RocketBlast
     }
 
     // Set while a manager is enabled; cleared on disable, so it never survives leaving Play mode.
@@ -42,6 +44,8 @@ public class TestFxManager : MonoBehaviour
     [Range(0f, 1f)] [SerializeField] private float playerDamageVolume = 0.8f;
     [Tooltip("Enemy charge warning and enemy cannon shot.")]
     [Range(0f, 1f)] [SerializeField] private float enemyAttackVolume = 0.5f;
+    [Tooltip("Rocket launch, rocket engine loop and rocket detonation.")]
+    [Range(0f, 1f)] [SerializeField] private float rocketVolume = 0.55f;
 
     [Header("Variation and limits")]
     [Tooltip("Random pitch change per play (0.03 = +/-3%). Kept small so recordings stay natural.")]
@@ -75,6 +79,7 @@ public class TestFxManager : MonoBehaviour
     public int MaxPerSound => maxPerSound;
     public int MaxExplosions => maxExplosions;
     public float MasterVolume => masterVolume;
+    public float RocketVolume => rocketVolume;
     public TestSoundBank Sounds => sounds;
 
     void Awake()
@@ -138,14 +143,27 @@ public class TestFxManager : MonoBehaviour
         Play(Sound.PlayerDestroyed, 0f);
     }
 
-    public void PlayEnemyCharge()
+    /// <summary>Attack warning: the turbine whine for guns, the same whine a little lower for a rocket lock.</summary>
+    public void PlayEnemyCharge(bool rocket = false)
     {
-        Play(Sound.EnemyCharge, 0f);
+        Play(Sound.EnemyCharge, 0f, rocket ? 0.85f : 1f);
     }
 
-    public void PlayEnemyShot()
+    public void PlayEnemyShot(Vector3 from = default)
     {
-        Play(Sound.EnemyShot, 0f);
+        Play(Sound.EnemyShot, from.x);
+    }
+
+    public void PlayRocketLaunch(Vector3 from)
+    {
+        Play(Sound.RocketLaunch, from.x);
+    }
+
+    /// <summary>A rocket detonating on the player: a small blast effect and the rocket's own detonation sound.</summary>
+    public void PlayRocketBlast(Vector3 position)
+    {
+        Spawn(explosionPrefab, position, 0.6f);
+        Play(Sound.RocketBlast, position.x);
     }
 
     /// <summary>Removes every effect still playing and silences all sounds.</summary>
@@ -206,7 +224,7 @@ public class TestFxManager : MonoBehaviour
         fx.transform.localScale = Vector3.one * scale;
     }
 
-    private void Play(Sound sound, float worldX)
+    private void Play(Sound sound, float worldX, float pitchScale = 1f)
     {
         AudioClip[] options = sounds != null ? sounds.For(sound) : null;
         if (options == null || options.Length == 0)
@@ -249,7 +267,7 @@ public class TestFxManager : MonoBehaviour
         {
             return;
         }
-        float pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
+        float pitch = pitchScale * (1f + Random.Range(-pitchVariation, pitchVariation));
 
         voice.source.Stop();
         voice.source.clip = clip;
@@ -282,6 +300,8 @@ public class TestFxManager : MonoBehaviour
             case Sound.PlayerHit:
             case Sound.PlayerDestroyed: return 1;
             case Sound.EnemyCharge: return 2;
+            case Sound.RocketLaunch:
+            case Sound.RocketBlast: return 2;
             case Sound.EnemyDestroyed: return maxExplosions;
             default: return maxPerSound;
         }
@@ -348,6 +368,8 @@ public class TestFxManager : MonoBehaviour
             case Sound.EnemyDestroyed:
             case Sound.PlayerDestroyed: return explosionVolume;
             case Sound.PlayerHit: return playerDamageVolume;
+            case Sound.RocketLaunch:
+            case Sound.RocketBlast: return rocketVolume;
             default: return enemyAttackVolume;
         }
     }

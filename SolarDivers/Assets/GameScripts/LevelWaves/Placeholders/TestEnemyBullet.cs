@@ -14,10 +14,13 @@ public class TestEnemyBullet : MonoBehaviour
     private float age;
 
     public Vector3 Velocity { get; private set; }
+    /// <summary>The attack (single shot or burst) this shot belongs to; a burst counts once against the attack cap.</summary>
+    public int AttackId { get; private set; }
 
-    public void Launch(Vector3 velocity)
+    public void Launch(Vector3 velocity, int attackId = 0)
     {
         Velocity = velocity;
+        AttackId = attackId;
         age = 0f;
     }
 

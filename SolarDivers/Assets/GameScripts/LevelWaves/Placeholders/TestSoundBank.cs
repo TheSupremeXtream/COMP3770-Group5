@@ -17,9 +17,15 @@ public class TestSoundBank : ScriptableObject
     public AudioClip[] enemyExplosions = new AudioClip[0];
     public AudioClip[] playerDestroyed = new AudioClip[0];
 
-    [Header("Enemy aimed attack")]
+    [Header("Enemy attacks")]
     public AudioClip[] enemyCharge = new AudioClip[0];
-    public AudioClip[] enemyCannon = new AudioClip[0];
+    [Tooltip("Enemy gunfire (single shots and bursts).")]
+    public AudioClip[] enemyGun = new AudioClip[0];
+    public AudioClip[] rocketLaunch = new AudioClip[0];
+    [Tooltip("A rocket detonating on the player.")]
+    public AudioClip[] rocketBlast = new AudioClip[0];
+    [Tooltip("Seamless loop played on each homing rocket.")]
+    public AudioClip rocketLoop;
 
     [Header("Engines")]
     [Tooltip("Seamless loop for the player's engine.")]
@@ -39,14 +45,16 @@ public class TestSoundBank : ScriptableObject
             case TestFxManager.Sound.PlayerHit: return playerHit;
             case TestFxManager.Sound.PlayerDestroyed: return playerDestroyed;
             case TestFxManager.Sound.EnemyCharge: return enemyCharge;
-            case TestFxManager.Sound.EnemyShot: return enemyCannon;
+            case TestFxManager.Sound.EnemyShot: return enemyGun;
+            case TestFxManager.Sound.RocketLaunch: return rocketLaunch;
+            case TestFxManager.Sound.RocketBlast: return rocketBlast;
         }
         return null;
     }
 
     public IEnumerable<AudioClip> AllClips()
     {
-        foreach (AudioClip[] set in new[] { autocannon, metalImpacts, playerHit, enemyExplosions, playerDestroyed, enemyCharge, enemyCannon, flybys })
+        foreach (AudioClip[] set in new[] { autocannon, metalImpacts, playerHit, enemyExplosions, playerDestroyed, enemyCharge, enemyGun, rocketLaunch, rocketBlast, flybys })
         {
             foreach (AudioClip clip in set)
             {
@@ -55,6 +63,10 @@ public class TestSoundBank : ScriptableObject
                     yield return clip;
                 }
             }
+        }
+        if (rocketLoop != null)
+        {
+            yield return rocketLoop;
         }
         if (playerEngineLoop != null)
         {
