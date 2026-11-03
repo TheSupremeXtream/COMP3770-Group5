@@ -31,8 +31,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 721780ad8057cb649b364c50f97dd22d, type: 3}
   enemyCharge:
   - {fileID: 8300000, guid: 45e8ce0c155cd0543ad5dbdb47bb0648, type: 3}
-  enemyCannon:
+  enemyGun:
+  - {fileID: 8300000, guid: 7c53997347223d04aa817a74152bbc8e, type: 3}
+  - {fileID: 8300000, guid: 5f92d42af73399d45bc7ce990caf475d, type: 3}
+  - {fileID: 8300000, guid: 29ea5b48d3b60c84d852de5ce11de1f6, type: 3}
+  rocketLaunch:
+  - {fileID: 8300000, guid: fe46ee6e68b9b4a45842f58a79717adf, type: 3}
+  rocketBlast:
   - {fileID: 8300000, guid: 23c8403f94f0dc6478454f4f6ae70353, type: 3}
+  rocketLoop: {fileID: 8300000, guid: 3b9e443df75db534987bbea072a9e176, type: 3}
   playerEngineLoop: {fileID: 8300000, guid: dd93583d9a75f6a4d8a2ac72d4595d33, type: 3}
   flybys:
   - {fileID: 8300000, guid: 894497c375d8d3c43b0607d9dad42cdc, type: 3}

@@ -192,10 +192,14 @@ public class CombatTests
         director.ShotFired += (from, dir, aim) => shots.Add((dir, aim));
         // The player strafes right at a steady 6 units/s while the burst is aimed.
         float end = Time.time + 2.5f;
+        Vector3 predicted = Vector3.zero, playerAtPrediction = Vector3.zero;
         while (Time.time < end && !shooter.HasFired)
         {
             player.position += Vector3.right * (6f * Time.deltaTime);
             yield return null;
+            // Measured while the player is still moving (the director reads its velocity each frame).
+            predicted = director.PredictedAim(new Vector3(-3f, 0f, 6f), 8f, 0.5f, 1.8f);
+            playerAtPrediction = director.PlayerPosition;
         }
         yield return null;
         Assert.AreEqual(4, shots.Count, "A 4-shot burst");
@@ -204,10 +208,9 @@ public class CombatTests
             Assert.Less(Vector3.Angle(s.dir, shots[0].dir), 0.01f, "Every shot of a burst follows the same locked line");
         }
         // Lead: ahead of the player in the direction it is moving, but never more than Max Lead.
-        Vector3 predicted = director.PredictedAim(new Vector3(-3f, 0f, 6f), 8f, 0.5f, 1.8f);
-        Debug.Log($"[Burst] {shots.Count} shots on one line; predicted aim {predicted.x - director.PlayerPosition.x:F2} units ahead of a player moving at 6 units/s");
-        Assert.LessOrEqual(Vector3.Distance(predicted, director.PlayerPosition), 1.8f + 1e-3f, "Lead is capped");
-        Assert.Greater(predicted.x, director.PlayerPosition.x, "Lead points the way the player is moving");
+        Debug.Log($"[Burst] {shots.Count} shots on one line; predicted aim {predicted.x - playerAtPrediction.x:F2} units ahead of a player moving at 6 units/s");
+        Assert.LessOrEqual(Vector3.Distance(predicted, playerAtPrediction), 1.8f + 1e-3f, "Lead is capped");
+        Assert.Greater(predicted.x, playerAtPrediction.x + 0.3f, "Lead points the way the player is moving");
     }
 
     // ---- Variation and pursuit ----

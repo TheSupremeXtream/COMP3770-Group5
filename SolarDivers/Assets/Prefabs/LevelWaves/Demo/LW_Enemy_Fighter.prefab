@@ -157,6 +157,7 @@ MonoBehaviour:
   aimLine: {fileID: 6467957818391517619}
   model: {fileID: 3512402740449678334}
   chargeColour: {r: 1, g: 0.45, b: 0.1, a: 1}
+  rocketColour: {r: 1, g: 0.12, b: 0.12, a: 1}
   aimLineLength: 16
 --- !u!1 &5764077789236164703
 GameObject:

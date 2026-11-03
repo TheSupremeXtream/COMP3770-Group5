@@ -432,7 +432,7 @@ public class MovementAndAudioTests
             foreach (float s in data) peak = Mathf.Max(peak, Mathf.Abs(s));
             Assert.LessOrEqual(peak, 0.92f, clip.name + " would clip");
             Assert.Greater(peak, 0.5f, clip.name + " is nearly silent");
-            if (clip != bank.playerEngineLoop)
+            if (clip != bank.playerEngineLoop && clip != bank.rocketLoop) // loops continue into their own start instead of ending at zero
             {
                 Assert.AreEqual(0f, data[data.Length - 1], 0.01f, clip.name + " ends with a click");
             }
@@ -465,6 +465,8 @@ public class MovementAndAudioTests
         double startE = 0, endE = 0;
         for (int i = 0; i < n; i++) { startE += loop[i] * loop[i]; endE += loop[loop.Length - 1 - i] * loop[loop.Length - 1 - i]; }
         Assert.Less(System.Math.Abs(10.0 * System.Math.Log10(startE / endE)), 2.0, "Engine loop level jumps at the seam");
+        float[] rocketLoop = Samples(bank.rocketLoop);
+        Assert.Less(Mathf.Abs(rocketLoop[rocketLoop.Length - 1] - rocketLoop[0]), 0.05f, "Rocket loop clicks at the seam");
         foreach (AudioClip flyby in bank.flybys)
         {
             Assert.Greater(flyby.length, bank.flybyPassSeconds + 1f, flyby.name + ": too short around its pass point");

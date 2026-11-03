@@ -25,14 +25,23 @@ The isolated test scene `LevelWaves_Encounter01_Test` is kept for development an
 **Controls:** **WASD / Arrow keys** move (Abel's controller, project-wide *Move* action), **Space / Left mouse**
 fire (test weapon), **R** restart, **Tab** debug counters. Click the Game view once after pressing Play.
 
-**The encounter - "Mars Orbit Breakout"** (about 80 s if nothing is shot down, shorter when enemies are destroyed):
+**The encounter - "Mars Orbit Breakout"** (about 73 s if nothing is shot down, shorter when enemies are destroyed):
 
 1. **Introduction:** the mission banner and an objective line ("Survive the Marquis's patrols and keep the route to Earth open").
-2. **Wave 1 - Patrol Screen:** fighters in lines; curved approaches, then one left/right sweep. No reactions, no shots.
-3. **Wave 2 - Interceptor Dives:** V formations with a fast interceptor at the back; dives with a brief retreat,
-   and a one-off lane shift towards you.
-4. **Wave 3 - Marquis Escort:** heavies, fighters and interceptors. Interceptors flank your last seen position,
-   and heavies fire the occasional telegraphed shot.
+2. **Wave 1 - Patrol Screen (introduces the patterns):**
+   - fighters in lines, one pattern per group: a left/right sweep, a curved approach, a dive with a brief retreat;
+   - one single, slow, unleading aimed shot per group, with a 1 s warning;
+   - no reactions and no rockets.
+3. **Wave 2 - Interceptor Dives (combines them):**
+   - V formations with a fast interceptor at the back, mixing dive-and-regroup, sweeps and retreats;
+   - a one-off lane shift towards you; interceptors make a short pursuit (at most 0.8 s, then commit);
+   - 3-shot bursts with a little lead;
+   - the **first homing rocket** of each group, from the V leader.
+4. **Wave 3 - Marquis Escort (more pressure):**
+   - heavies, fighters and interceptors: heavies sweep slowly and launch rockets, interceptors flank your last
+     seen position, fighters pursue briefly;
+   - 4-shot bursts with more (still capped) lead.
+   - Paths vary a little between runs (width, dive depth, speed, side), within fixed bounds.
 5. **Ending:**
    - **Win:** **ROUTE CLEAR** shows destroyed / escaped / time, plus "Next: the frigate (boss encounter not built yet)".
    - **Defeat:** after 3 hits, **SHIP DESTROYED**; spawning stops and the controls turn off.
@@ -58,12 +67,26 @@ the team decides otherwise.
 - **Frame rate:** his controller moves *Speed* per frame (not per second), so `DemoFrameRateCap` holds the demo at
   60 fps (VSync off) while it runs and restores the previous settings afterwards. Remove it once that movement
   uses `Time.deltaTime`.
-- **Rail:**
+- **Rail (Abel's moving camera, `1fcae16`):**
   - The camera, player, boundaries, spawn origin, spawned enemies, attack director, entry warnings and backdrop
     are all children of **`RailRig`**. `WaveEncounter` *Bounds Space* points at it, so bounds follow the rig.
-  - The test enemies, enemy shots and warnings work in their parent's space, so routes and safety heights move with it.
-  - `TestRailScroll` on the rig (speed 0 by default) stands in for camera motion until `LevelCamera` moves.
-    A test runs the whole encounter with the rig moving at 3 units/s.
+  - **`RailPath (Abel's LevelCamera)`** carries his `LevelCamera`, moving at 1.5 units/s along his `KeyFrame`
+    objects (`RailKeyFrames`, 1,200 units apart). This is set up only through his own serialized fields.
+  - `RailPathFollower` on the rig follows that path. It moves first each frame and syncs physics, so his
+    CharacterController player rides along; it also puts both back at the start on R, since `LevelCamera` has no reset.
+  - The test enemies, enemy shots, rockets and warnings work in their parent's space, so routes and safety
+    heights move with the rig.
+  - In his own `railSystemTest`, the camera is a sibling of the player and its keyframes lower it from height 15
+    to 12 (a zoom). The demo uses his component for forward travel instead.
+- **Enemy appearance (checked, not changed):**
+  - The demo shows Leonardo's exact model, `Spaceship_BarbaraTheBee` from `Enemy_model.fbx`, with his -90°
+    rotation, scaled only per class.
+  - Its single material is named `Atlas`, but no texture is referenced in the FBX or committed, so Unity renders
+    it plain light grey (0.906).
+  - His test-scene camera sees the ship from in front and 30° above (canopy window facing the viewer). Abel's
+    rail camera looks straight down, so the demo shows its top: round body, two domes, swept wings.
+  - Renders of both views were made in 6000.6.0f1 (see Validation).
+  - **For Leonardo:** commit the colour texture if the source pack has one, and record the model's source and licence.
 - **Built from code:** `Solar Divers > Level Waves > Rebuild Integrated Demo Scene` (or
   `WaveTestSceneBuilder.BuildDemoFromCommandLine`) rebuilds the test scene, the demo prefabs and the demo scene.
 
@@ -381,10 +404,13 @@ Asset credits:
 | `LW_Flyby_A/B/C`, `LW_EnemyCharge` | [Jet Plane Flyby.flac](https://freesound.org/people/qubodup/sounds/189446/) (from a US government video, public domain; Freesound high-quality preview) | qubodup | CC0 1.0 | 3.3-3.9 s around the pass (pass at 1.4 s), ±3 % speed, 60 Hz-9 kHz, fades. Charge: 0.95 s of the rising whine, high-passed at 1.4 kHz |
 | `LW_Engine_PlayerLoop`, `LW_Flyby_D` | [Fighter Jets Passing Overhead](https://freesound.org/people/Nice_Audio/sounds/420560/) (field recording; Freesound high-quality preview) | Nice_Audio | CC0 1.0 | Engine: steady 15-21.5 s section, 45 Hz-8 kHz, -4 dB at 3 kHz, 0.6 s loop crossfade. Flyby D: second jet's pass |
 | `LW_Cannon_A-D` (crack) | [The Free Firearm Sound Library](https://opengameart.org/content/the-free-firearm-sound-library) (Mosin Nagant `M_21P`, AK-47 `C_28P`) | Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney | CC0 1.0 | Single reports, 0.78-0.82x speed, 70 Hz-8.5 kHz, shortened to 0.3 s |
-| `LW_Cannon_A-D` (body), `LW_EnemyCannon`, explosion thump | [Cannon fire](https://opengameart.org/content/cannon-fire) | Thimras | CC0 1.0 | Band-limited slices; enemy shot 1.15x, 0.42 s |
+| `LW_Cannon_A-D` (body), `LW_EnemyCannon`, explosion thump | [Cannon fire](https://opengameart.org/content/cannon-fire) | Thimras | CC0 1.0 | Band-limited slices; `LW_EnemyCannon` 1.15x, 0.42 s (now used as the rocket detonation) |
 | `LW_Explosion_A-C`, `LW_PlayerDestroyed` (bang) | [25 CC0 bang / firework SFX](https://opengameart.org/node/92774) (`bang_03`, `bang_09`, `cannon_01`, `bang_01`) | rubberduck | CC0 1.0 | 0.55-0.68x speed, low-passed, 35 Hz high-pass, tail shortened |
 | Explosion debris, `LW_PlayerHit` crunch, `LW_PlayerDestroyed` | [Mechanical Explosion](https://opengameart.org/content/mechanical-explosion) | Spring Spring | CC0 1.0 | 0.75 s clatter tail, 600 Hz-7 kHz |
 | `LW_Impact_Metal_A-C`, `LW_PlayerHit` | [Metal Impact Sounds](https://opengameart.org/content/metal-impact-sounds) (`clink1-3`, `thud3`, `bong1`) | BMacZero | CC0 1.0 | 0.22 s, 350 Hz high-pass; hit = thud + bong + crunch |
+| `LW_EnemyGun_A-C` (enemy gunfire) | [The Free Firearm Sound Library](https://opengameart.org/content/the-free-firearm-sound-library) (PPSh `P_30P`, three single reports) | Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney | CC0 1.0 | 0.97-1.04x speed, 140 Hz-9 kHz, 0.22 s; bright and light, unlike the player's autocannon |
+| `LW_RocketLaunch` | [25 CC0 bang / firework SFX](https://opengameart.org/node/92774) (`fw_02`, a firework launch hiss) | rubberduck | CC0 1.0 | 0.08-0.93 s, 250 Hz-9 kHz, fades |
+| `LW_RocketLoop` (homing rocket engine) | [Rocket Engine](https://opengameart.org/content/rocket-engine) (`rocket_engine.001.wav`) | theMinesAreShakin | CC0 1.0 | 1.35x speed, 320 Hz-8 kHz, +4 dB at 2.5 kHz, 0.4 s loop crossfade; `LW_EnemyCannon` is now the rocket detonation |
 
   Every clip is peak-normalised to -1 dBFS with a soft limiter. No purchased or unclear-licence assets are used.
   The edits were made with a small offline script (decoding, trimming, filters, speed changes, mixing); the steps
@@ -396,6 +422,53 @@ Asset credits:
   - A Wikimedia airliner flyover was rejected: it is CC BY-SA and not a fighter.
 
 The team had no existing models, effects, textures or audio to reuse (checked `main` and `movement-rail-system`).
+
+### Combat, movement and rail pass (Nov 2; test enemies in both scenes)
+
+Still the single encounter, no routes and no boss. All of this lives in the labelled test components, so it can
+be dropped once Leonardo's enemy AI and Taha's weapons exist. Neither has code in the repository yet, so there
+was no AI or projectile interface to build on.
+
+- **Movement** (`TestEnemyMover`):
+  - **Dive and regroup** (new): the group dives spread out, pulls back up into a tighter formation around its
+    centre, then makes a second pass together.
+  - **Short pursuit** (new, per class): the ship follows your x for at most *Pursuit Seconds* (0.8), then commits
+    to that lane while still high above your zone. It never follows continuously.
+  - **Bounded variation between runs:** a run seed (new on every start and restart) varies each group's path
+    width (up to ±20 %), dive depth (up to ±0.4 units) and, for centre groups, which side they sweep to; each
+    ship's speed varies up to ±7 %. There's no per-frame jitter. *Fixed Seed* in the profile makes runs repeatable.
+  - Kept: speed classes, turn-rate and turn-acceleration limits, the straight descent near you, retreats, flanks,
+    lane shifts, the free-lane check and Max Lifetime.
+- **Attacks by role** (`TestEnemyShooter`, `TestAttackDirector`). Each armed ship attacks once, always with a warning.
+  - **Fighters:** aimed **bursts** (3 shots in wave 2, 4 in wave 3) along one locked aim line.
+  - **Interceptors:** a quicker single shot with a little more lead.
+  - **Limited prediction:** the aim leads you by *Lead Factor* (0 / 0.35 / 0.5) of your motion during the shot's
+    flight, capped at *Max Lead* (1.5-1.8 units). The line locks 0.3 s before firing, so it shows exactly
+    where the burst goes.
+  - **Rockets:** heavies (wave 3) and each wave 2 V leader carry one **homing rocket**. First a red pulse, a red
+    lock line and a lower lock tone for 1-1.1 s, then the launch.
+  - **Fairness:**
+    - at most 2 gun attacks busy at once (a burst counts once), at least 1.2 s apart;
+    - at most 2 rockets in flight or being readied, at least 3 s apart, launched from at least 8 units away;
+    - nothing while you recover from a hit, after defeat or after the encounter ends.
+- **Homing rocket** (`TestHomingRocket`, `TEST_HomingRocket`):
+  - **Look:** dark metal body, red nose, blinking red beacon, orange flame and grey smoke trail, clearly unlike
+    the round orange shots.
+  - **Flight:** straight for 0.35 s, then homing at no more than **70°/s** while it speeds up from 3 to
+    **6.5 units/s** (slower than your 9.6).
+  - **Burn-out and expiry:** homing stops after **2.6 s** and it flies straight, then it's removed after **5 s**
+    or on leaving the area.
+  - **Counter-play:** its turning circle at full speed is about 5 units, so a late side-step makes it miss.
+    It can also be shot down (10 HP), costs one hit on contact, and plays its engine loop on itself (louder and
+    panned as it approaches).
+- **Sound:** every sound is an edited **recorded** CC0 clip; nothing is synthesised.
+  - New this pass: enemy gunfire (PPSh reports), rocket launch (a firework launch hiss), rocket engine loop.
+  - The ship-cannon report is now the rocket detonation.
+  - Separate volume for rockets (*Rocket Volume*). Enemy gunfire is panned by position and capped like the other
+    one-shots. The rocket warning uses the turbine whine at a lower pitch.
+  - Ronit has no audio system in the repository yet, so these stay in `TestFxManager` / `TEST_SoundBank`.
+- **Restart (R)** also removes rockets (and with them their engine sound), clears rocket and attack
+  reservations, picks a new run seed, and puts Abel's rail path and the rig back at the start.
 
 ### Why touching enemies used to do nothing (fixed)
 
@@ -424,11 +497,15 @@ encounter can be played on `main`, which currently has no player, weapons, enemi
 - `PLACEHOLDER_EntryWarnings` / `TestEntryWarnings.cs` - entry chevrons driven by `onGroupIncoming`.
 - `TEST_Difficulty_Encounter01` / `TestDifficultyProfile.cs` - per-wave movement/attack settings and shot fairness rules.
 - `PLACEHOLDER_AttackDirector` / `TestAttackDirector.cs`, `TestEnemyShooter.cs`, `TEST_EnemyShot` + `TestEnemyBullet.cs` -
-  telegraphed aimed shots for the test enemies (not Leonardo's AI or Taha's weapons).
+  telegraphed aimed shots and bursts for the test enemies (not Leonardo's AI or Taha's weapons).
+- `TEST_HomingRocket` / `TestHomingRocket.cs` + `TEST_Rocket_Body`, `TEST_Rocket_Nose`, `TEST_FX_RocketBeacon` -
+  the warned, turn-limited homing rocket (not Taha's or Leonardo's weapons).
 - `TestCameraShake.cs` (on the Main Camera), `TestShipBanking.cs`, `TestBackgroundDrift.cs`, `TestBackdropPreset.cs`,
   `PLACEHOLDER_Background`, `PLACEHOLDER_PostFX` - visual dressing for this scene only.
 - Integrated demo only (`GameScripts/LevelWaves/Integration/`):
-  - `TestRailScroll` - stand-in rail motion, speed 0 by default.
+  - `RailPathFollower` - makes the `RailRig` (camera, player, spawns, bounds) follow the path that Abel's
+    `LevelCamera` moves, and syncs physics for his CharacterController. It's an adapter; his files are unchanged.
+  - `TestRailScroll` - fallback rail motion, used only if Abel's `LevelCamera` / `KeyFrame` types are missing.
   - `DemoFrameRateCap` - 60 fps for Abel's per-frame movement.
   - `LW_Enemy_*` demo prefabs - Leonardo's model plus the test enemy logic.
 
@@ -452,17 +529,19 @@ What you should see:
 1. Layered stars and faint nebulae drifting downwards (forward travel), a lit ocean planet in the bottom-right
    corner and a small moon on the left. Top-left: hull pips, "3/3" and the wave. Bottom-left: controls including **R restart**.
 2. The banner "WAVE 1 - BASIC LINE" and amber chevrons at the top edge where the first group will enter; 1.2 s
-   later a row of 4 red Dart fighters. The first two groups curve in towards the centre; the third sweeps sideways
-   across the upper screen, then dives on the far side. Ships turn in smooth arcs, bank into turns and fly
-   straight once they are level with the top of your area. A steady jet engine plays all the time and rises as
-   you move; ships passing near you whoosh past from their side.
-3. Wave 2: three V formations (four red Darts plus one small gold interceptor at the back right), each warned
-   by chevrons. Two groups dive to mid-screen, loop back up briefly and make a second pass; their descent leans up
-   to 1.8 units towards the lane you were in when they looked. Move and they do not follow.
-4. Wave 3: Darts, interceptors and slow, larger orange/purple Manta heavies. The heavies sweep sideways and
-   sometimes glow and show a thin orange aim line (with a rising turbine whine); the line locks, brightens, and an
-   orange shot flies straight along it. Interceptors come down **beside** where you were (never on top of you),
-   adjusting for about half a second, then commit. There is always a free lane to dodge into.
+   later a row of 4 red Dart fighters. Group 1 sweeps sideways across the upper screen and dives on the far side,
+   group 2 curves in, group 3 dives and pulls back up. Paths differ slightly every run. One ship per group
+   glows and shows an orange aim line (rising turbine whine), the line locks, and a single slow shot flies along it.
+   Ships turn in smooth arcs, bank into turns and fly straight once they are level with the top of your area.
+   A steady jet engine plays all the time and rises as you move; ships passing near you whoosh past from their side.
+3. Wave 2: three V formations (four red Darts plus one small gold interceptor). One group dives spread out, pulls
+   back up into a tight formation and makes a second pass. Interceptors follow your lane for under a second, then
+   commit. Fighters fire **3-shot bursts** that lead you a little (the locked line shows where). The V leader
+   glows red, shows a red pulsing line with a low lock tone, and launches a **homing rocket** (red nose, blinking
+   beacon, smoke trail, engine sound) that curves slowly towards you: side-step late or shoot it.
+4. Wave 3: Darts, interceptors and slow, larger Manta heavies. Heavies sweep sideways and launch rockets (never
+   more than 2 at once, at least 3 s apart); fighters fire 4-shot bursts and make short pursuits; interceptors come
+   down **beside** where you were (never on top of you). There is always a free lane to dodge into.
 5. Your ship is about 20% faster than before, eases into motion and stops quickly when you let go, banking up to 30°.
 6. Shooting: a heavy autocannon report, star-shaped muzzle flash, cyan bolts with trails, sparks and a metallic
    clink on hits. Destroyed enemies: brief flash, expanding blast and ring, sparks and tumbling fragments, with a
@@ -523,18 +602,24 @@ the prefabs in `Assets/Prefabs/LevelWaves/`. Rebuilding the scene from the menu 
 | `PLACEHOLDER_FlightAudio` > `TestFlightAudio` | Engine Volume (0.3), Idle Level (0.55), Idle / Full Pitch (0.95 / 1.05), Idle / Full Cutoff (1600 / 7000 Hz), Acceleration Boost (0.35), Spool Up / Down Seconds (0.15 / 0.45), Fade Seconds (0.4) | Player engine response. |
 | same > flybys | Flyby Volume (0.45), Pass Distance (4.5), Full Volume Distance (2.5), Hearing Distance (14), Max Flybys (2), Min Gap Seconds (0.6), Doppler Amount (0.03), Doppler Speed (6), Pan Width (8) / Max Pan (0.8), Far / Near Cutoff (1800 / 9000 Hz) | Which passes get a flyby and how they are positioned. |
 | `TEST_SoundBank` (asset in `Assets/Audio/LevelWaves/`) | Clip lists per sound, Player Engine Loop, Flybys, Flyby Pass Seconds (1.4) | Swap clips here without code changes. |
-| `TEST_Difficulty_Encounter01` (asset in `Assets/Prefabs/LevelWaves/`) > each wave | Speed Multiplier (1 / 1.05 / 1.1), Turn Rate Multiplier (1 / 1 / 1.1), Path Width Multiplier (1 / 1.1 / 1), Alternate Flanks (off / on / on), Group Patterns (Curved, Curved, Side Sweep / Pass And Retreat, Curved, Pass And Retreat / Curved, Pass And Retreat, Side Sweep), Keep Own Pattern (- / - / Heavy) | Movement per wave. Waves beyond the list reuse the last entry. |
-| same > reactions | React After Distance (2.5), Lane Seek Distance (0 / 1.8 / 1.2), Flanking Classes (- / - / Interceptor), Flank Offset (2.4), Tracking Seconds (0.6), Max Reposition (4) | Limited reactions to the player. |
-| same > aimed shots | Aimed Shooter Every Nth (0 / 0 / 3, so the heavies in wave 3), Telegraph Seconds (0.9), Shot Speed (8) | As before. |
-| same > all waves | Min Escape Gap (2.6); Max Shots In Flight (2), Min Seconds Between Attacks (1.4), Min Fire Distance (7), Fire Window Z (3-8.5), Fire Window X (9.5), Aim Lock Seconds (0.3), Hold Fire While Player Recovers (on) | Escape lane and aimed-shot fairness. |
-| `PLACEHOLDER_AttackDirector` > `TestAttackDirector` | Profile, Player, Player Health, Encounter, Shot Prefab | Wiring only; point Profile at another asset to try a different difficulty. |
+| `TEST_Difficulty_Encounter01` (asset in `Assets/Prefabs/LevelWaves/`) > each wave | Speed Multiplier (1 / 1.05 / 1.1), Turn Rate Multiplier (1 / 1 / 1.1), Path Width Multiplier (1 / 1.1 / 1), Alternate Flanks (off / on / on), Group Patterns (Side Sweep, Curved, Pass And Retreat / Dive Regroup, Side Sweep, Pass And Retreat / Dive Regroup, Curved, Side Sweep), Keep Own Pattern (- / - / Heavy) | Movement per wave. Waves beyond the list reuse the last entry. |
+| same > reactions | React After Distance (- / 2.5 / 2.5), Lane Seek Distance (0 / 1.5 / 1.2), Flanking Classes (- / - / Interceptor), Flank Offset (2.4), Tracking Seconds (0.6), Max Reposition (4), Pursuit Classes (- / Interceptor / Fighter), Pursuit Seconds (0.8) | Limited reactions to the player. Pursuit is short and then commits to a lane. |
+| same > variation | Variation (0.15 / 0.2 / 0.2) | Per-run spread: group width ±Variation, dive depth ±2×Variation units, ship speed ±Variation/3. 0 = identical runs. |
+| same > aimed shots | Aimed Shooter Every Nth (4 / 3 / 2), Telegraph Seconds (1 / 0.9 / 0.85), Shot Speed (7 / 8 / 8.5), Shots Per Burst (1 / 3 / 4), Burst Interval (0.14 / 0.14 / 0.13), Lead Factor (0 / 0.35 / 0.5), Max Lead (1.5 / 1.5 / 1.8) | Gun attacks. Interceptors fire a single shot with +0.25 lead and a shorter warning (×0.8, at least 0.6 s). |
+| same > rockets | Rocket Classes (- / - / Heavy), Group Leader Rocket (off / on / off), Rocket Warning Seconds (- / 1.1 / 1) | Which ships carry the homing rocket and how long the red warning lasts. |
+| same > all waves | Min Escape Gap (2.6); Max Shots In Flight (2, a burst counts once), Min Seconds Between Attacks (1.2), Min Fire Distance (7), Fire Window Z (3-8.5), Fire Window X (9.5), Aim Lock Seconds (0.3), Hold Fire While Player Recovers (on); Max Rockets In Flight (2), Min Seconds Between Rockets (3), Min Rocket Distance (8); Fixed Seed (0 = new variation every run) | Escape lane, attack and rocket fairness, repeatability. |
+| `PLACEHOLDER_AttackDirector` > `TestAttackDirector` | Profile, Player, Player Health, Encounter, Shot Prefab, Rocket Prefab | Wiring only; point Profile at another asset to try a different difficulty. |
 | `TEST_EnemyShot` > `TestEnemyBullet` | Lifetime (4), Area | Enemy shot clean-up. |
+| `TEST_HomingRocket` > `TestHomingRocket` | Launch Speed (3), Max Speed (6.5), Acceleration (4), Turn Rate (70 °/s), Arming Seconds (0.35), Homing Seconds (2.6), Lifetime (5), Beacon Rate (7 Hz), Loop Volume (0.4), Area | Rocket flight and burn-out. Keep Max Speed below the player's 9.6 and Turn Rate low so a side-step evades it. |
+| `TEST_HomingRocket` > `TestEnemyHealth` / `TestContactDamage` | Max Health (10) / 1 hit | The rocket can be shot down; it costs one hit on contact. |
+| `PLACEHOLDER_FX` > `TestFxManager` (new) | Rocket Volume (0.55) | Rocket launch and detonation level (at most 2 voices). |
 | `Main Camera` > `TestCameraShake` | Shake Enabled (on), Max Offset (0.3), Frequency (24), Duration (0.35) | Optional shake. |
 | `PLACEHOLDER_TestHarness` > `EncounterTestHarness` | Damage Shake (0.55), Defeat Shake (0.9) | Shake strength per event (0-1, squared). |
 | `PLACEHOLDER_HUD` > `EncounterDebugHUD` | Minimum Scale (0.6), Damage Flash (on), Show Debug Counters (off) | HUD readability / feedback. |
 | `PLACEHOLDER_EntryWarnings` > `TestEntryWarnings` | Marker Z (8.2), Colour, Blink Rate | Warning strip position and look. |
 | `PLACEHOLDER_Background (decor only)` > `TestBackdropPreset` | Preset (Planet And Moon / Sun), light angles per preset | One backdrop at a time. |
-| Integrated demo: `RailRig` > `TestRailScroll` | Speed (0 = static) | Stand-in rail motion until Abel's `LevelCamera` moves; reset by R. |
+| Integrated demo: `RailPath (Abel's LevelCamera)` > `LevelCamera` (Abel) | Camera Speed (1.5), Key Frames (`KeyFrame0` at the start, `KeyFrame1` 1200 units ahead) | His component; the demo builder only sets these values. Camera Speed is in units per second (it uses `Time.deltaTime`). |
+| Integrated demo: `RailRig` > `RailPathFollower` | Path (`RailPath`) | Rig follows the path with its starting offset, syncs physics; R resets path and rig. |
 | Integrated demo: `PLACEHOLDER_TestHarness` > `DemoFrameRateCap` | Frames Per Second (60) | Needed while Abel's controller moves per frame. |
 | Integrated demo: `PLACEHOLDER_TestHarness` > `EncounterTestHarness` | Disable On Defeat (Abel's `PlayerController`), On Restart (rail reset) | Teammates' components switched off on defeat and back on at restart. |
 | Integrated demo: Player > `PlayerController` (Abel) | Speed (0.15 per frame) | His component; only the value is set by the demo builder. |
@@ -559,8 +644,10 @@ for spawns and bounds. Still open below.
 2. **Player (Abel):** done in the demo: his `PlayerController` moves the ship. The branch `movement-rail-system`
    is merged into my feature branch only (not `main`); ideally it reaches `main` first. Open items for his code:
    - speed is per frame, not per second (the demo holds 60 fps until then);
-   - `LevelCamera` does not move yet; when it does, it needs a `Physics.SyncTransforms()` after moving the rig,
-     or the CharacterController is left behind (found by the moving-rail test).
+   - his `LevelCamera` + `KeyFrame` now drive the demo rail (done Nov 2, without changing his files): the demo
+     builder creates two keyframes and a `RailPath` object with his `LevelCamera`, and `RailPathFollower` moves the
+     `RailRig` with it and calls `Physics.SyncTransforms()` so his CharacterController isn't left behind. If he
+     later moves the real camera himself, `RailPathFollower` can be deleted.
    Spawns and bounds already follow the rig: `WaveEncounter` *Bounds Space* plus `SpawnOrigin` and *Spawn Parent*
    under the rig.
 3. **Damage/health (team decision):** replace `TestPlayerHealth` with the real player health. To keep defeat working,
@@ -593,6 +680,67 @@ The scene builder and tests also reference URP (camera stack, volume profile), w
 ---
 
 ## Validation
+
+### This round: combat, movement and rail pass (Nov 2)
+
+Unity 6000.6.0f1, actual project folder, Unity closed first, batch mode with graphics. Automated results only;
+manual checks are listed separately below.
+
+- **Compile:** 0 errors. Same 4 unused-field warnings in Abel's files, still untouched.
+- **Scenes rebuilt** by `WaveTestSceneBuilder.BuildDemoFromCommandLine`. Unity rewrote 4 render/project settings
+  files during the runs; they were restored (`git checkout`) and are not part of the change.
+- **PlayMode tests, final full run: 65 tests, 61 passed, 0 failed, 4 skipped** (the opt-in `[Explicit]` capture
+  and performance tests, run separately below). 163 s.
+- The first full run had **2 failures**, both fixed:
+  - the burst-lead test measured the lead after the player had stopped (test bug);
+  - the new rocket engine loop "ended with a click" because a seamless loop doesn't end at zero. It's now
+    exempt from that check and has a loop-seam check instead.
+
+| Check (new this round unless marked) | Result |
+| --- | --- |
+| Difficulty profile: per-wave patterns, variation, bursts, lead, rocket carriers, warnings and global caps as listed in the settings table | Passed |
+| Whole encounter, attacks per wave (bursts count once) | Gun attacks 3 / 3 / 6, shots 3 / 9 / 15, rockets 0 / 3 / 5. At most 2 gun attacks and at most 2 rockets busy. Shots fly along the locked line, nothing fires after completion, R removes all shots and rockets |
+| Burst | 4 shots on one locked line; aim 1.80 units ahead of a player moving at 6 units/s (cap 1.8) |
+| Rocket limits | Worst turn 70 °/s (limit 70), top speed 6.50, removed after 6.0 s (lifetime 5 s + flight check) |
+| Rocket evasion | Hits a player who stays still (closest 1.05); a late side-step makes it miss (closest 3.49) |
+| Rocket caps | At most 2 at once, at least 3 s apart, never launched closer than 8 units |
+| Variation | 12 / 12 seeds gave different paths, all within the bounds; the same seed repeats exactly |
+| Pursuit | Follows for at most 0.8 s, then commits to the last lane seen |
+| Escape lane, whole encounter with the player weaving (previous check, new waves) | Narrowest free lane 3.34 units (minimum 2.6); 6 flanks, 14 retreats; longest on screen 15.4 s; 0 timed out |
+| Movement limits (previous check) | Worst turn 165 °/s = 100 % of the class limit; lowest retreat z 3.14; 30 vs 144 fps 0.037 units apart |
+| Integrated demo with Abel's `LevelCamera` rail | 189 components and 13 renderers checked. Fighter destroyed by 2 shots. No-input run 73.5 s with all 45 escaped. At camera speed 3, the rail moved 220 units with all enemies inside the bounds and 0 timed out. Defeat and 3 restarts reset rail, rig, shots, rockets, effects and sounds |
+| Sounds (previous check plus new clips) | All credited, mono, no clipping. Enemy gun 0.22 s, ~1.9-2.1 kHz (distinct from the player's ~0.7-0.9 kHz cannon); rocket launch 0.85 s; rocket loop 3.3 s with a seamless seam |
+| Engine / flybys / explosion ducking (previous checks) | Pitch 0.950 → 1.045; 3 flybys, pitch 0.980-1.019, at most 2 at once; explosions 0.36 then 0.27 |
+
+Opt-in runs (`[Explicit]`, with `SOLAR_CAPTURE_DIR`), outside the repository:
+
+- **Enemy appearance** (`CaptureEnemyAppearance`): top-down as in the demo, Leonardo's scene angle and side view,
+  plus model info. Confirms the plain-grey look comes from the untextured `Atlas` material (see "Integrated demo").
+- **Runtime screenshots** (`CaptureDemoScreens`): the intro, waves 1-3 (the red rocket lock line in wave 2 and a
+  rocket with its smoke trail in wave 3 are visible) and the ROUTE CLEAR panel.
+- **Performance** (`MeasureDemoPerformance`, Editor, 1920×1080, demo capped at 60 fps, GeForce 940MX laptop):
+  2,285 frames, mean 18.8 ms (53 fps), median 16.7 ms, 95th percentile 22.0 ms, worst 169.7 ms (a single
+  hitch). The Editor adds overhead, so the build should be faster, but the build's frame rate was **not measured**.
+
+**Local Windows build:** succeeded (`WaveTestSceneBuilder.BuildWindowsDemo`, demo scene only, 108 MB, 0 errors,
+5 warnings, 40 s). Path: `C:\Users\hp\Documents\COMP3770-Group5-Work\Builds\SolarDivers_WaveDemo\SolarDivers_WaveDemo.exe`
+(outside the repository). Started windowed for 25 s: wave 1 started, no errors or exceptions in the player
+log. With nobody at the controls the idle ship was defeated after 9.5 s (11 s in the previous build), which is
+the expected rule. **Keyboard play in the build was not tested.**
+
+Manual checks for this round (not done; tests can't judge feel or sound):
+
+- [ ] Rocket warning (red pulse, red line, low tone) is noticed in time, and the rocket looks different from shots.
+- [ ] A late side-step reliably beats a rocket; shooting one down feels possible but not required.
+- [ ] Bursts are readable: you can see where the locked line points and step out of it.
+- [ ] Wave 1 feels like an introduction, wave 2 combines, wave 3 is harder but fair.
+- [ ] Runs feel slightly different, but never unfair.
+- [ ] Enemy gunfire, rocket launch, rocket engine and rocket blast sound right on speakers and headphones.
+- [ ] The rail moves smoothly at camera speed 1.5 and doesn't make dodging harder.
+- [ ] R during a rocket warning, with rockets in flight, and after defeat leaves nothing behind.
+- [ ] Keyboard play and frame rate in the Windows build.
+
+### Previous round (integration, Nov 2)
 
 **Editor: Unity 6000.6.0f1 (the team version), run in the actual project folder** after merging `main` and
 `movement-rail-system` into `khaled/level-waves-prototype` (Nov 2). Unity was closed first; batch mode with the
@@ -649,7 +797,7 @@ Problems found and fixed during this round (by the tests):
 `IntegratedDemoTests.CaptureDemoScreens` and `SOLAR_CAPTURE_DIR`): intro banner, wave 1 to 3 with Leonardo's model,
 the aim line and flanking interceptors, and the ROUTE CLEAR panel.
 
-**Local Windows build:** succeeded (Windows 64-bit, demo scene only, 107 MB, 0 errors; warnings are only the unused fields in Abel's keyframe scripts), at `C:SERSHPDOCUMENTSCOMP3770-GROUP5-WORKBUILDSSOLARDIVERS_WAVEDEMOSOLARDIVERS_WAVEDEMO.EXE` (OUTSIDE THE REPOSITORY). STARTED WINDOWED FOR 25 S: DIRECT3D 11 ON THE GEFORCE 940MX, WAVE 1 STARTED, NO ERRORS OR EXCEPTIONS IN THE PLAYER LOG. WITH NOBODY AT THE CONTROLS THE IDLE SHIP WAS HIT THREE TIMES AND THE ENCOUNTER ENDED IN DEFEAT AFTER 11 S, WHICH IS THE EXPECTED RULE. KEYBOARD PLAY IN THE BUILD WAS NOT TESTED.
+**Local Windows build (previous round):** succeeded (Windows 64-bit, demo scene only, 107 MB, 0 errors). Started windowed for 25 s: Direct3D 11 on the GeForce 940MX, wave 1 started, no errors or exceptions in the player log. With nobody at the controls the idle ship was defeated after 11 s, which is the expected rule. Keyboard play in the build was not tested.
 
 Manual checks still needed (not done: nobody has played this build yet; automated tests cannot judge feel or sound):
 
@@ -673,9 +821,15 @@ Manual checks still needed (not done: nobody has played this build yet; automate
       test mover/health from the demo enemies.
 - [ ] When Taha's weapons exist: replace the test weapon (`TestPlayerShip` with *Handle Movement* off) and
       `TestProjectile`; enemies only need to take damage and be destroyed.
-- [ ] When Abel's `LevelCamera` moves: drive the `RailRig` from it (or make the rig its child), call
-      `Physics.SyncTransforms()` after moving it (CharacterController, see `TestRailScroll`), and remove
-      `DemoFrameRateCap` once `PlayerController` scales speed by `Time.deltaTime`.
+- [x] Drive the demo rail with Abel's `LevelCamera` and `KeyFrame` (Nov 2, through `RailPathFollower`).
+- [x] Bursts, limited lead, warned homing rockets, short pursuit, dive-and-regroup and per-run variation for the
+      test enemies (Nov 2).
+- [ ] Ask Leonardo for the texture (or colours) for the `Atlas` material and the model's source and licence. The
+      FBX references no texture and none is committed, so it renders plain grey.
+- [ ] Remove `DemoFrameRateCap` once Abel's `PlayerController` scales speed by `Time.deltaTime`.
+- [ ] When Leonardo's AI and Taha's weapons exist, compare them with the test bursts and rockets. Keep the
+      fairness rules (warning, lock, caps, minimum distance, turn-limited homing) or move them into the real systems.
+- [ ] When Ronit's audio system exists, move the `LW_*` clips and volumes there and remove `TestFxManager` / `TestFlightAudio`.
 - [ ] Trigger encounters from rail keyframes instead of starting on Play.
 - [ ] Hook score/UI/game-flow events with Ronit, then delete the test HUD and harness from the demo.
 - [ ] Lay out the three alternative routes to Earth using encounters as building blocks (later goal, not started).
