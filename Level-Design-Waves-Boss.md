@@ -403,18 +403,20 @@ Asset credits:
 | --- | --- | --- | --- | --- |
 | `LW_Flyby_A/B/C`, `LW_EnemyCharge` | [Jet Plane Flyby.flac](https://freesound.org/people/qubodup/sounds/189446/) (from a US government video, public domain; Freesound high-quality preview) | qubodup | CC0 1.0 | 3.3-3.9 s around the pass (pass at 1.4 s), ±3 % speed, 60 Hz-9 kHz, fades. Charge: 0.95 s of the rising whine, high-passed at 1.4 kHz |
 | `LW_Engine_PlayerLoop`, `LW_Flyby_D` | [Fighter Jets Passing Overhead](https://freesound.org/people/Nice_Audio/sounds/420560/) (field recording; Freesound high-quality preview) | Nice_Audio | CC0 1.0 | Engine: steady 15-21.5 s section, 45 Hz-8 kHz, -4 dB at 3 kHz, 0.6 s loop crossfade. Flyby D: second jet's pass |
-| `LW_Cannon_A-D` (crack) | [The Free Firearm Sound Library](https://opengameart.org/content/the-free-firearm-sound-library) (Mosin Nagant `M_21P`, AK-47 `C_28P`) | Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney | CC0 1.0 | Single reports, 0.78-0.82x speed, 70 Hz-8.5 kHz, shortened to 0.3 s |
-| `LW_Cannon_A-D` (body), `LW_EnemyCannon`, explosion thump | [Cannon fire](https://opengameart.org/content/cannon-fire) | Thimras | CC0 1.0 | Band-limited slices; `LW_EnemyCannon` 1.15x, 0.42 s (now used as the rocket detonation) |
-| `LW_Explosion_A-C`, `LW_PlayerDestroyed` (bang) | [25 CC0 bang / firework SFX](https://opengameart.org/node/92774) (`bang_03`, `bang_09`, `cannon_01`, `bang_01`) | rubberduck | CC0 1.0 | 0.55-0.68x speed, low-passed, 35 Hz high-pass, tail shortened |
-| Explosion debris, `LW_PlayerHit` crunch, `LW_PlayerDestroyed` | [Mechanical Explosion](https://opengameart.org/content/mechanical-explosion) | Spring Spring | CC0 1.0 | 0.75 s clatter tail, 600 Hz-7 kHz |
-| `LW_Impact_Metal_A-C`, `LW_PlayerHit` | [Metal Impact Sounds](https://opengameart.org/content/metal-impact-sounds) (`clink1-3`, `thud3`, `bong1`) | BMacZero | CC0 1.0 | 0.22 s, 350 Hz high-pass; hit = thud + bong + crunch |
-| `LW_EnemyGun_A-C` (enemy gunfire) | [The Free Firearm Sound Library](https://opengameart.org/content/the-free-firearm-sound-library) (PPSh `P_30P`, three single reports) | Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney | CC0 1.0 | 0.97-1.04x speed, 140 Hz-9 kHz, 0.22 s; bright and light, unlike the player's autocannon |
-| `LW_RocketLaunch` | [25 CC0 bang / firework SFX](https://opengameart.org/node/92774) (`fw_02`, a firework launch hiss) | rubberduck | CC0 1.0 | 0.08-0.93 s, 250 Hz-9 kHz, fades |
-| `LW_RocketLoop` (homing rocket engine) | [Rocket Engine](https://opengameart.org/content/rocket-engine) (`rocket_engine.001.wav`) | theMinesAreShakin | CC0 1.0 | 1.35x speed, 320 Hz-8 kHz, +4 dB at 2.5 kHz, 0.4 s loop crossfade; `LW_EnemyCannon` is now the rocket detonation |
+| `LW_Cannon_A-D` (player cannon) | [The Free Firearm Sound Library](https://opengameart.org/content/the-free-firearm-sound-library) (mid-distance single shots: Springfield 1917 .30-06 `B_16P`, Mosin Nagant `M_26P`, Savage .300 BLK `T_17P`) | Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney | CC0 1.0 | Cut at the measured onset, 0.97-1.02x speed, 45 Hz-11 kHz, +2 dB at 140 Hz, natural report kept to 0.52 s (gentle decay from 0.28 s); cannon body layered underneath |
+| `LW_Cannon_A-D` (low body), `LW_Explosion_B/C`, `LW_PlayerDestroyed` (layer), `LW_RocketBlast_A` | [Cannon Shot](https://freesound.org/people/qubodup/sounds/187767/) (from a US government video, public domain; clips briefly at the two shots) | qubodup | CC0 1.0 | Body: first 0.45 s, 45-700 Hz. Explosions: each of the two shots with ~1.9 s of its own rumble. Rocket blast: second shot, 1.4 s, 90 Hz high-pass |
+| `LW_Explosion_A`, `LW_PlayerDestroyed`, `LW_RocketBlast_B` | [Explosion with debris - authentic. 4kg TNT](https://freesound.org/people/sidohzen/sounds/165808/) (land-mine demolition, camcorder field recording) | sidohzen | CC0 1.0 | Low-passed at 5.5 kHz and +5 dB below 150 Hz (the camcorder mic is thin and bright). Explosion: 1.9 s from the blast; player destroyed: 3.6 s with the long rumble and debris rain; rocket blast: 1.3 s |
+| Explosion debris, `LW_PlayerHit*` rattle, `LW_PlayerDestroyed` metal crash | [Scrap metal dropping / crashing](https://freesound.org/people/SamsterBirdies/sounds/587443/) | SamsterBirdies | CC0 1.0 | Separate crashes from the recording, 200-400 Hz high-pass, faded; mixed at 0.2-0.35 from ~0.1 s after the blast |
+| `LW_PlayerHit`, `_B`, `_C` (hull struck) | [Rubber Metal Wood Impact Collision Bang](https://freesound.org/people/qubodup/sounds/54850/) (rubber hammer on metal) | qubodup | CC0 1.0 | Three blows cut at their onsets, 80 Hz high-pass, 0.6 s; with the `thud3` hull thud and a short metal rattle |
+| `LW_Impact_Metal_A-C`, `LW_PlayerHit*` (thud) | [Metal Impact Sounds](https://opengameart.org/content/metal-impact-sounds) (`clink1-3`, `thud3`) | BMacZero | CC0 1.0 | Clinks: 0.22 s, 350 Hz high-pass (unchanged). Thud: +3 dB below 120 Hz |
+| `LW_EnemyGun_A-C` (enemy gunfire) | [The Free Firearm Sound Library](https://opengameart.org/content/the-free-firearm-sound-library) (AK-47 `C_28P`, three single near-distance shots) | Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney | CC0 1.0 | 0.32 s each, 260 Hz-11 kHz, +4 dB at 3 kHz: lighter and brighter than the player's cannon |
+| `LW_RocketLaunch`, `_B`, `LW_RocketLoop` | [Rocket Launch.flac](https://freesound.org/people/qubodup/sounds/182794/) (from a US government video, public domain) | qubodup | CC0 1.0 | Launch: the two launches in the recording, 1.5 s each (blast + first second of thrust), faded. Motor loop: the steady thrust right after the first launch, 60 Hz-10 kHz, level-flattened, 0.5 s loop crossfade |
 
-  Every clip is peak-normalised to -1 dBFS with a soft limiter. No purchased or unclear-licence assets are used.
-  The edits were made with a small offline script (decoding, trimming, filters, speed changes, mixing); the steps
-  in the Edit column are enough to repeat them in any audio editor.
+  Every clip is peak-normalised to -1 dBFS. Clips from this pass have no soft limiting and no large speed changes
+  (variants differ by at most 3 %). No purchased or unclear-licence assets are used. The edits were made with a
+  small offline script (decoding, trimming at measured onsets, filters, mixing); the steps in the Edit column are
+  enough to repeat them in any audio editor. `CREDITS.md` in the audio folder lists the same sources, plus the
+  recordings that were looked at and rejected.
 - **Code-generated sounds removed:** the code-generated sounds from earlier rounds were removed; `TestFxManager`
   now only plays clips from `TEST_SoundBank`.
 - **Not used:**
@@ -464,11 +466,81 @@ was no AI or projectile interface to build on.
 - **Sound:** every sound is an edited **recorded** CC0 clip; nothing is synthesised.
   - New this pass: enemy gunfire (PPSh reports), rocket launch (a firework launch hiss), rocket engine loop.
   - The ship-cannon report is now the rocket detonation.
-  - Separate volume for rockets (*Rocket Volume*). Enemy gunfire is panned by position and capped like the other
+  - Separate volume for rockets (*Rocket Volume*; replaced by the Weapons / Explosions / Engines groups in audio pass 2). Enemy gunfire is panned by position and capped like the other
     one-shots. The rocket warning uses the turbine whine at a lower pitch.
   - Ronit has no audio system in the repository yet, so these stay in `TestFxManager` / `TEST_SoundBank`.
 - **Restart (R)** also removes rockets (and with them their engine sound), clears rocket and attack
   reservations, picks a new run seed, and puts Abel's rail path and the rig back at the start.
+
+### Audio pass 2 (Nov 2; sound only, both scenes)
+
+Only sound changed: no gameplay, model, movement, damage or wave values. Ronit has no audio system in the
+repository yet, so this still lives in the **temporary** `TestFxManager` / `TestFlightAudio` / `TEST_SoundBank`.
+
+**Why the previous sounds were weak** (measured with the edit script and the in-game volumes):
+
+- **Mix balance:** the player's cannon played at master 0.6 × firing 0.32. That made it the quietest sound in
+  the game (about -31 dBFS at its loudest), below enemy gunfire (-29) and even below hits on enemies (-29). The
+  rocket launch (-29) was also far below the explosions (-20).
+- **Pitch and speed:** the variation at playback was small (±3 %). The edits were the problem: the gun reports
+  were slowed to 0.8x and the explosion bangs to 0.55-0.68x. Slowing a recording smears its attack, which gives
+  the soft, toy-like thud.
+- **Trimming:** the gun reports were cut to 0.3 s, which removed their natural report and reflections, and the
+  explosions to 1.1 s. A rifle crack alone (~40 ms) sounds like a cap gun.
+- **Limiting:** every clip went through a soft limiter after peak normalisation, flattening the transients a
+  little more.
+- **Sources:** the explosions were firework bangs, the rocket launch was a firework launch hiss, and the rocket
+  motor was mostly sub-rumble (about 290 Hz) whose volume fell off with the square of distance. A rocket
+  launched 8+ units away was nearly silent until it was close.
+- **Not a cause:** Unity's import settings were already uncompressed PCM, mono, decompressed on load.
+
+**What replaced them** (all CC0 recordings; sources in `CREDITS.md` and the credits table below):
+
+| Sound | Now |
+| --- | --- |
+| Player cannon (4 variants) | Mid-distance shots of full-power rifles (.30-06, 7.62x54R, .300 BLK) at their own speed, with the natural report kept (~0.5 s) and the first 0.3 s of a recorded cannon shot underneath for weight |
+| Enemy gunfire (3) | AK-47 single shots: shorter, lighter and brighter, with no low layer, so they can't be confused with the player's cannon |
+| Enemy explosions (3) | A recorded blast with its own rumble (a land-mine demolition, or one of two recorded cannon shots), then metal debris falling from ~0.15 s; 1.9 s |
+| Player damage (3) | A rubber hammer striking metal (the hull being hit), a low hull thud and a short metal rattle. Metallic and dull, with no gun crack |
+| Player destruction | The full land-mine blast with its long rumble and debris rain, a cannon shot layered on the blast and a large metal crash; 3.6 s |
+| Rocket launch (2) and motor | A recorded rocket launch: the launch blast plus the first second of thrust, then the steady motor from the same recording as a loop on the rocket |
+| Rocket detonation (2) | Short cuts of the cannon shot and the land-mine blast with less low end: smaller than a kill explosion |
+
+**Mix and playback** (`TestFxManager`):
+- Separate volumes: **Weapons** (both guns and rocket launches), **Impacts** (hits on enemies and hull damage),
+  **Explosions**, **Engines** (player engine, flybys and rocket motor) and **Warnings** (charge whine and rocket
+  lock), plus Master.
+- Within each group a fixed balance, set from the measured clip loudness. Loudest 0.1 s at game level, before →
+  after:
+  - player cannon -31 → -24 dBFS;
+  - enemy gunfire -29 → -28;
+  - hits on enemies -29 → -28;
+  - player damage -19 → -20;
+  - kill explosion -20 → -18;
+  - player destroyed -18 → -17;
+  - rocket launch -29 → -21;
+  - rocket blast -24 → -20;
+  - warning -23 → -19.
+- **Warnings stay audible:** explosions that start while a warning sounds are lowered by 45 %. Explosions also
+  still duck each other, and at most 2 ring at once.
+- **Repeated gunfire:**
+  - pitch variation ±2.5 % (was ±3 %);
+  - never the same variant twice in a row;
+  - at most 3 shots of one kind overlap. At 5 shots/s each 0.52 s report rings under no more than two following
+    shots.
+- **Headroom:** the busiest rendered scene peaks at -4.9 dBFS, so nothing clips.
+- **Rocket motor:** heard from the launch (at least 35 % of its close level at the edge of hearing). It fades in
+  over 0.6 s under the launch blast and gets louder and slightly higher as the rocket closes in. It stops with the
+  rocket: detonation, shot down, expiry, leaving the area or restart.
+- **Cleanup:** R silences every one-shot, flyby and motor at once (the engine fades back in). After defeat
+  everything falls silent once the last sounds end. After completion only the player's engine remains. Stopping
+  Play mode leaves nothing.
+
+**Before/after samples** (rendered by the edit script at the in-game volumes, outside the repository):
+`C:\Users\hp\Documents\COMP3770-Group5-Work\AudioComparison\`. `AB_*.wav` plays the old version, one second of
+silence, then the new one. Scenes: gunfire, explosions, player damage, rocket (warning → launch → motor →
+detonation), and a full mix with the engine. They leave out stereo panning and the per-play pitch variation.
+Whether the result sounds convincing still has to be judged by ear; the tests only check behaviour and levels.
 
 ### Why touching enemies used to do nothing (fixed)
 
@@ -598,7 +670,7 @@ the prefabs in `Assets/Prefabs/LevelWaves/`. Rebuilding the scene from the menu 
 | same > Route shape | Curve Width (2.6), Flank Width (2.2), Sweep Width (6), Sweep Z (6.5), Dive Z (4.6), Retreat Z (7), Retreat Shift (1.6) | Pattern sizes (scaled per wave by Path Width Multiplier). |
 | same > Safety | Straight Below Z (1.5), Line Up Band (1.8), Lane Limit X (8), Max Lifetime (16 s), Half Width (heavy 1.1, fighter 0.75, interceptor 0.6) | Keep Straight Below Z above the player's zone (z ≤ 0) and Dive Z well above it. |
 | Enemy prefabs > `TestEnemyHealth` | Max Health (fighter 20, heavy 30, interceptor 10), Hit Flash Seconds, Explosion Scale | Placeholder health (player shots do 10). |
-| `PLACEHOLDER_FX` > `TestFxManager` | Sounds (`TEST_SoundBank`); Master (0.6), Firing (0.32), Impact (0.4), Explosion (0.6), Player Damage (0.8), Enemy Attack (0.5) volumes; Pitch Variation (0.03); Max Voices (10); Max Per Sound (3); Max Explosions (2); Explosion Ducking (0.35); Pan Width (12) / Max Pan (0.6) | One-shot mix and overlap limits. Master also scales the engine and flybys. |
+| `PLACEHOLDER_FX` > `TestFxManager` | Sounds (`TEST_SoundBank`); Master (0.8), Weapons (0.6), Impacts (0.7), Explosions (0.6), Engines (0.7), Warnings (0.55) volumes; Duck Under Warnings (0.45); Pitch Variation (0.025); Max Voices (10); Max Per Sound (3); Max Explosions (2); Explosion Ducking (0.35); Pan Width (12) / Max Pan (0.6) | Mix groups and overlap limits (temporary until the team has an audio system). Master x Engines also scales the player engine, flybys and rocket motor. The balance inside each group is fixed in `TestFxManager.Volume()`. |
 | `PLACEHOLDER_FlightAudio` > `TestFlightAudio` | Engine Volume (0.3), Idle Level (0.55), Idle / Full Pitch (0.95 / 1.05), Idle / Full Cutoff (1600 / 7000 Hz), Acceleration Boost (0.35), Spool Up / Down Seconds (0.15 / 0.45), Fade Seconds (0.4) | Player engine response. |
 | same > flybys | Flyby Volume (0.45), Pass Distance (4.5), Full Volume Distance (2.5), Hearing Distance (14), Max Flybys (2), Min Gap Seconds (0.6), Doppler Amount (0.03), Doppler Speed (6), Pan Width (8) / Max Pan (0.8), Far / Near Cutoff (1800 / 9000 Hz) | Which passes get a flyby and how they are positioned. |
 | `TEST_SoundBank` (asset in `Assets/Audio/LevelWaves/`) | Clip lists per sound, Player Engine Loop, Flybys, Flyby Pass Seconds (1.4) | Swap clips here without code changes. |
@@ -610,9 +682,8 @@ the prefabs in `Assets/Prefabs/LevelWaves/`. Rebuilding the scene from the menu 
 | same > all waves | Min Escape Gap (2.6); Max Shots In Flight (2, a burst counts once), Min Seconds Between Attacks (1.2), Min Fire Distance (7), Fire Window Z (3-8.5), Fire Window X (9.5), Aim Lock Seconds (0.3), Hold Fire While Player Recovers (on); Max Rockets In Flight (2), Min Seconds Between Rockets (3), Min Rocket Distance (8); Fixed Seed (0 = new variation every run) | Escape lane, attack and rocket fairness, repeatability. |
 | `PLACEHOLDER_AttackDirector` > `TestAttackDirector` | Profile, Player, Player Health, Encounter, Shot Prefab, Rocket Prefab | Wiring only; point Profile at another asset to try a different difficulty. |
 | `TEST_EnemyShot` > `TestEnemyBullet` | Lifetime (4), Area | Enemy shot clean-up. |
-| `TEST_HomingRocket` > `TestHomingRocket` | Launch Speed (3), Max Speed (6.5), Acceleration (4), Turn Rate (70 °/s), Arming Seconds (0.35), Homing Seconds (2.6), Lifetime (5), Beacon Rate (7 Hz), Loop Volume (0.4), Area | Rocket flight and burn-out. Keep Max Speed below the player's 9.6 and Turn Rate low so a side-step evades it. |
+| `TEST_HomingRocket` > `TestHomingRocket` | Launch Speed (3), Max Speed (6.5), Acceleration (4), Turn Rate (70 °/s), Arming Seconds (0.35), Homing Seconds (2.6), Lifetime (5), Beacon Rate (7 Hz), Loop Volume (0.5), Far Level (0.35), Motor Fade In (0.6 s), Area | Rocket flight and burn-out. Keep Max Speed below the player's 9.6 and Turn Rate low so a side-step evades it. |
 | `TEST_HomingRocket` > `TestEnemyHealth` / `TestContactDamage` | Max Health (10) / 1 hit | The rocket can be shot down; it costs one hit on contact. |
-| `PLACEHOLDER_FX` > `TestFxManager` (new) | Rocket Volume (0.55) | Rocket launch and detonation level (at most 2 voices). |
 | `Main Camera` > `TestCameraShake` | Shake Enabled (on), Max Offset (0.3), Frequency (24), Duration (0.35) | Optional shake. |
 | `PLACEHOLDER_TestHarness` > `EncounterTestHarness` | Damage Shake (0.55), Defeat Shake (0.9) | Shake strength per event (0-1, squared). |
 | `PLACEHOLDER_HUD` > `EncounterDebugHUD` | Minimum Scale (0.6), Damage Flash (on), Show Debug Counters (off) | HUD readability / feedback. |
@@ -680,6 +751,45 @@ The scene builder and tests also reference URP (camera stack, volume profile), w
 ---
 
 ## Validation
+
+### Audio pass 2 (Nov 2)
+
+Unity 6000.6.0f1, actual project folder, Unity closed first. Automated results only; the manual listening checks
+are below.
+
+- **Scenes rebuilt.** Ignoring object IDs, the only changes in both scenes are the `TestFxManager` mix settings.
+  Two prefabs (`TEST_Enemy_Weaver`, `TEST_PlayerShip`) were regenerated with new object IDs and identical
+  content. The rocket prefab gained its three new motor fields. Unity rewrote 4 render/project settings files
+  during the build; they were restored and are not part of the change.
+- **PlayMode tests: 70 total, 66 passed, 0 failed, 4 skipped** (the opt-in capture and performance tests). 193 s.
+  New (`AudioMixTests`):
+
+| Check | Result |
+| --- | --- |
+| Each volume group (weapons, impacts, explosions, engines, warnings) changes only its own sounds; an explosion during a warning is lowered | Passed: explosion 0.360 alone, 0.198 during a rocket warning |
+| Continuous fire (5 s at 5 shots/s): overlap capped, several variants, never the same twice in a row, restrained pitch | Passed: at most 3 ringing, pitch 0.976-1.024, all 4 variants used |
+| Rocket motor: heard from the launch, fades in under the launch blast, and stops when the rocket expires, is shot down, is cleared by R, or detonates on the player (detonation sound plays) | Passed: motor 0.010 at launch, 0.149 after 0.75 s |
+| Integrated demo: R silences everything except the engine fading back in; after defeat everything falls silent; after completion only the engine remains and no rockets are left; unloading (Stop) leaves no sound | Passed |
+| Mixed output of the demo with deliberately heavy combat (continuous fire, bursts, kills, warning, two rockets, hull hit, rocket blast, player destroyed), read from the audio listener | Peak **-4.5 dBFS**, no clipping |
+| Recorded sounds (updated rules): credited sources, mono, peak ≤ -0.7 dBFS, no end clicks; cannon report ≥ 0.3 s but ≤ 0.6 s; enemy gunfire brighter than every player shot; explosions 1.5-2.2 s; player destroyed ≥ 1 s longer; hull hits brighter than the cannon and duller than enemy hits; variations present | Passed (cannon 0.78-1.28 kHz, enemy gun 1.70-1.82 kHz, hull hits 1.97-2.05 kHz, enemy hits 3.2-4.9 kHz) |
+
+Earlier audio checks still pass: explosions duck each other (0.36 then 0.27, at most 2), engine pitch and
+smoothness, flybys, and restart cleanup in the test scene.
+
+**Windows build:** succeeded (109 MB, 0 errors), at
+`C:\Users\hp\Documents\COMP3770-Group5-Work\Builds\SolarDivers_WaveDemo\SolarDivers_WaveDemo.exe`. A 25 s windowed
+run showed no errors or exceptions in the player log. Wave 1 started, and the idle ship was defeated after 9.4 s
+with nobody at the controls. **Nobody has listened to the build yet.**
+
+Manual listening checks (not done; tests can't judge whether a sound is convincing):
+
+- [ ] Cannon: punchy and heavy, not tiring after 30 s of continuous fire; clearly different from enemy gunfire.
+- [ ] Explosions: blast, then rumble and debris; weighty without masking the rocket lock tone.
+- [ ] Hull damage sounds like the ship being struck, not like firing; player destruction is clearly bigger.
+- [ ] Rocket: the launch blast, then a motor you can track as it approaches, which stops when it explodes or expires.
+- [ ] Headphones and laptop speakers: nothing harsh (the land-mine recording is a camcorder recording and the
+      cannon recording clips briefly at the shots).
+- [ ] Compare `AB_*.wav` in `C:\Users\hp\Documents\COMP3770-Group5-Work\AudioComparison\` with what the game plays.
 
 ### This round: combat, movement and rail pass (Nov 2)
 
@@ -829,7 +939,9 @@ Manual checks still needed (not done: nobody has played this build yet; automate
 - [ ] Remove `DemoFrameRateCap` once Abel's `PlayerController` scales speed by `Time.deltaTime`.
 - [ ] When Leonardo's AI and Taha's weapons exist, compare them with the test bursts and rockets. Keep the
       fairness rules (warning, lock, caps, minimum distance, turn-limited homing) or move them into the real systems.
-- [ ] When Ronit's audio system exists, move the `LW_*` clips and volumes there and remove `TestFxManager` / `TestFlightAudio`.
+- [x] Audio pass 2: recorded CC0 gunfire, explosions, hull damage, player destruction, rocket launch and motor; volume groups (Nov 2).
+- [ ] Listen to the audio pass in the build and adjust the group volumes (manual checks under Validation).
+- [ ] When Ronit's audio system exists, move the `LW_*` clips and the group volumes there (e.g. AudioMixer groups) and remove `TestFxManager` / `TestFlightAudio`.
 - [ ] Trigger encounters from rail keyframes instead of starting on Play.
 - [ ] Hook score/UI/game-flow events with Ronit, then delete the test HUD and harness from the demo.
 - [ ] Lay out the three alternative routes to Earth using encounters as building blocks (later goal, not started).

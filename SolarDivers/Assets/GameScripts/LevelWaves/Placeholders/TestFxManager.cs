@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// PLACEHOLDER effects and sound for the wave test scene (not the team's audio/VFX system).
-/// Spawned effects are parented here so a restart can remove them. Sounds are edited CC0 recordings from a
-/// TestSoundBank: several variants per sound, never the same variant twice in a row, small pitch changes, a voice
-/// pool with per-sound limits, and explosions that duck each other instead of stacking up. Everything is stopped on
-/// restart and when Play mode ends. Engine and flyby sounds live in TestFlightAudio.
+/// TEMPORARY effects and sound for the wave scenes until the team has an audio system (Ronit has none in the
+/// repository yet); not the team's audio/VFX system. Spawned effects are parented here so a restart can remove them.
+/// Sounds are edited CC0 recordings from a TestSoundBank: several variants per sound, never the same variant twice in
+/// a row, small pitch changes, a voice pool with per-sound limits, separate weapons / impacts / explosions / engines /
+/// warnings volumes, and explosions that duck each other (and duck under attack warnings) instead of stacking up.
+/// Everything is stopped on restart and when Play mode ends. Engine and flyby sounds live in TestFlightAudio.
 /// </summary>
 public class TestFxManager : MonoBehaviour
 {
@@ -33,23 +34,23 @@ public class TestFxManager : MonoBehaviour
 
     [Header("Mix (0-1)")]
     [Tooltip("Scales every placeholder sound, including engines and flybys.")]
-    [Range(0f, 1f)] [SerializeField] private float masterVolume = 0.6f;
-    [Tooltip("Player autocannon (5 shots a second while firing, so keep it moderate).")]
-    [Range(0f, 1f)] [SerializeField] private float firingVolume = 0.32f;
-    [Tooltip("Metal impacts when shots hit enemies.")]
-    [Range(0f, 1f)] [SerializeField] private float impactVolume = 0.4f;
-    [Tooltip("Enemy and player explosions.")]
-    [Range(0f, 1f)] [SerializeField] private float explosionVolume = 0.6f;
-    [Tooltip("Player taking damage.")]
-    [Range(0f, 1f)] [SerializeField] private float playerDamageVolume = 0.8f;
-    [Tooltip("Enemy charge warning and enemy cannon shot.")]
-    [Range(0f, 1f)] [SerializeField] private float enemyAttackVolume = 0.5f;
-    [Tooltip("Rocket launch, rocket engine loop and rocket detonation.")]
-    [Range(0f, 1f)] [SerializeField] private float rocketVolume = 0.55f;
+    [Range(0f, 1f)] [SerializeField] private float masterVolume = 0.8f;
+    [Tooltip("Player cannon, enemy gunfire and rocket launches.")]
+    [Range(0f, 1f)] [SerializeField] private float weaponsVolume = 0.6f;
+    [Tooltip("Shots hitting enemies and the player's hull taking damage.")]
+    [Range(0f, 1f)] [SerializeField] private float impactsVolume = 0.7f;
+    [Tooltip("Enemy, player and rocket explosions.")]
+    [Range(0f, 1f)] [SerializeField] private float explosionsVolume = 0.6f;
+    [Tooltip("Player engine, enemy flybys and the rocket motor (read by TestFlightAudio and TestHomingRocket).")]
+    [Range(0f, 1f)] [SerializeField] private float enginesVolume = 0.7f;
+    [Tooltip("Enemy attack warnings: the charge whine and the rocket lock tone.")]
+    [Range(0f, 1f)] [SerializeField] private float warningsVolume = 0.55f;
+    [Tooltip("While a warning is sounding, explosions are lowered by this fraction so the warning stays audible.")]
+    [Range(0f, 1f)] [SerializeField] private float duckUnderWarnings = 0.45f;
 
     [Header("Variation and limits")]
-    [Tooltip("Random pitch change per play (0.03 = +/-3%). Kept small so recordings stay natural.")]
-    [Range(0f, 0.1f)] [SerializeField] private float pitchVariation = 0.03f;
+    [Tooltip("Random pitch change per play (0.025 = +/-2.5%). Kept small so recordings stay natural.")]
+    [Range(0f, 0.1f)] [SerializeField] private float pitchVariation = 0.025f;
     [Tooltip("Total one-shot sounds that can play at once.")]
     [Range(2, 16)] [SerializeField] private int maxVoices = 10;
     [Tooltip("Overlapping autocannon shots / impacts; the oldest is cut when exceeded.")]
@@ -79,7 +80,9 @@ public class TestFxManager : MonoBehaviour
     public int MaxPerSound => maxPerSound;
     public int MaxExplosions => maxExplosions;
     public float MasterVolume => masterVolume;
-    public float RocketVolume => rocketVolume;
+    /// <summary>Master x Engines: what looping engine sounds (player engine, flybys, rocket motor) are scaled by.</summary>
+    public float EngineVolume => masterVolume * enginesVolume;
+    public float DuckUnderWarnings => duckUnderWarnings;
     public TestSoundBank Sounds => sounds;
 
     void Awake()
@@ -239,7 +242,7 @@ public class TestFxManager : MonoBehaviour
         }
 
         float volume = Volume(sound) * masterVolume;
-        if (sound == Sound.EnemyDestroyed || sound == Sound.PlayerDestroyed)
+        if (sound == Sound.EnemyDestroyed || sound == Sound.PlayerDestroyed || sound == Sound.RocketBlast)
         {
             int ringing = ActiveVoiceCount(Sound.EnemyDestroyed);
             if (sound == Sound.EnemyDestroyed && ringing >= maxExplosions && NewestStart(sound) > now - 0.25f)
@@ -247,6 +250,10 @@ public class TestFxManager : MonoBehaviour
                 return; // several kills at once: the ones already ringing cover it
             }
             volume *= 1f / (1f + explosionDucking * ringing);
+            if (ActiveVoiceCount(Sound.EnemyCharge) > 0)
+            {
+                volume *= 1f - duckUnderWarnings; // a gun or rocket warning must stay audible
+            }
         }
 
         Voice voice = PickVoice(sound, now);
@@ -359,18 +366,21 @@ public class TestFxManager : MonoBehaviour
         }
     }
 
-    private float Volume(Sound sound)
+    /// <summary>Group volume x a fixed balance within the group. The balance values were set from the clips' measured
+    /// loudness (all clips peak at -1 dBFS): the player's cannon sits above enemy gunfire, which fires in bursts.</summary>
+    public float Volume(Sound sound)
     {
         switch (sound)
         {
-            case Sound.Shot: return firingVolume;
-            case Sound.Impact: return impactVolume;
-            case Sound.EnemyDestroyed:
-            case Sound.PlayerDestroyed: return explosionVolume;
-            case Sound.PlayerHit: return playerDamageVolume;
-            case Sound.RocketLaunch:
-            case Sound.RocketBlast: return rocketVolume;
-            default: return enemyAttackVolume;
+            case Sound.Shot: return weaponsVolume * 0.8f; // 5 shots a second while firing
+            case Sound.EnemyShot: return weaponsVolume * 0.85f; // quieter recording (sharper peak), so a higher gain
+            case Sound.RocketLaunch: return weaponsVolume * 0.65f;
+            case Sound.Impact: return impactsVolume * 0.45f;
+            case Sound.PlayerHit: return impactsVolume;
+            case Sound.EnemyDestroyed: return explosionsVolume * 0.75f;
+            case Sound.PlayerDestroyed: return explosionsVolume;
+            case Sound.RocketBlast: return explosionsVolume * 0.85f;
+            default: return warningsVolume; // EnemyCharge: gun warning and rocket lock
         }
     }
 }

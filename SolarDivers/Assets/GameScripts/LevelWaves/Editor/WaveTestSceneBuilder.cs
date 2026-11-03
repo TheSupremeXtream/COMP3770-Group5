@@ -231,13 +231,13 @@ public static partial class WaveTestSceneBuilder
         }
         bank.autocannon = Clips("LW_Cannon_A", "LW_Cannon_B", "LW_Cannon_C", "LW_Cannon_D");
         bank.metalImpacts = Clips("LW_Impact_Metal_A", "LW_Impact_Metal_B", "LW_Impact_Metal_C");
-        bank.playerHit = Clips("LW_PlayerHit");
+        bank.playerHit = Clips("LW_PlayerHit", "LW_PlayerHit_B", "LW_PlayerHit_C");
         bank.enemyExplosions = Clips("LW_Explosion_A", "LW_Explosion_B", "LW_Explosion_C");
         bank.playerDestroyed = Clips("LW_PlayerDestroyed");
         bank.enemyCharge = Clips("LW_EnemyCharge");
         bank.enemyGun = Clips("LW_EnemyGun_A", "LW_EnemyGun_B", "LW_EnemyGun_C");
-        bank.rocketLaunch = Clips("LW_RocketLaunch");
-        bank.rocketBlast = Clips("LW_EnemyCannon"); // the shortened ship-cannon report works as a small rocket detonation
+        bank.rocketLaunch = Clips("LW_RocketLaunch", "LW_RocketLaunch_B");
+        bank.rocketBlast = Clips("LW_RocketBlast_A", "LW_RocketBlast_B");
         AudioClip[] rocketLoop = Clips("LW_RocketLoop");
         bank.rocketLoop = rocketLoop.Length > 0 ? rocketLoop[0] : null;
         bank.flybys = Clips("LW_Flyby_A", "LW_Flyby_B", "LW_Flyby_C", "LW_Flyby_D");

@@ -453,8 +453,10 @@ MonoBehaviour:
   beacon: {fileID: 944720887164905507}
   beaconRate: 7
   loop: {fileID: 732576588335913508}
-  loopVolume: 0.4
+  loopVolume: 0.5
   hearingDistance: 14
+  farLevel: 0.35
+  motorFadeIn: 0.6
 --- !u!114 &276979416481483428
 MonoBehaviour:
   m_ObjectHideFlags: 0

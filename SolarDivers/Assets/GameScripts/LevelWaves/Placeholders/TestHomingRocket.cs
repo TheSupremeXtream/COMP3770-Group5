@@ -28,10 +28,15 @@ public class TestHomingRocket : MonoBehaviour
     [Tooltip("Blinking warning light (optional).")]
     [SerializeField] private GameObject beacon;
     [SerializeField] private float beaconRate = 7f;
-    [Tooltip("Looping engine sound (optional); its level and stereo position follow the rocket relative to the player.")]
+    [Tooltip("Looping motor sound (optional); its level and stereo position follow the rocket relative to the player. " +
+             "It stops with the rocket (detonation, shot down, expiry, leaving the area, restart).")]
     [SerializeField] private AudioSource loop;
-    [Range(0f, 1f)] [SerializeField] private float loopVolume = 0.4f;
+    [Range(0f, 1f)] [SerializeField] private float loopVolume = 0.5f;
     [SerializeField] private float hearingDistance = 14f;
+    [Tooltip("Motor level (fraction) when the rocket is at the edge of hearing, so the motor is heard from the launch.")]
+    [Range(0f, 1f)] [SerializeField] private float farLevel = 0.35f;
+    [Tooltip("The motor fades in over this long, under the launch blast (which already contains the first burst of thrust).")]
+    [SerializeField] private float motorFadeIn = 0.6f;
 
     private Transform target;
     private Vector2 heading;
@@ -122,8 +127,9 @@ public class TestHomingRocket : MonoBehaviour
         Vector3 rel = transform.position - target.position;
         rel.y = 0f;
         float g = Mathf.Clamp01(1f - rel.magnitude / Mathf.Max(1f, hearingDistance));
-        float master = TestFxManager.Active != null ? TestFxManager.Active.MasterVolume * TestFxManager.Active.RocketVolume : 1f;
-        loop.volume = loopVolume * master * g * g;
+        float engines = TestFxManager.Active != null ? TestFxManager.Active.EngineVolume : 1f;
+        float fadeIn = motorFadeIn > 0f ? Mathf.Clamp01(age / motorFadeIn) : 1f;
+        loop.volume = loopVolume * engines * fadeIn * Mathf.Lerp(farLevel, 1f, g * g);
         loop.panStereo = Mathf.Clamp(rel.x / 8f, -1f, 1f) * 0.8f;
         // Slightly higher while closing in, lower once it has passed (subtle, capped).
         Vector3 v = transform.forward * speed;

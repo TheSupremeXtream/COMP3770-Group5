@@ -412,8 +412,10 @@ public class MovementAndAudioTests
         Assert.IsNotNull(bank, "Sound bank missing");
         string credits = File.ReadAllText(Path.Combine(Application.dataPath, "Audio/LevelWaves/CREDITS.md"));
         foreach (string source in new[] { "freesound.org/people/qubodup/sounds/189446", "freesound.org/people/Nice_Audio/sounds/420560",
-                     "opengameart.org/content/the-free-firearm-sound-library", "opengameart.org/content/cannon-fire",
-                     "opengameart.org/content/mechanical-explosion", "opengameart.org/content/metal-impact-sounds", "opengameart.org/node/92774" })
+                     "opengameart.org/content/the-free-firearm-sound-library", "opengameart.org/content/metal-impact-sounds",
+                     "freesound.org/people/sidohzen/sounds/165808", "freesound.org/people/qubodup/sounds/187767",
+                     "freesound.org/people/qubodup/sounds/182794", "freesound.org/people/SamsterBirdies/sounds/587443",
+                     "freesound.org/people/qubodup/sounds/54850" })
         {
             StringAssert.Contains(source, credits, "CREDITS.md must list " + source);
         }
@@ -440,23 +442,42 @@ public class MovementAndAudioTests
             Debug.Log($"[Sound] {clip.name}: {clip.length:F2} s, sub-60 Hz {stats[clip.name].subShare:P0}, RMS frequency {stats[clip.name].rmsHz:F0} Hz, tail {stats[clip.name].tail:F2} s");
         }
 
+        // Player cannon keeps its natural report (not chopped), but at 5 shots a second no more than 3 overlap.
+        float playerGunHz = 0f;
         foreach (AudioClip shot in bank.autocannon)
         {
-            Assert.LessOrEqual(stats[shot.name].tail, 0.2f, shot.name + ": rings into the next shot (0.2 s apart)");
-            Assert.LessOrEqual(shot.length, 0.35f);
+            Assert.GreaterOrEqual(stats[shot.name].tail, 0.3f, shot.name + ": report cut too short (sounds thin)");
+            Assert.LessOrEqual(shot.length, 0.6f, shot.name + ": would ring under more than 3 following shots (0.2 s apart)");
             Assert.Less(stats[shot.name].subShare, 0.2f, shot.name + ": too much sub-bass for continuous fire");
+            playerGunHz = Mathf.Max(playerGunHz, stats[shot.name].rmsHz);
         }
+        // Enemy gunfire is a different, lighter gun: brighter than every player shot, short enough for bursts.
+        foreach (AudioClip gun in bank.enemyGun)
+        {
+            Assert.Greater(stats[gun.name].rmsHz, playerGunHz + 200f, gun.name + ": not distinct from the player's cannon");
+            Assert.LessOrEqual(gun.length, 0.4f, gun.name + ": too long for bursts");
+        }
+        float longestBoom = 0f;
         foreach (AudioClip boom in bank.enemyExplosions)
         {
-            Assert.GreaterOrEqual(boom.length, 0.8f, boom.name + ": needs a short debris tail");
-            Assert.LessOrEqual(boom.length, 1.3f, boom.name + ": tail too long for several kills in a row");
+            Assert.GreaterOrEqual(boom.length, 1.5f, boom.name + ": needs a rumble and debris after the blast");
+            Assert.LessOrEqual(boom.length, 2.2f, boom.name + ": tail too long for several kills in a row");
             Assert.Less(stats[boom.name].subShare, 0.5f, boom.name + ": low end not controlled");
+            longestBoom = Mathf.Max(longestBoom, boom.length);
         }
-        string impact = bank.metalImpacts[0].name, explosion = bank.enemyExplosions[0].name, shot0 = bank.autocannon[0].name, hit = bank.playerHit[0].name;
-        Assert.Greater(stats[impact].rmsHz, stats[explosion].rmsHz * 2f, "Metal impacts are much brighter than explosions");
+        Assert.Greater(bank.playerDestroyed[0].length, longestBoom + 1f, "Player destruction is a bigger, longer explosion");
+        string impact = bank.metalImpacts[0].name, explosion = bank.enemyExplosions[0].name, shot0 = bank.autocannon[0].name;
+        Assert.Greater(stats[impact].rmsHz, stats[explosion].rmsHz * 1.5f, "Metal impacts are much brighter than explosions");
         Assert.Greater(stats[impact].rmsHz, stats[shot0].rmsHz, "Impacts are brighter than gunfire");
-        Assert.Less(stats[hit].rmsHz, stats[impact].rmsHz, "Player damage is heavier than an enemy hit");
-        Assert.Greater(bank.playerHit[0].length, bank.metalImpacts[0].length, "Player damage lasts longer than an enemy hit");
+        foreach (AudioClip hit in bank.playerHit)
+        {
+            Assert.Less(stats[hit.name].rmsHz, stats[impact].rmsHz, hit.name + ": player damage is heavier than an enemy hit");
+            Assert.Greater(stats[hit.name].rmsHz, playerGunHz, hit.name + ": hull damage should not sound like the cannon");
+            Assert.Greater(hit.length, bank.metalImpacts[0].length, hit.name + ": player damage lasts longer than an enemy hit");
+        }
+        Assert.GreaterOrEqual(bank.playerHit.Length, 2, "Player damage needs variations");
+        Assert.GreaterOrEqual(bank.rocketLaunch.Length, 2, "Rocket launch needs variations");
+        Assert.GreaterOrEqual(bank.rocketBlast.Length, 2, "Rocket detonation needs variations");
 
         // Engine loop is seamless: no jump and no level step at the loop point.
         float[] loop = Samples(bank.playerEngineLoop);

@@ -203,7 +203,8 @@ public class TestFlightAudio : MonoBehaviour
         {
             return;
         }
-        float master = TestFxManager.Active != null ? TestFxManager.Active.MasterVolume : 1f;
+        // Engines group: master x engines volume from the FX manager.
+        float master = TestFxManager.Active != null ? TestFxManager.Active.EngineVolume : 1f;
         MeasurePlayer(dt);
         UpdateEngine(dt, master);
         StartFlybys();
