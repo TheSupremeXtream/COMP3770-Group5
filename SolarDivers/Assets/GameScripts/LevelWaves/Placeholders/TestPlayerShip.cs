@@ -245,8 +245,31 @@ public class TestPlayerShip : MonoBehaviour
         }
         Transform from = firePoint != null ? firePoint : transform;
         projectiles.RemoveAll(p => p == null);
-        projectiles.Add(Instantiate(projectilePrefab, from.position, from.rotation));
-        cooldown = fireCooldown;
+
+
+        // projectiles.Add(Instantiate(projectilePrefab, from.position, from.rotation)); 
+        // updated to implement choosing the right projectile based on the selected weapon, right now in test we have the 1 plaster
+        // plasma uses its own prefab and has limited ammo
+        GameObject selectedProjectile = usingPlasma ? plasmaProjectilePrefab : projectilePrefab;
+        if (selectedProjectile == null || (usingPlasma && plasmaAmmo <= 0))
+            return;
+        projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
+        if (usingPlasma)
+            plasmaAmmo--;
+
+        //cooldown = fireCooldown;
+        // implementing the funtion so that each weapon has its own firing speed
+        // Plasma fires slower than the regular laser - remember to add MISSILES NEXT
+        cooldown = usingPlasma ? plasmaFireCooldown : fireCooldown;
+
+
+
+
+
+
+
+
+
         if (muzzleFlash != null)
         {
             muzzleFlash.SetActive(true);
