@@ -1,0 +1,46 @@
+using UnityEngine;
+
+/// <summary>
+/// PLACEHOLDER enemy shot: flies in a straight line (no homing), hurts through TestContactDamage on the same object,
+/// disappears on touching the player, after its lifetime, or once it leaves the play area.
+/// Needs a trigger collider and a kinematic Rigidbody.
+/// </summary>
+public class TestEnemyBullet : MonoBehaviour
+{
+    [SerializeField] private float lifetime = 4f;
+    [Tooltip("Removed when it leaves this area (relative to the shot's parent, i.e. the attack director, so it follows a moving rig).")]
+    [SerializeField] private Bounds area = new Bounds(new Vector3(0f, 0f, 0f), new Vector3(36f, 10f, 32f));
+
+    private float age;
+
+    public Vector3 Velocity { get; private set; }
+    /// <summary>The attack (single shot or burst) this shot belongs to; a burst counts once against the attack cap.</summary>
+    public int AttackId { get; private set; }
+
+    public void Launch(Vector3 velocity, int attackId = 0)
+    {
+        Velocity = velocity;
+        AttackId = attackId;
+        age = 0f;
+    }
+
+    void Update()
+    {
+        age += Time.deltaTime;
+        transform.position += Velocity * Time.deltaTime;
+        Vector3 p = transform.parent != null ? transform.parent.InverseTransformPoint(transform.position) : transform.position;
+        if (age > lifetime || !area.Contains(p))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // TestPlayerHealth applies the damage from its own trigger callback; the shot just ends here.
+        if (other.GetComponentInParent<TestPlayerHealth>() != null)
+        {
+            Destroy(gameObject);
+        }
+    }
+}
