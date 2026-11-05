@@ -323,7 +323,7 @@ Camera:
   m_GameObject: {fileID: 300848371}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 3
+  m_ClearFlags: 4
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -434,6 +434,7 @@ GameObject:
   m_Component:
   - component: {fileID: 449067516}
   - component: {fileID: 449067515}
+  - component: {fileID: 449067517}
   m_Layer: 0
   m_Name: Fill Light
   m_TagString: Untagged
@@ -521,6 +522,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &449067517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449067514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &451396519
 GameObject:
   m_ObjectHideFlags: 0
@@ -9074,6 +9104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2088677813}
   - component: {fileID: 2088677812}
+  - component: {fileID: 2088677814}
   m_Layer: 0
   m_Name: Key Light
   m_TagString: Untagged
@@ -9161,6 +9192,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2088677814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088677811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &2093528427
 GameObject:
   m_ObjectHideFlags: 0
@@ -14197,6 +14257,12 @@ MonoBehaviour:
   xLimits: {x: -9, y: 9}
   zLimits: {x: -8, y: 0}
   projectilePrefab: {fileID: 740178081553508912, guid: be1b50a8e3d8872499cc34425e9799d2, type: 3}
+  plasmaProjectilePrefab: {fileID: 740178081553508912, guid: 92163d7ba63688d48a6feafb5bfc0eb4, type: 3}
+  plasmaFireCooldown: 0.5
+  plasmaAmmo: 33
+  missileProjectilePrefab: {fileID: 740178081553508912, guid: 99ecbe42044782b458f8c068849fa2a9, type: 3}
+  missileFireCooldown: 2
+  missileAmmo: 6
   firePoint: {fileID: 813196411095329555}
   fireCooldown: 0.2
   muzzleFlash: {fileID: 4285814273097177970}
