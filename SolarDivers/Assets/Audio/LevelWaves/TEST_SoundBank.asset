@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2e77b7381428049a57c3e1922425fa, type: 3}
+  m_Name: TEST_SoundBank
+  m_EditorClassIdentifier: SolarDivers.LevelWaves::TestSoundBank
+  autocannon:
+  - {fileID: 8300000, guid: 438c23b784b7f204a941b2697160b850, type: 3}
+  - {fileID: 8300000, guid: e9ae93a0f6273bd4086fbfe32cebaedf, type: 3}
+  - {fileID: 8300000, guid: dfd00583299296642aaca021948c44e0, type: 3}
+  - {fileID: 8300000, guid: b9da710400783b34daaa5fb95cf77acc, type: 3}
+  metalImpacts:
+  - {fileID: 8300000, guid: 4dffc83d51ab4f942868bce255cdd069, type: 3}
+  - {fileID: 8300000, guid: 590fc6293b30a4647b4801e5da238502, type: 3}
+  - {fileID: 8300000, guid: 3202f89a89a69a748bdf2b5e02e8421f, type: 3}
+  playerHit:
+  - {fileID: 8300000, guid: 2b2311d55d0c72b4dba1ec1fb2ce2f5a, type: 3}
+  - {fileID: 8300000, guid: c490c5ee54b00d347baf17f83f1062e5, type: 3}
+  - {fileID: 8300000, guid: b3d7867861a3bc44295ee34c377da601, type: 3}
+  enemyExplosions:
+  - {fileID: 8300000, guid: f45b62f32efbd64428c62938866f3bbd, type: 3}
+  - {fileID: 8300000, guid: c884514dbcad9fc4c9e5131dacc48514, type: 3}
+  - {fileID: 8300000, guid: 8b64d32455e793d48a14d58d920d9f17, type: 3}
+  playerDestroyed:
+  - {fileID: 8300000, guid: 721780ad8057cb649b364c50f97dd22d, type: 3}
+  enemyCharge:
+  - {fileID: 8300000, guid: 45e8ce0c155cd0543ad5dbdb47bb0648, type: 3}
+  enemyGun:
+  - {fileID: 8300000, guid: 7c53997347223d04aa817a74152bbc8e, type: 3}
+  - {fileID: 8300000, guid: 5f92d42af73399d45bc7ce990caf475d, type: 3}
+  - {fileID: 8300000, guid: 29ea5b48d3b60c84d852de5ce11de1f6, type: 3}
+  rocketLaunch:
+  - {fileID: 8300000, guid: fe46ee6e68b9b4a45842f58a79717adf, type: 3}
+  - {fileID: 8300000, guid: 1639cb3c985bcbe41a1a0ee574f7e57b, type: 3}
+  rocketBlast:
+  - {fileID: 8300000, guid: 0f3c58b79bcc4aa40b63b4413c756b07, type: 3}
+  - {fileID: 8300000, guid: 75d5bb022135120449eca905d7d5d7e4, type: 3}
+  rocketLoop: {fileID: 8300000, guid: 3b9e443df75db534987bbea072a9e176, type: 3}
+  playerEngineLoop: {fileID: 8300000, guid: dd93583d9a75f6a4d8a2ac72d4595d33, type: 3}
+  flybys:
+  - {fileID: 8300000, guid: 894497c375d8d3c43b0607d9dad42cdc, type: 3}
+  - {fileID: 8300000, guid: b280494f164947d428926d148a293a2d, type: 3}
+  - {fileID: 8300000, guid: 7f36f2d38aa0c8049875ffbab65bea11, type: 3}
+  - {fileID: 8300000, guid: 37bf851e446a5d3498c4dab76b4906bb, type: 3}
+  flybyPassSeconds: 1.4

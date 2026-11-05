@@ -1,4 +1,7 @@
 ﻿<Solution>
+  <Project Path="SolarDivers.LevelWaves.Tests.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="SolarDivers.LevelWaves.Editor.csproj" />
+  <Project Path="SolarDivers.LevelWaves.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
 </Solution>
