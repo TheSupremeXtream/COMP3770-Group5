@@ -33,6 +33,21 @@ public class TestPlayerShip : MonoBehaviour
     [SerializeField] private float plasmaFireCooldown = 0.5f;
     [SerializeField] private int plasmaAmmo = 33;
     private bool usingPlasma = false;
+    // Keeps track of whether missiles are selected
+    // We'll use this for switching between all three weapons
+    private bool usingMissiles = false;
+    // Taha, Missile launcher settings
+    // Third weapon, with its own projectile and limited ammo
+    // Slower firing rate, but deals more damage
+    [SerializeField] private GameObject missileProjectilePrefab;
+    [SerializeField] private float missileFireCooldown = 2f;
+    [SerializeField] private int missileAmmo = 6;
+
+
+
+
+
+
 
 
     [SerializeField] private Transform firePoint;
@@ -129,6 +144,24 @@ public class TestPlayerShip : MonoBehaviour
         }
     }
 
+
+
+
+    // Taha - manual edit
+    // Tracks which weapon is selected, 0 = laser, etc
+    // Switching weapons also resets the firing cooldown
+    private int CurrentWeapon => usingMissiles ? 2 : usingPlasma ? 1 : 0;
+    private void SelectWeapon(int weapon)
+    {
+        usingPlasma = weapon == 1;
+        usingMissiles = weapon == 2;
+        cooldown = 0f;
+    }
+
+
+
+
+
     void Update()
     {
         if (flashTimer > 0f)
@@ -165,19 +198,34 @@ public class TestPlayerShip : MonoBehaviour
 
 
 
-        // Switching from weapons using 1 and 2 on MNK, eventually 3 for missils. 
-        // Reset the firing timer so switching feels responsive
-        // place holder, need to ADD CONTROLER SUPPORT - done - Taha
-        // The top face button on a controller toggles weapons (Y on Xbox, X on Nintendo, Square on PlayStation)
-        // Reset the cooldown when switching
+                //// Switching from weapons using 1 and 2 on MNK, eventually 3 for missils. 
+                //// Reset the firing timer so switching feels responsive
+                //// place holder, need to ADD CONTROLER SUPPORT - done - Taha
+                //// The top face button on a controller toggles weapons (Y on Xbox, X on Nintendo, Square on PlayStation)
+                //// Reset the cooldown when switching
+                //Gamepad gamepad = Gamepad.current;
+                //if (keyboard.digit1Key.wasPressedThisFrame)
+                //    usingPlasma = false;
+                //if (keyboard.digit2Key.wasPressedThisFrame)
+                //    usingPlasma = true;
+                //if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
+                //    usingPlasma = !usingPlasma;
+        // Switch between laser, plasma, and missiles
+        // Keyboard uses 1, 2, 3
+        // Controller's top face button cycles through all three
         Gamepad gamepad = Gamepad.current;
-        if (keyboard.digit1Key.wasPressedThisFrame)
-            usingPlasma = false;
-        if (keyboard.digit2Key.wasPressedThisFrame)
-            usingPlasma = true;
-        if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
-            usingPlasma = !usingPlasma;
 
+        if (keyboard.digit1Key.wasPressedThisFrame)
+            SelectWeapon(0);
+
+        if (keyboard.digit2Key.wasPressedThisFrame)
+            SelectWeapon(1);
+
+        if (keyboard.digit3Key.wasPressedThisFrame)
+            SelectWeapon(2);
+
+        if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
+            SelectWeapon((CurrentWeapon + 1) % 3);
 
 
 
@@ -251,20 +299,43 @@ public class TestPlayerShip : MonoBehaviour
         projectiles.RemoveAll(p => p == null);
 
 
+
+
         // projectiles.Add(Instantiate(projectilePrefab, from.position, from.rotation)); 
         // updated to implement choosing the right projectile based on the selected weapon, right now in test we have the 1 plaster
         // plasma uses its own prefab and has limited ammo
-        GameObject selectedProjectile = usingPlasma ? plasmaProjectilePrefab : projectilePrefab;
-        if (selectedProjectile == null || (usingPlasma && plasmaAmmo <= 0))
-            return;
-        projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
-        if (usingPlasma)
-            plasmaAmmo--;
+        // GameObject selectedProjectile = usingPlasma ? plasmaProjectilePrefab : projectilePrefab;
+        // Pick the projectile for whichever weapon is selected
+        // Laser, plasma, and missiles each have their own prefab
+        GameObject selectedProjectile = usingMissiles ? missileProjectilePrefab
+            : usingPlasma ? plasmaProjectilePrefab : projectilePrefab;
+        //if (selectedProjectile == null || (usingPlasma && plasmaAmmo <= 0))
+        //    return;
+        //projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
+        //if (usingPlasma)
+        //    plasmaAmmo--;
+
+    // Check ammo before firing
+    // Each special weapon uses its own ammo supply
+    if (selectedProjectile == null ||
+        (usingPlasma && plasmaAmmo <= 0) ||
+        (usingMissiles && missileAmmo <= 0))
+        return;
+
+    projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
+
+    if (usingPlasma)
+        plasmaAmmo--;
+    if (usingMissiles)
+        missileAmmo--;
 
         //cooldown = fireCooldown;
         // implementing the funtion so that each weapon has its own firing speed
         // Plasma fires slower than the regular laser - remember to add MISSILES NEXT
-        cooldown = usingPlasma ? plasmaFireCooldown : fireCooldown;
+        // Each weapon has its own firing speed
+        // Missiles are the slowest, followed by plasma and laser
+        cooldown = usingMissiles ? missileFireCooldown
+            : usingPlasma ? plasmaFireCooldown : fireCooldown;
 
 
 

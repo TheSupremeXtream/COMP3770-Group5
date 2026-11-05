@@ -14257,6 +14257,12 @@ MonoBehaviour:
   xLimits: {x: -9, y: 9}
   zLimits: {x: -8, y: 0}
   projectilePrefab: {fileID: 740178081553508912, guid: be1b50a8e3d8872499cc34425e9799d2, type: 3}
+  plasmaProjectilePrefab: {fileID: 740178081553508912, guid: 92163d7ba63688d48a6feafb5bfc0eb4, type: 3}
+  plasmaFireCooldown: 0.5
+  plasmaAmmo: 33
+  missileProjectilePrefab: {fileID: 740178081553508912, guid: 99ecbe42044782b458f8c068849fa2a9, type: 3}
+  missileFireCooldown: 2
+  missileAmmo: 6
   firePoint: {fileID: 813196411095329555}
   fireCooldown: 0.2
   muzzleFlash: {fileID: 4285814273097177970}
