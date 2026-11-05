@@ -27,7 +27,7 @@ fire (test weapon), **R** restart, **Tab** debug counters. Click the Game view o
 
 **The encounter - "Mars Orbit Breakout"** (about 73 s if nothing is shot down, shorter when enemies are destroyed):
 
-1. **Introduction:** the mission banner and an objective line ("Survive the Marquis's patrols and keep the route to Earth open").
+1. **Introduction:** the mission banner and an objective line ("Survive the Martioness' patrols.").
 2. **Wave 1 - Patrol Screen (introduces the patterns):**
    - fighters in lines, one pattern per group: a left/right sweep, a curved approach, a dive with a brief retreat;
    - one single, slow, unleading aimed shot per group, with a 1 s warning;
@@ -37,7 +37,7 @@ fire (test weapon), **R** restart, **Tab** debug counters. Click the Game view o
    - a one-off lane shift towards you; interceptors make a short pursuit (at most 0.8 s, then commit);
    - 3-shot bursts with a little lead;
    - the **first homing rocket** of each group, from the V leader.
-4. **Wave 3 - Marquis Escort (more pressure):**
+4. **Wave 3 - Martioness Escort (more pressure):**
    - heavies, fighters and interceptors: heavies sweep slowly and launch rockets, interceptors flank your last
      seen position, fighters pursue briefly;
    - 4-shot bursts with more (still capped) lead.
@@ -91,7 +91,7 @@ the team decides otherwise.
   `WaveTestSceneBuilder.BuildDemoFromCommandLine`) rebuilds the test scene, the demo prefabs and the demo scene.
 
 **Boss: not implemented.** No Issue, milestone or repository document asks for a boss in this milestone; the GDD
-routes all end at the final boss (the Marquis's frigate). The result panel says the boss is still to come, and the
+routes all end at the final boss (the Martioness' frigate). The result panel says the boss is still to come, and the
 boss proposal and its tasks are at the end of this document.
 
 ---
@@ -957,7 +957,7 @@ encounter came first. Order of work, smallest playable version first:
    test health until then) and telegraphed aimed shots (reuse `TestAttackDirector` fairness rules).
 3. Warned beam: a lane warning (like the aim line) for ~1.5 s, then a short damaging beam with a dodge lane.
 4. Exposed-core window after the turrets are down; core damage ends the level.
-5. Model and art for the Marquis's frigate (team decision; none exists yet), boss UI with Ronit.
+5. Model and art for the Martioness' frigate (team decision; none exists yet), boss UI with Ronit.
 6. Tests: phases advance once, no unavoidable damage, defeat/restart reset the boss.
 
 Dependencies: real weapons (Taha) and damage system; enemy projectile/attack conventions (Leonardo);
