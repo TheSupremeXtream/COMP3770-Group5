@@ -151,6 +151,7 @@ public class TestPlayerShip : MonoBehaviour
             return;
         }
 
+        /*
         if (handleMovement)
         {
             Vector2 move = Vector2.zero;
@@ -160,6 +161,7 @@ public class TestPlayerShip : MonoBehaviour
             if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) move.y += 1f;
             Step(move, Time.deltaTime);
         }
+        */
 
 
 
@@ -188,6 +190,7 @@ public class TestPlayerShip : MonoBehaviour
         }
     }
 
+    /* ALREADY BEING HANDLED BY PLAYERCONTROLLER
     /// <summary>One movement step for a given input (x = right, y = up the screen). Public so tests can drive it.</summary>
     public void Step(Vector2 input, float dt)
     {
@@ -236,6 +239,7 @@ public class TestPlayerShip : MonoBehaviour
         }
         return distance;
     }
+    */
 
     public void Fire()
     {
@@ -284,4 +288,5 @@ public class TestPlayerShip : MonoBehaviour
             TestFxManager.Active.PlayShot();
         }
     }
+    
 }
