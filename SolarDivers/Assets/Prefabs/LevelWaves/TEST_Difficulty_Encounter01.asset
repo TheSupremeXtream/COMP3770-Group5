@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbfba0886e516d43bc13ce9280cf5cd, type: 3}
+  m_Name: TEST_Difficulty_Encounter01
+  m_EditorClassIdentifier: SolarDivers.LevelWaves::TestDifficultyProfile
+  waves:
+  - label: Wave 1 - sweep, curved pass, dive and retreat
+    speedMultiplier: 1
+    turnRateMultiplier: 1
+    pathWidthMultiplier: 1
+    alternateFlanks: 0
+    groupPatterns: 030000000100000004000000i
+    keepOwnPattern: 0
+    reactAfterDistance: 2.5
+    laneSeekDistance: 0
+    flankingClasses: 0
+    flankOffset: 2.4
+    trackingSeconds: 0.6
+    maxReposition: 4
+    pursuitClasses: 0
+    pursuitSeconds: 1
+    variation: 0.15
+    aimedShooterEveryNth: 4
+    telegraphSeconds: 1
+    shotSpeed: 7
+    shotsPerBurst: 1
+    burstInterval: 0.14
+    leadFactor: 0
+    maxLead: 1.5
+    rocketClasses: 0
+    groupLeaderRocket: 0
+    rocketWarningSeconds: 1
+  - label: Wave 2 - combined patterns, bursts, first rockets
+    speedMultiplier: 1.05
+    turnRateMultiplier: 1
+    pathWidthMultiplier: 1.1
+    alternateFlanks: 1
+    groupPatterns: 050000000300000004000000i
+    keepOwnPattern: 0
+    reactAfterDistance: 2.5
+    laneSeekDistance: 1.5
+    flankingClasses: 0
+    flankOffset: 2.4
+    trackingSeconds: 0.6
+    maxReposition: 4
+    pursuitClasses: 4
+    pursuitSeconds: 0.8
+    variation: 0.2
+    aimedShooterEveryNth: 3
+    telegraphSeconds: 0.9
+    shotSpeed: 8
+    shotsPerBurst: 3
+    burstInterval: 0.14
+    leadFactor: 0.35
+    maxLead: 1.5
+    rocketClasses: 0
+    groupLeaderRocket: 1
+    rocketWarningSeconds: 1.1
+  - label: 'Wave 3 - pressure: flanks, pursuit, bursts and rockets'
+    speedMultiplier: 1.1
+    turnRateMultiplier: 1.1
+    pathWidthMultiplier: 1
+    alternateFlanks: 1
+    groupPatterns: 050000000100000003000000i
+    keepOwnPattern: 1
+    reactAfterDistance: 2.5
+    laneSeekDistance: 1.2
+    flankingClasses: 4
+    flankOffset: 2.4
+    trackingSeconds: 0.6
+    maxReposition: 4
+    pursuitClasses: 2
+    pursuitSeconds: 0.8
+    variation: 0.2
+    aimedShooterEveryNth: 2
+    telegraphSeconds: 0.85
+    shotSpeed: 8.5
+    shotsPerBurst: 4
+    burstInterval: 0.13
+    leadFactor: 0.5
+    maxLead: 1.8
+    rocketClasses: 1
+    groupLeaderRocket: 0
+    rocketWarningSeconds: 1
+  minEscapeGap: 2.6
+  maxShotsInFlight: 2
+  minSecondsBetweenAttacks: 1.2
+  minFireDistance: 7
+  fireWindowZ: {x: 3, y: 8.5}
+  fireWindowX: 9.5
+  aimLockSeconds: 0.3
+  holdFireWhilePlayerRecovers: 1
+  maxRocketsInFlight: 2
+  minSecondsBetweenRockets: 3
+  minRocketDistance: 8
+  fixedSeed: 0
