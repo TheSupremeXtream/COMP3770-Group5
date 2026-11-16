@@ -6,7 +6,7 @@ public class KeyFrame : MonoBehaviour
     [SerializeField] int ID = 1;
     [SerializeField] Boolean overrideCameraSpeed = false;
     [SerializeField] float overrideSpeed = 1.0f;
-    [SerializeField] Vector3 rotation;
+    public Quaternion rotation;
     public Vector3 position;
 
     
@@ -15,6 +15,7 @@ public class KeyFrame : MonoBehaviour
     void Start()
     {
         position = transform.position;
+        rotation = transform.rotation;
     }
 
     // Update is called once per frame
