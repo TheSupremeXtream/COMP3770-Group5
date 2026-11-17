@@ -9,16 +9,14 @@ public enum TestShooterRole
     Rocket
 }
 
-/// <summary>
-/// PLACEHOLDER attacks for the test enemies (not Leonardo's AI or Taha's weapons). Each armed ship attacks once, only when
-/// TestAttackDirector allows it, and always with a warning:
-/// - Gun: the ship glows orange and shows an aim line that follows the player's predicted position (limited lead), the
-///   line locks Aim Lock Seconds before firing, then a single shot or a short burst flies straight along it.
-///   Interceptors fire one quick shot with a little more lead; fighters fire bursts.
-/// - Rocket: the ship pulses red with a red lock line for the rocket warning time, then launches one homing rocket
-///   (TestHomingRocket: limited turn rate, speed and homing time, so it can be dodged).
-/// The role comes from the wave's TestDifficultyProfile entry and the ship's class / formation slot.
-/// </summary>
+// PLACEHOLDER attacks for the test enemies (not Leonardo's AI or Taha's weapons). Each armed ship attacks once, only when
+// TestAttackDirector allows it, and always with a warning:
+// - Gun: the ship glows orange and shows an aim line that follows the player's predicted position (limited lead), the
+//   line locks Aim Lock Seconds before firing, then a single shot or a short burst flies straight along it.
+//   Interceptors fire one quick shot with a little more lead; fighters fire bursts.
+// - Rocket: the ship pulses red with a red lock line for the rocket warning time, then launches one homing rocket
+//   (TestHomingRocket: limited turn rate, speed and homing time, so it can be dodged).
+// The role comes from the wave's TestDifficultyProfile entry and the ship's class / formation slot.
 public class TestEnemyShooter : MonoBehaviour, IWaveSpawnReceiver
 {
     [SerializeField] private Transform muzzle;
@@ -96,7 +94,7 @@ public class TestEnemyShooter : MonoBehaviour, IWaveSpawnReceiver
         Configure(wave, enemyClass, info.slotIndex);
     }
 
-    /// <summary>Chooses this ship's role for a wave (used by OnWaveSpawn and tests).</summary>
+    // Chooses this ship's role for a wave (used by OnWaveSpawn and tests).
     public void Configure(TestWaveDifficulty wave, TestEnemyClass enemyClass, int slotIndex)
     {
         role = TestShooterRole.None;
@@ -121,7 +119,7 @@ public class TestEnemyShooter : MonoBehaviour, IWaveSpawnReceiver
         }
     }
 
-    /// <summary>Arms a gun attack directly (tests).</summary>
+    // Arms a gun attack directly (tests).
     public void Arm(bool canShoot, float telegraph, float speed, int shots = 1, float interval = 0.14f, float lead = 0f, float leadCap = 1.5f)
     {
         role = canShoot ? TestShooterRole.Gun : TestShooterRole.None;
@@ -133,7 +131,7 @@ public class TestEnemyShooter : MonoBehaviour, IWaveSpawnReceiver
         maxLead = leadCap;
     }
 
-    /// <summary>Arms a rocket attack directly (tests).</summary>
+    // Arms a rocket attack directly (tests).
     public void ArmRocket(float warningSeconds)
     {
         role = TestShooterRole.Rocket;

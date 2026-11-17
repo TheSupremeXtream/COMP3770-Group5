@@ -6,10 +6,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-/// <summary>
-/// Homing rocket limits (turn rate, speed, burn-out, lifetime, dodging, caps), aimed bursts with limited prediction,
-/// bounded seeded variation between runs, and short pursuit.
-/// </summary>
+// Homing rocket limits (turn rate, speed, burn-out, lifetime, dodging, caps), aimed bursts with limited prediction,
+// bounded seeded variation between runs, and short pursuit.
 public class CombatTests
 {
     private const string ProfilePath = "Assets/Prefabs/LevelWaves/TEST_Difficulty_Encounter01.asset";

@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Scene helpers shared by the Level Waves PlayMode tests. GetSceneByPath returns the first loaded copy, so if a
-/// failed test ever leaves the test scene loaded, later tests would read that stale copy; these helpers avoid that.
-/// </summary>
+// Scene helpers shared by the Level Waves PlayMode tests. GetSceneByPath returns the first loaded copy, so if a
+// failed test ever leaves the test scene loaded, later tests would read that stale copy; these helpers avoid that.
 public static class LevelWavesTestScenes
 {
-    /// <summary>The most recently loaded copy of the scene at 'path'.</summary>
+    // The most recently loaded copy of the scene at 'path'.
     public static Scene Newest(string path)
     {
         Scene found = default;
@@ -23,7 +21,7 @@ public static class LevelWavesTestScenes
         return found;
     }
 
-    /// <summary>Unloads every loaded copy of the scene at 'path'.</summary>
+    // Unloads every loaded copy of the scene at 'path'.
     public static IEnumerator UnloadAll(string path)
     {
         var copies = new List<Scene>();

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-/// <summary>Progressive difficulty, aimed-shot fairness, dodgeability, faster player and destruction effects (sounds: MovementAndAudioTests).</summary>
+// Progressive difficulty, aimed-shot fairness, dodgeability, faster player and destruction effects (sounds: MovementAndAudioTests).
 public class DifficultyAndAttackTests
 {
     /*

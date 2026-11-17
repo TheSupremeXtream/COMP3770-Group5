@@ -1,13 +1,11 @@
 using UnityEngine;
 
-/// <summary>
-/// PLACEHOLDER homing rocket for the test enemies (not Taha's weapons or Leonardo's AI). Dodgeable by design:
-/// it flies straight for Arming Seconds, then turns towards the player at no more than Turn Rate while it speeds up to
-/// Max Speed, stops homing after Homing Seconds (burn-out: flies straight) and is removed after Lifetime or when it
-/// leaves its area. A sharp sideways move inside its turning circle makes it miss. It can be shot down (TestEnemyHealth
-/// on the same object) and hurts on contact (TestContactDamage). Moves in its parent's space, so it follows a moving rig.
-/// Needs a trigger collider and a kinematic Rigidbody.
-/// </summary>
+// PLACEHOLDER homing rocket for the test enemies (not Taha's weapons or Leonardo's AI). Dodgeable by design:
+// it flies straight for Arming Seconds, then turns towards the player at no more than Turn Rate while it speeds up to
+// Max Speed, stops homing after Homing Seconds (burn-out: flies straight) and is removed after Lifetime or when it
+// leaves its area. A sharp sideways move inside its turning circle makes it miss. It can be shot down (TestEnemyHealth
+// on the same object) and hurts on contact (TestContactDamage). Moves in its parent's space, so it follows a moving rig.
+// Needs a trigger collider and a kinematic Rigidbody.
 public class TestHomingRocket : MonoBehaviour
 {
     [SerializeField] private float launchSpeed = 3f;
@@ -54,7 +52,7 @@ public class TestHomingRocket : MonoBehaviour
     public bool IsHoming => launched && age >= armingSeconds && age < armingSeconds + homingSeconds;
     public Vector2 Heading => heading;
 
-    /// <summary>Starts the rocket heading 'direction' (world) towards 'homeOn'.</summary>
+    // Starts the rocket heading 'direction' (world) towards 'homeOn'.
     public void Launch(Vector3 direction, Transform homeOn)
     {
         Vector3 local = transform.parent != null ? transform.parent.InverseTransformDirection(direction) : direction;
@@ -76,7 +74,7 @@ public class TestHomingRocket : MonoBehaviour
         Step(Time.deltaTime);
     }
 
-    /// <summary>Advances the rocket by dt (fixed sub-steps, so the path is the same at any frame rate). Public for tests.</summary>
+    // Advances the rocket by dt (fixed sub-steps, so the path is the same at any frame rate). Public for tests.
     public void Step(float dt)
     {
         if (!launched || dt <= 0f)

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// PLACEHOLDER: shows a blinking chevron strip at the top of the play area where the next enemy group will enter,
-/// driven by WaveEncounter.onGroupIncoming. Decoration only (no colliders); markers remove themselves.
-/// </summary>
+// PLACEHOLDER: shows a blinking chevron strip at the top of the play area where the next enemy group will enter,
+// driven by WaveEncounter.onGroupIncoming. Decoration only (no colliders); markers remove themselves.
 public class TestEntryWarnings : MonoBehaviour
 {
     [SerializeField] private WaveEncounter encounter;

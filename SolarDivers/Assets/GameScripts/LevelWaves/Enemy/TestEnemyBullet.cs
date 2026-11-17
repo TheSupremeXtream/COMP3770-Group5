@@ -1,10 +1,8 @@
 using UnityEngine;
 
-/// <summary>
-/// PLACEHOLDER enemy shot: flies in a straight line (no homing), hurts through TestContactDamage on the same object,
-/// disappears on touching the player, after its lifetime, or once it leaves the play area.
-/// Needs a trigger collider and a kinematic Rigidbody.
-/// </summary>
+// PLACEHOLDER enemy shot: flies in a straight line (no homing), hurts through TestContactDamage on the same object,
+// disappears on touching the player, after its lifetime, or once it leaves the play area.
+// Needs a trigger collider and a kinematic Rigidbody.
 public class TestEnemyBullet : MonoBehaviour
 {
     [SerializeField] private float lifetime = 4f;
@@ -14,7 +12,7 @@ public class TestEnemyBullet : MonoBehaviour
     private float age;
 
     public Vector3 Velocity { get; private set; }
-    /// <summary>The attack (single shot or burst) this shot belongs to; a burst counts once against the attack cap.</summary>
+    // The attack (single shot or burst) this shot belongs to; a burst counts once against the attack cap.
     public int AttackId { get; private set; }
 
     public void Launch(Vector3 velocity, int attackId = 0)

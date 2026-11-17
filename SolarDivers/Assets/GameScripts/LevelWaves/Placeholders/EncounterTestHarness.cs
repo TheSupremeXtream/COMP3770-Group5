@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// PLACEHOLDER game-flow glue for the wave test scene (Ronit owns real game management).
-/// Player defeated -> encounter fails, ship stops. R -> full restart of ship, health, shots (player and enemy), effects, sounds and encounter.
-/// </summary>
+// PLACEHOLDER game-flow glue for the wave test scene (Ronit owns real game management).
+// Player defeated -> encounter fails, ship stops. R -> full restart of ship, health, shots (player and enemy), effects, sounds and encounter.
 public class EncounterTestHarness : MonoBehaviour
 {
     [SerializeField] private WaveEncounter encounter;
@@ -30,7 +28,7 @@ public class EncounterTestHarness : MonoBehaviour
     public WaveEncounter Encounter => encounter;
     public TestPlayerHealth PlayerHealth => playerHealth;
 
-    /// <summary>Used by the scene builder and tests.</summary>
+    // Used by the scene builder and tests.
     public void Configure(WaveEncounter newEncounter, TestPlayerHealth health, TestPlayerShip ship, TestFxManager effects = null,
         TestCameraShake shake = null, TestEntryWarnings warnings = null, TestAttackDirector director = null, TestFlightAudio flight = null)
     {
@@ -105,7 +103,7 @@ public class EncounterTestHarness : MonoBehaviour
         }
     }
 
-    /// <summary>Used by the demo scene builder: components switched off on defeat and back on at restart.</summary>
+    // Used by the demo scene builder: components switched off on defeat and back on at restart.
     public void SetDisableOnDefeat(params Behaviour[] behaviours)
     {
         disableOnDefeat = behaviours ?? new Behaviour[0];

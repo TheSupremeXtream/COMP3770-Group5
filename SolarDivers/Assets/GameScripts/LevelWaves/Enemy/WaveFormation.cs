@@ -2,17 +2,17 @@ using UnityEngine;
 
 public enum WaveFormationType
 {
-    Line,
-    VFormation,
-    Mixed
+    Line,           // One horizontal row, centred on the spawn origin.
+    VFormation,     // Leader at the tip, then alternating left/right pairs further back.
+    Mixed           // Staggered pairs on alternating flanks, sweeping in and out across three lanes.
 }
 
-/// <summary>
-/// Pure formation maths. Offsets are in the spawn origin's local space:
-/// +X is the origin's right, -Z is "behind the leader" (the origin's forward is the travel direction).
-/// </summary>
+// Pure formation maths. Offsets are in the spawn origin's local space:
+// +X is the origin's right, -Z is "behind the leader" (the origin's forward is the travel direction).
 public static class WaveFormation
 {
+    // Returns the local-space offset for a given slot in a formation, 
+    // based on the formation type, slot index, total slot count, and spacing between slots.
     public static Vector3 GetOffset(WaveFormationType formation, int index, int count, float spacing)
     {
         switch (formation)

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>Speed class of a test enemy. Each prefab picks one; speed and turn rate are set per prefab.</summary>
+// Speed class of a test enemy. Each prefab picks one; speed and turn rate are set per prefab.
 public enum TestEnemyClass
 {
     Heavy,

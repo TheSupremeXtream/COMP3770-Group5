@@ -1,11 +1,9 @@
 using UnityEngine;
 
-/// <summary>
-/// PLACEHOLDER health so test projectiles can destroy test enemies.
-/// Replace with the team's real damage/health system when it exists.
-/// Presentation: short white flash when hit, explosion effect when destroyed by damage
-/// (enemies that escape or time out are removed silently by WaveEncounter).
-/// </summary>
+// PLACEHOLDER health so test projectiles can destroy test enemies.
+// Replace with the team's real damage/health system when it exists.
+// Presentation: short white flash when hit, explosion effect when destroyed by damage
+// (enemies that escape or time out are removed silently by WaveEncounter).
 public class TestEnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 20;

@@ -41,6 +41,7 @@ public class WaveEncounterTests
         return go;
     }
 
+    // Creates a wave with the given parameters, using the test enemy template.
     private EnemyWave MakeWave(string name, WaveFormationType formation, int count, params GameObject[] prefabs)
     {
         return new EnemyWave

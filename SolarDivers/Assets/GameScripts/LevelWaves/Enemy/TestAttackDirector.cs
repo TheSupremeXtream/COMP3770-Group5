@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// PLACEHOLDER: referee for the test enemies' attacks (not Leonardo's AI). Enemies ask before charging a shot, burst or
-/// rocket; the director enforces the fairness rules of the difficulty profile (attacks and rockets in flight, gaps between
-/// attacks, distance, on-screen window, no attacks while the player recovers or after defeat). Enemy shots and rockets are
-/// parented here so a restart can remove them. Also tells the test movers where the player is and how it is moving
-/// (for limited prediction), and holds the run seed for bounded run-to-run variation.
-/// </summary>
+// PLACEHOLDER: referee for the test enemies' attacks (not Leonardo's AI). Enemies ask before charging a shot, burst or
+// rocket; the director enforces the fairness rules of the difficulty profile (attacks and rockets in flight, gaps between
+// attacks, distance, on-screen window, no attacks while the player recovers or after defeat). Enemy shots and rockets are
+// parented here so a restart can remove them. Also tells the test movers where the player is and how it is moving
+// (for limited prediction), and holds the run seed for bounded run-to-run variation.
 public class TestAttackDirector : MonoBehaviour
 {
     // Set while enabled; cleared on disable, so it never survives leaving Play mode.

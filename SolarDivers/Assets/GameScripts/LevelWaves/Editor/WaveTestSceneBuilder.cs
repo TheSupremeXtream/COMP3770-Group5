@@ -6,13 +6,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-/// <summary>
-/// Rebuilds the wave prototype's placeholder prefabs, meshes, textures, materials, effects and test scene from code,
-/// so the test setup can be recreated if it gets broken. Menu: Solar Divers > Level Waves.
-/// Everything it creates is original (generated here) and lives in LevelWaves folders / the test scene only.
-/// The only external content is the edited CC0 sound clips in Assets/Audio/LevelWaves (see CREDITS.md there);
-/// the builder sets their import options and collects them into TEST_SoundBank.
-/// </summary>
+// Rebuilds the wave prototype's placeholder prefabs, meshes, textures, materials, effects and test scene from code,
+// so the test setup can be recreated if it gets broken. Menu: Solar Divers > Level Waves.
+// Everything it creates is original (generated here) and lives in LevelWaves folders / the test scene only.
+// The only external content is the edited CC0 sound clips in Assets/Audio/LevelWaves (see CREDITS.md there);
+// the builder sets their import options and collects them into TEST_SoundBank.
 public static partial class WaveTestSceneBuilder
 {
     public const string ScenePath = "Assets/Scenes/LevelWaves_Encounter01_Test.unity";
@@ -52,7 +50,7 @@ public static partial class WaveTestSceneBuilder
         Build();
     }
 
-    /// <summary>Batch-mode entry: Unity -batchmode -executeMethod WaveTestSceneBuilder.BuildFromCommandLine -quit</summary>
+    // Batch-mode entry: Unity -batchmode -executeMethod WaveTestSceneBuilder.BuildFromCommandLine -quit
     public static void BuildFromCommandLine()
     {
         Build();
@@ -196,10 +194,8 @@ public static partial class WaveTestSceneBuilder
         public int health;
     }
 
-    /// <summary>
-    /// Imports the edited CC0 clips in Assets/Audio/LevelWaves as uncompressed mono (short, so PCM is small and loops
-    /// stay seamless) and collects them into TEST_SoundBank.
-    /// </summary>
+    // Imports the edited CC0 clips in Assets/Audio/LevelWaves as uncompressed mono (short, so PCM is small and loops
+    // stay seamless) and collects them into TEST_SoundBank.
     static TestSoundBank SoundBank()
     {
         EnsureFolder("Assets/Audio");
@@ -266,13 +262,11 @@ public static partial class WaveTestSceneBuilder
         return found.ToArray();
     }
 
-    /// <summary>
-    /// Per-wave difficulty for this encounter (PLACEHOLDER enemies). Harder through movement and attacks, not health.
-    /// Wave 1 introduces the patterns one per group with single slow shots; wave 2 combines them with a lane shift,
-    /// interceptor pursuit, 3-shot bursts with a little lead and the first rocket per group (the V leader); wave 3 adds
-    /// pressure with all classes, flanks, fighter pursuit, 4-shot bursts with more lead and rockets from the heavies.
-    /// Paths vary a little between runs (bounded, seeded per run).
-    /// </summary>
+    // Per-wave difficulty for this encounter (PLACEHOLDER enemies). Harder through movement and attacks, not health.
+    // Wave 1 introduces the patterns one per group with single slow shots; wave 2 combines them with a lane shift,
+    // interceptor pursuit, 3-shot bursts with a little lead and the first rocket per group (the V leader); wave 3 adds
+    // pressure with all classes, flanks, fighter pursuit, 4-shot bursts with more lead and rockets from the heavies.
+    // Paths vary a little between runs (bounded, seeded per run).
     static TestDifficultyProfile DifficultyProfile()
     {
         string path = PrefabFolder + "/TEST_Difficulty_Encounter01.asset";
