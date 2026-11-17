@@ -7,7 +7,7 @@ using UnityEngine;
 public class CameraRig : MonoBehaviour
 {
     //When in a keyFrame, if this is true then rig will proceed to the next keyFrame.
-    [SerializeField] bool goToNextKF = true;
+    [SerializeField] bool cameraStay = false;
     //Default speed for rig movement. The keyFrames can override this with their own speed.
     [SerializeField] float defaultSpeed = 1.0f;
 
@@ -38,12 +38,20 @@ public class CameraRig : MonoBehaviour
         transform.rotation = currentKeyFrame.rotation;
         startPos = transform.position;
         startRotation = transform.rotation;
+        cameraStay = currentKeyFrame.cameraStay;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (goToNextKF)
+        if (IsCameraAtNextKeyFrame())
+        {
+            currentKeyFrame = nextKeyFrame;
+            cameraStay = currentKeyFrame.cameraStay;
+            return;
+        }
+
+        if (!cameraStay)
         {
             AdvanceToNextKeyFrame(transform.position, Time.deltaTime);
         }
@@ -56,6 +64,7 @@ public class CameraRig : MonoBehaviour
     //Camera advances to the next keyframe in the list. It will stop at the last keyframe.
     void AdvanceToNextKeyFrame(Vector3 position, float dt)
     {
+
         if (nextKeyFrame == null || currentKeyFrame == nextKeyFrame)
         {
             if (keyFrameList.Count > 0)
@@ -85,23 +94,13 @@ public class CameraRig : MonoBehaviour
             elapsed = 0f;
         }
 
-        if (IsCameraAtNextKeyFrame())
-        {
-            currentKeyFrame = nextKeyFrame;
-            return;
-        }
 
-        /*
-        Vector3 newVec = GetDirectionToNextKeyFrame();
-        float amount = defaultSpeed * dt;
+       
+    }
 
+    void AdvanceToNextKeyFrameBezier(Vector3 position, float dt)
+    {
 
-        position.x += newVec.x * amount;
-        position.y += newVec.y * amount;
-        position.z += newVec.z * amount;
-
-        transform.position = position;
-        */
     }
 
     private bool FloatApprox(float a, float b, float tolerance)
@@ -111,6 +110,11 @@ public class CameraRig : MonoBehaviour
 
     private bool IsCameraAtNextKeyFrame()
     {
+        if (currentKeyFrame == nextKeyFrame)
+        {
+            return true;
+        }
+        
         Vector3 camPos = transform.position;
         float tolerance = 0.01f;
         if (FloatApprox(camPos.x, endPos.x, tolerance) && FloatApprox(camPos.y, endPos.y, tolerance) && FloatApprox(camPos.z, endPos.z, tolerance))
@@ -120,19 +124,5 @@ public class CameraRig : MonoBehaviour
         return false;
     }
 
-    
-
-    private Vector3 GetDirectionToNextKeyFrame()
-    {
-        
-        Vector3 retVal = nextKeyFrame.position - currentKeyFrame.position;
-        retVal.Normalize();
-        return retVal;
-    }
-
-    //
-    private void ChangeRotation()
-    {
-
-    }
+   
 }
