@@ -39,6 +39,7 @@ Executes waves, spawns enemies, monitors their status and manages encounter comp
 
 ## Class diagram
 
+```mermaid
 classDiagram
   class C1["WaveEncounter : MonoBehavior"] {
     +State : EncounterState
@@ -119,7 +120,4 @@ classDiagram
     +OnWaveSpawn(info : WaveSpawnInfo)
   }
   C5 <|-- C4 : passed to
-
-
-
-
+```
