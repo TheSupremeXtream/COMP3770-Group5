@@ -79,8 +79,17 @@ classDiagram
     +HasAnyPrefab()
     +Wait(float)
     +OnDrawGizmos()
-    +enum EncounterState { Idle, WaitingForWave, Spawning, Cleanign, Completed, Failed }
   }
+  Class E1["EncounterState"] {
+    <<Enumeration>>
+    +Idle
+    +WaitingForWave
+    +Spawning
+    +Cleaning
+    +Completed
+    +Failed
+  }
+  E1 <|-- C1
   class C2["EnemyWave [Serializable]"] {
     +waveName : string
     +formation : WaveFormationType
@@ -96,13 +105,23 @@ classDiagram
     +clearTimeout : float
     +TotalEnemies : int
     +GetGroupShift(int) : float
-    +enum WaveSpawnStyle { Formation, Stream }
   }
+  class E2["WaveSpawnStyle"] {
+    <<Enumeration>>
+    +Formation
+    +Stream
+  }
+  E2 <|-- C2
   C1 <|-- C2 : configured by
   class C3["WaveFormation [static]"] {
     +GetOffset(...) : Vector3
-    +enum WaveFormationType { Line, VFormation, Mixed }
   }
+  class E3["WaveFormationType] {
+    +Line
+    +VFormation
+    +Mixed
+  }
+  E3 <|-- C3
   C3 <|-- C1 : uses
   class C4["WaveSpawnInfo [struct] ] {
     +waveIndex : int
