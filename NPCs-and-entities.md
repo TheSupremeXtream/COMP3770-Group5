@@ -80,7 +80,8 @@ classDiagram
     +Wait(float)
     +OnDrawGizmos()
   }
-  Class E1["EncounterState"] {
+
+  class C2["EncounterState"] {
     <<Enumeration>>
     +Idle
     +WaitingForWave
@@ -89,8 +90,9 @@ classDiagram
     +Completed
     +Failed
   }
-  E1 <|-- C1
-  class C2["EnemyWave [Serializable]"] {
+  C2 <|-- C1
+
+  class C3["EnemyWave [Serializable]"] {
     +waveName : string
     +formation : WaveFormationType
     +enemyPrefabs : GameObject[]
@@ -106,24 +108,29 @@ classDiagram
     +TotalEnemies : int
     +GetGroupShift(int) : float
   }
-  class E2["WaveSpawnStyle"] {
+
+  class C4["WaveSpawnStyle"] {
     <<Enumeration>>
     +Formation
     +Stream
   }
-  E2 <|-- C2
-  C1 <|-- C2 : configured by
-  class C3["WaveFormation [static]"] {
+  C4 <|-- C3
+  C1 <|-- C3 : configured by
+
+  class C5["WaveFormation [static]"] {
     +GetOffset(...) : Vector3
   }
-  class E3["WaveFormationType] {
+
+  class C6["WaveFormationType] {
+    <<Enumeration>>
     +Line
     +VFormation
     +Mixed
   }
-  E3 <|-- C3
-  C3 <|-- C1 : uses
-  class C4["WaveSpawnInfo [struct] ] {
+  C6 <|-- C5
+  C5 <|-- C1 : uses
+
+  class C7["WaveSpawnInfo [struct] ] {
     +waveIndex : int
     +groupIndex : int
     +slotIndex : int
@@ -133,10 +140,11 @@ classDiagram
     +groupMinX : float
     +groupMaxX : float
   }
-  C4 <|-- C1
-  C4 <|-- C3
-  class C5["IWaveSpawnReceiver (interface)"] {
+  C7 <|-- C1
+  C7 <|-- C5
+
+  class C8["IWaveSpawnReceiver (interface)"] {
     +OnWaveSpawn(info : WaveSpawnInfo)
   }
-  C5 <|-- C4 : passed to
+  C8 <|-- C7 : passed to
 ```
