@@ -92,7 +92,7 @@ classDiagram
   }
   C2 <|-- C1
 
-  class C3["EnemyWave [Serializable]"] {
+  class C3["EnemyWave (Serializable)"] {
     +waveName : string
     +formation : WaveFormationType
     +enemyPrefabs : GameObject[]
@@ -117,7 +117,7 @@ classDiagram
   C4 <|-- C3
   C1 <|-- C3 : configured by
 
-  class C5["WaveFormation [static]"] {
+  class C5["WaveFormation (static)"] {
     +GetOffset(...) : Vector3
   }
 
@@ -130,7 +130,7 @@ classDiagram
   C6 <|-- C5
   C5 <|-- C1 : uses
 
-  class C7["WaveSpawnInfo [struct] "] {
+  class C7["WaveSpawnInfo (struct)"] {
     +waveIndex : int
     +groupIndex : int
     +slotIndex : int
