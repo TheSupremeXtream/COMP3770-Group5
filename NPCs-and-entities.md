@@ -130,7 +130,7 @@ classDiagram
   C6 <|-- C5
   C5 <|-- C1 : uses
 
-  class C7["WaveSpawnInfo [struct] ] {
+  class C7["WaveSpawnInfo [struct] "] {
     +waveIndex : int
     +groupIndex : int
     +slotIndex : int
