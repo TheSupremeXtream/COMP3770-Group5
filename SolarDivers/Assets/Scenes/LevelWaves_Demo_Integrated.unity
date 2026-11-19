@@ -6478,6 +6478,7 @@ MonoBehaviour:
   objective: Survive the Martioness' patrols.
   clearedTitle: ROUTE CLEAR
   clearedMessage: '<color=#B8C6D8>Next: the frigate (boss encounter not built yet)</color>'
+  playerObject: {fileID: 6555808402691593192}
 --- !u!4 &1664254453
 Transform:
   m_ObjectHideFlags: 0

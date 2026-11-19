@@ -350,6 +350,7 @@ public class EncounterDebugHUD : MonoBehaviour
 
         weaponPanel.SetActive(true);
         currentWeapon = ship.GetSelectedWeapon();
+
         int ammo = ship.MissileAmmo;
         if (missileAmmoText != null)
         {
