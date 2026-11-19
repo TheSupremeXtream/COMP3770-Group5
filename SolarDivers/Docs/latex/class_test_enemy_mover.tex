@@ -1,0 +1,146 @@
+\doxysection{Test\+Enemy\+Mover Class Reference}
+\hypertarget{class_test_enemy_mover}{}\label{class_test_enemy_mover}\index{TestEnemyMover@{TestEnemyMover}}
+
+
+PLACEHOLDER movement for wave testing only. Leonardo\textquotesingle{}s enemy AI replaces this; \doxylink{class_wave_encounter}{Wave\+Encounter} does not depend on it. The ship steers along a short route of waypoints on the gameplay plane with a capped turn rate and turn acceleration, so direction never changes instantly. Every route ends with a straight descent: below Straight Below Z the ship stops turning, so nothing turns near the player. Reactions are limited: a one-\/off shift towards the player\textquotesingle{}s lane, or (for some classes) a flank pass beside the player\textquotesingle{}s last observed position that tracks for at most Tracking Seconds. Reactions are shrunk if they would close the last escape lane (see Largest\+Gap). Per-\/wave settings come from the \doxylink{class_test_difficulty_profile}{Test\+Difficulty\+Profile} entry for the enemy\textquotesingle{}s wave. All positions are in the parent\textquotesingle{}s space (the encounter\textquotesingle{}s Spawn Parent), so if that parent rides a moving rail rig the routes, lanes and safety heights move with it. With no parent this is plain world space.  
+
+
+Inheritance diagram for Test\+Enemy\+Mover:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_enemy_mover}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{class_test_enemy_mover_afa3b486d52c71d453413d52e209978c5}{On\+Wave\+Spawn}} (\doxymbox{\hyperlink{struct_wave_spawn_info}{Wave\+Spawn\+Info}} info)
+\item 
+\Hypertarget{class_test_enemy_mover_a94623c3ece16260e1f1469ad9a67e81b}\label{class_test_enemy_mover_a94623c3ece16260e1f1469ad9a67e81b} 
+void {\bfseries Apply\+Difficulty} (\doxymbox{\hyperlink{class_test_wave_difficulty}{Test\+Wave\+Difficulty}} wave)
+\begin{DoxyCompactList}\small\item\em Speed, turn rate, widths and reactions for this wave. Used by On\+Wave\+Spawn and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_mover_ae146375767389bb5bcc8cdbfcb4cdf3f}\label{class_test_enemy_mover_ae146375767389bb5bcc8cdbfcb4cdf3f} 
+void {\bfseries Plan\+Route} (Test\+Move\+Pattern chosen, float x0, float group\+Min, float group\+Max)
+\begin{DoxyCompactList}\small\item\em Builds the waypoint route for a pattern from x0 (this ship), keeping the whole group inside Lane Limit X. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_mover_a6f1ff2e3cac2e8eca707feaa5bc4d48f}\label{class_test_enemy_mover_a6f1ff2e3cac2e8eca707feaa5bc4d48f} 
+void {\bfseries Step} (float dt)
+\begin{DoxyCompactList}\small\item\em Advances the ship by dt seconds (in fixed sub-\/steps, so the path is the same at any frame rate). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_enemy_mover_aca06eb5b6351e05bc45624e7326ec7b3}\label{class_test_enemy_mover_aca06eb5b6351e05bc45624e7326ec7b3} 
+static Test\+Enemy\+Class\+Mask {\bfseries To\+Mask} (Test\+Enemy\+Class c)
+\item 
+\Hypertarget{class_test_enemy_mover_a38f355e73d1593806a7820b3398eccd6}\label{class_test_enemy_mover_a38f355e73d1593806a7820b3398eccd6} 
+static float {\bfseries Largest\+Gap} (List$<$ float $>$ lanes, float half\+Width, float minX, float maxX)
+\begin{DoxyCompactList}\small\item\em Widest free stretch of \+[minX, maxX] not covered by any lane +/\+-\/ half\+Width. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_mover_a771bdc34fee7ac537498874782d25147}\label{class_test_enemy_mover_a771bdc34fee7ac537498874782d25147} 
+static float {\bfseries Largest\+Gap} (List$<$ Vector2 $>$ lanes, float minX, float maxX)
+\begin{DoxyCompactList}\small\item\em Widest free stretch of \+[minX, maxX] not covered by any ship; each entry is (x, half width). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_enemy_mover_a4f780bfcf4c0844e16b0d340187ebaf4}\label{class_test_enemy_mover_a4f780bfcf4c0844e16b0d340187ebaf4} 
+static IRead\+Only\+List$<$ \doxymbox{\hyperlink{class_test_enemy_mover}{Test\+Enemy\+Mover}} $>$ {\bfseries Active}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_ae742261cb67dec5e86802e92564e3cd0}\label{class_test_enemy_mover_ae742261cb67dec5e86802e92564e3cd0} 
+Test\+Enemy\+Class {\bfseries Class}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a6ef54763cb908e28e5cae1daa1b8a308}\label{class_test_enemy_mover_a6ef54763cb908e28e5cae1daa1b8a308} 
+Test\+Move\+Pattern {\bfseries Pattern}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a6286100cb7a62188f7e8856097cfa6da}\label{class_test_enemy_mover_a6286100cb7a62188f7e8856097cfa6da} 
+Test\+Move\+Pattern {\bfseries Active\+Pattern}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_aa7acdb98c6802df7e551fa33b9bf50ff}\label{class_test_enemy_mover_aa7acdb98c6802df7e551fa33b9bf50ff} 
+float {\bfseries Speed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a7c9d58cb0a2b0b099309b98b3f9f6cb4}\label{class_test_enemy_mover_a7c9d58cb0a2b0b099309b98b3f9f6cb4} 
+float {\bfseries Turn\+Rate}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_acd19a252ee194460998890e35e3fc15d}\label{class_test_enemy_mover_acd19a252ee194460998890e35e3fc15d} 
+float {\bfseries Turn\+Acceleration}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a4252a62f5e95cba712679e605b5659b2}\label{class_test_enemy_mover_a4252a62f5e95cba712679e605b5659b2} 
+float {\bfseries Straight\+BelowZ}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_ac325be68b9151eea4221f158aa810fbe}\label{class_test_enemy_mover_ac325be68b9151eea4221f158aa810fbe} 
+float {\bfseries Lane\+LimitX}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a55d5c1498c375ed485a14c70068f02e3}\label{class_test_enemy_mover_a55d5c1498c375ed485a14c70068f02e3} 
+float {\bfseries Max\+Lifetime}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_adc9b0d9fc0dd9b996c52097772e0ec1d}\label{class_test_enemy_mover_adc9b0d9fc0dd9b996c52097772e0ec1d} 
+float {\bfseries Half\+Width}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_aa6ad544f0baee33b5b0bf7d623f6834c}\label{class_test_enemy_mover_aa6ad544f0baee33b5b0bf7d623f6834c} 
+float {\bfseries Side}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a97e7b37ac9e2f58a7fcd2e8ab29472fd}\label{class_test_enemy_mover_a97e7b37ac9e2f58a7fcd2e8ab29472fd} 
+float {\bfseries Travelled}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_ab2faa1b5333bf9d868ae07f3ed25d437}\label{class_test_enemy_mover_ab2faa1b5333bf9d868ae07f3ed25d437} 
+Vector3 {\bfseries Velocity}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Velocity relative to the parent, as a world-\/space direction (excludes the parent\textquotesingle{}s own motion). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_mover_a8b34b0fea306fa04905186666631976e}\label{class_test_enemy_mover_a8b34b0fea306fa04905186666631976e} 
+Vector2 {\bfseries Heading}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a393240dad2d65f6bff7fa62fc3f49456}\label{class_test_enemy_mover_a393240dad2d65f6bff7fa62fc3f49456} 
+float {\bfseries Angular\+Velocity}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a9caa0d7eb615a03e975576794933b4ae}\label{class_test_enemy_mover_a9caa0d7eb615a03e975576794933b4ae} 
+float {\bfseries LaneX}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em x of the final straight descent (where the ship will cross the player\textquotesingle{}s zone). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_mover_a65596d9fd8088529b8aaa426a023802d}\label{class_test_enemy_mover_a65596d9fd8088529b8aaa426a023802d} 
+float {\bfseries Seek\+Shift}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Sideways change of the descent lane made by a reaction (lane shift or flank). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_mover_a61e6411ccaab7b9c289fccf192386d58}\label{class_test_enemy_mover_a61e6411ccaab7b9c289fccf192386d58} 
+bool {\bfseries Seek\+Read}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a018e0ad513993b7f1cc20b148bcf8d06}\label{class_test_enemy_mover_a018e0ad513993b7f1cc20b148bcf8d06} 
+bool {\bfseries Is\+Flanking}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a77176d4f9d8113149ab0c79be7a9f052}\label{class_test_enemy_mover_a77176d4f9d8113149ab0c79be7a9f052} 
+bool {\bfseries Is\+Tracking}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a169001b17e7c686c17f278dd3f6c3f83}\label{class_test_enemy_mover_a169001b17e7c686c17f278dd3f6c3f83} 
+bool {\bfseries Is\+Pursuing}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_adc8e8244959c5432f80c01c9f466ae36}\label{class_test_enemy_mover_adc8e8244959c5432f80c01c9f466ae36} 
+float {\bfseries Width\+Multiplier}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_aa7e3d19c87a29bf96f00c0abfab55e13}\label{class_test_enemy_mover_aa7e3d19c87a29bf96f00c0abfab55e13} 
+float {\bfseries Dive\+Offset}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_ab7ae1a80476024db9404a6fcbafabe86}\label{class_test_enemy_mover_ab7ae1a80476024db9404a6fcbafabe86} 
+bool {\bfseries Ever\+Retreated}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_acb56fa0f6a801b24278e55e67a223dca}\label{class_test_enemy_mover_acb56fa0f6a801b24278e55e67a223dca} 
+IRead\+Only\+List$<$ Vector2 $>$ {\bfseries Route}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_mover_a9c04102a5c6a96d729695ea6c71159b8}\label{class_test_enemy_mover_a9c04102a5c6a96d729695ea6c71159b8} 
+int {\bfseries Waypoint\+Index}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER movement for wave testing only. Leonardo\textquotesingle{}s enemy AI replaces this; \doxylink{class_wave_encounter}{Wave\+Encounter} does not depend on it. The ship steers along a short route of waypoints on the gameplay plane with a capped turn rate and turn acceleration, so direction never changes instantly. Every route ends with a straight descent: below Straight Below Z the ship stops turning, so nothing turns near the player. Reactions are limited: a one-\/off shift towards the player\textquotesingle{}s lane, or (for some classes) a flank pass beside the player\textquotesingle{}s last observed position that tracks for at most Tracking Seconds. Reactions are shrunk if they would close the last escape lane (see Largest\+Gap). Per-\/wave settings come from the \doxylink{class_test_difficulty_profile}{Test\+Difficulty\+Profile} entry for the enemy\textquotesingle{}s wave. All positions are in the parent\textquotesingle{}s space (the encounter\textquotesingle{}s Spawn Parent), so if that parent rides a moving rail rig the routes, lanes and safety heights move with it. With no parent this is plain world space. 
+
+\label{class_test_enemy_mover_doc-func-members}
+\Hypertarget{class_test_enemy_mover_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_test_enemy_mover_afa3b486d52c71d453413d52e209978c5}\index{TestEnemyMover@{TestEnemyMover}!OnWaveSpawn@{OnWaveSpawn}}
+\index{OnWaveSpawn@{OnWaveSpawn}!TestEnemyMover@{TestEnemyMover}}
+\doxysubsubsection{\texorpdfstring{OnWaveSpawn()}{OnWaveSpawn()}}
+{\footnotesize\ttfamily \label{class_test_enemy_mover_afa3b486d52c71d453413d52e209978c5} 
+void Test\+Enemy\+Mover.\+On\+Wave\+Spawn (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_wave_spawn_info}{Wave\+Spawn\+Info}}}]{info}{}\end{DoxyParamCaption})}
+
+
+
+Implements \doxymbox{\hyperlink{interface_i_wave_spawn_receiver}{IWave\+Spawn\+Receiver}}.
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Enemy\+Mover.\+cs\end{DoxyCompactItemize}

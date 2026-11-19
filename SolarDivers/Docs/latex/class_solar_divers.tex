@@ -1,0 +1,228 @@
+\doxysection{Solar\+Divers Class Reference}
+\hypertarget{class_solar_divers}{}\label{class_solar_divers}\index{SolarDivers@{SolarDivers}}
+
+
+Provides programmatic access to Input\+Action\+Asset, Input\+Action\+Map, Input\+Action and Input\+Control\+Scheme instances defined in asset "{}\+Assets/\+\+Solar\+Divers.\+inputactions"{}.  
+
+
+Inheritance diagram for Solar\+Divers:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_solar_divers}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_solar_divers_1_1_player_actions}{Player\+Actions}}
+\begin{DoxyCompactList}\small\item\em Provides access to input actions defined in input action map "{}\+Player"{}. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{struct_solar_divers_1_1_u_i_actions}{UIActions}}
+\begin{DoxyCompactList}\small\item\em Provides access to input actions defined in input action map "{}\+UI"{}. \end{DoxyCompactList}\item 
+interface \doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}}
+\begin{DoxyCompactList}\small\item\em Interface to implement callback methods for all input action callbacks associated with input actions defined by "{}\+Player"{} which allows adding and removing callbacks. \end{DoxyCompactList}\item 
+interface \doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}}
+\begin{DoxyCompactList}\small\item\em Interface to implement callback methods for all input action callbacks associated with input actions defined by "{}\+UI"{} which allows adding and removing callbacks. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_solar_divers_ab49988d9d132abb32154d7b1031c7a59}\label{class_solar_divers_ab49988d9d132abb32154d7b1031c7a59} 
+{\bfseries Solar\+Divers} ()
+\begin{DoxyCompactList}\small\item\em Constructs a new instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_solar_divers_ad5080361a50236a1b129f9933057d48d}\label{class_solar_divers_ad5080361a50236a1b129f9933057d48d} 
+void {\bfseries Dispose} ()
+\begin{DoxyCompactList}\small\item\em Destroys this asset and all associated Input\+Action instances. \end{DoxyCompactList}\item 
+\Hypertarget{class_solar_divers_ab5f7e70dc7036c5171d7c99ee778e0ff}\label{class_solar_divers_ab5f7e70dc7036c5171d7c99ee778e0ff} 
+bool {\bfseries Contains} (Input\+Action action)
+\item 
+\Hypertarget{class_solar_divers_a94bff6f6477a6ae86213d9c11554f4ac}\label{class_solar_divers_a94bff6f6477a6ae86213d9c11554f4ac} 
+IEnumerator$<$ Input\+Action $>$ {\bfseries Get\+Enumerator} ()
+\item 
+\Hypertarget{class_solar_divers_a7b0ee07ce96776b00c4fba7029505454}\label{class_solar_divers_a7b0ee07ce96776b00c4fba7029505454} 
+void {\bfseries Enable} ()
+\item 
+\Hypertarget{class_solar_divers_ae6645faaca4b7cc466e3208273ee8595}\label{class_solar_divers_ae6645faaca4b7cc466e3208273ee8595} 
+void {\bfseries Disable} ()
+\item 
+\Hypertarget{class_solar_divers_a2d88d84ce3a4f55d1ed0850b9ca7af4c}\label{class_solar_divers_a2d88d84ce3a4f55d1ed0850b9ca7af4c} 
+Input\+Action {\bfseries Find\+Action} (string action\+Name\+Or\+Id, bool throw\+If\+Not\+Found=false)
+\item 
+\Hypertarget{class_solar_divers_abf203548bb92044c6bd2d39605a0000b}\label{class_solar_divers_abf203548bb92044c6bd2d39605a0000b} 
+int {\bfseries Find\+Binding} (Input\+Binding binding\+Mask, out Input\+Action action)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_solar_divers_a97beed1bac66b04503fc2467a781043f}\label{class_solar_divers_a97beed1bac66b04503fc2467a781043f} 
+Input\+Action\+Asset {\bfseries asset}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying asset instance. \end{DoxyCompactList}\item 
+\Hypertarget{class_solar_divers_ac34add29f2ab32d4dc87b0404c7845fd}\label{class_solar_divers_ac34add29f2ab32d4dc87b0404c7845fd} 
+Input\+Binding? {\bfseries binding\+Mask}\hspace{0.3cm}{\ttfamily  \+[get, set]}
+\item 
+\Hypertarget{class_solar_divers_a5cbb0ca4b1c1010186348870abb9164e}\label{class_solar_divers_a5cbb0ca4b1c1010186348870abb9164e} 
+Read\+Only\+Array$<$ Input\+Device $>$? {\bfseries devices}\hspace{0.3cm}{\ttfamily  \+[get, set]}
+\item 
+\Hypertarget{class_solar_divers_ae8e94e887e39ca29f79254d9594aa5da}\label{class_solar_divers_ae8e94e887e39ca29f79254d9594aa5da} 
+Read\+Only\+Array$<$ Input\+Control\+Scheme $>$ {\bfseries control\+Schemes}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_solar_divers_ad52631d9746ba0bc03188393ea197c18}\label{class_solar_divers_ad52631d9746ba0bc03188393ea197c18} 
+IEnumerable$<$ Input\+Binding $>$ {\bfseries bindings}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_solar_divers_a041f6265eedf7b90c5ac44c3cc3ae346}\label{class_solar_divers_a041f6265eedf7b90c5ac44c3cc3ae346} 
+\doxymbox{\hyperlink{struct_solar_divers_1_1_player_actions}{Player\+Actions}} {\bfseries Player}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides a new Player\+Actions instance referencing this action map. \end{DoxyCompactList}\item 
+\Hypertarget{class_solar_divers_a30bc124c297f514f919e3d6fdede71e5}\label{class_solar_divers_a30bc124c297f514f919e3d6fdede71e5} 
+\doxymbox{\hyperlink{struct_solar_divers_1_1_u_i_actions}{UIActions}} {\bfseries UI}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides a new UIActions instance referencing this action map. \end{DoxyCompactList}\item 
+Input\+Control\+Scheme \doxymbox{\hyperlink{class_solar_divers_a5a728c1c4b0155a75ef6721c84e68a56}{Keyboard\+Mouse\+Scheme}}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the input control scheme. \end{DoxyCompactList}\item 
+Input\+Control\+Scheme \doxymbox{\hyperlink{class_solar_divers_a9a55bd4378578aaaccfd7b24c1da9aeb}{Gamepad\+Scheme}}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the input control scheme. \end{DoxyCompactList}\item 
+Input\+Control\+Scheme \doxymbox{\hyperlink{class_solar_divers_ad1109674c60fda05d05ff89097613cfd}{Touch\+Scheme}}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the input control scheme. \end{DoxyCompactList}\item 
+Input\+Control\+Scheme \doxymbox{\hyperlink{class_solar_divers_a2779dde0c7484945e62e83e5ad003a08}{Joystick\+Scheme}}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the input control scheme. \end{DoxyCompactList}\item 
+Input\+Control\+Scheme \doxymbox{\hyperlink{class_solar_divers_aa99b4bcee189d0e298072fafcb9c1ef4}{XRScheme}}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the input control scheme. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides programmatic access to Input\+Action\+Asset, Input\+Action\+Map, Input\+Action and Input\+Control\+Scheme instances defined in asset "{}\+Assets/\+\+Solar\+Divers.\+inputactions"{}. 
+
+This class is source generated and any manual edits will be discarded if the associated asset is reimported or modified. 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{using\ namespace\ }UnityEngine;}
+\DoxyCodeLine{\textcolor{keyword}{using\ }UnityEngine.InputSystem;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Example\ of\ using\ an\ InputActionMap\ named\ "{}Player"{}\ from\ a\ UnityEngine.MonoBehaviour\ implementing\ callback\ interface.}}
+\DoxyCodeLine{\textcolor{keyword}{public}\ \textcolor{keyword}{class\ }Example\ :\ MonoBehaviour,\ MyActions.\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayerActions}}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{private}\ MyActions\_Actions\ m\_Actions;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Source\ code\ representation\ of\ asset.}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{private}\ MyActions\_Actions.PlayerActions\ m\_Player;\ \ \ \ \ \textcolor{comment}{//\ Source\ code\ representation\ of\ action\ map.}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ Awake()}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ m\_Actions\ =\ \textcolor{keyword}{new}\ MyActions\_Actions();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Create\ asset\ object.}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ m\_Player\ =\ m\_Actions.Player;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Extract\ action\ map\ object.}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ m\_Player.AddCallbacks(\textcolor{keyword}{this});\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Register\ callback\ interface\ IPlayerActions.}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ OnDestroy()}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ m\_Actions.Dispose();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Destroy\ asset\ object.}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ OnEnable()}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ m\_Player.Enable();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Enable\ all\ actions\ within\ map.}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}\ OnDisable()}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ m\_Player.Disable();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Disable\ all\ actions\ within\ map.}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#region\ Interface\ implementation\ of\ MyActions.IPlayerActions}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Invoked\ when\ "{}Move"{}\ action\ is\ either\ started,\ performed\ or\ canceled.}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{public}\ \textcolor{keywordtype}{void}\ OnMove(InputAction.CallbackContext\ context)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ Debug.Log(\$\textcolor{stringliteral}{"{}OnMove:\ \{context.ReadValue<Vector2>()\}"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Invoked\ when\ "{}Attack"{}\ action\ is\ either\ started,\ performed\ or\ canceled.}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{public}\ \textcolor{keywordtype}{void}\ OnAttack(InputAction.CallbackContext\ context)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ Debug.Log(\$\textcolor{stringliteral}{"{}OnAttack:\ \{context.ReadValue<float>()\}"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#endregion}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+
+\label{class_solar_divers_doc-property-members}
+\Hypertarget{class_solar_divers_doc-property-members}
+\doxysubsection{Property Documentation}
+\Hypertarget{class_solar_divers_a9a55bd4378578aaaccfd7b24c1da9aeb}\index{SolarDivers@{SolarDivers}!GamepadScheme@{GamepadScheme}}
+\index{GamepadScheme@{GamepadScheme}!SolarDivers@{SolarDivers}}
+\doxysubsubsection{\texorpdfstring{GamepadScheme}{GamepadScheme}}
+{\footnotesize\ttfamily \label{class_solar_divers_a9a55bd4378578aaaccfd7b24c1da9aeb} 
+Input\+Control\+Scheme Solar\+Divers.\+Gamepad\+Scheme\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the input control scheme. 
+
+\begin{DoxySeeAlso}{See also}
+Unity\+Engine.\+Input\+System.\+Input\+Control\+Scheme
+
+
+\end{DoxySeeAlso}
+\Hypertarget{class_solar_divers_a2779dde0c7484945e62e83e5ad003a08}\index{SolarDivers@{SolarDivers}!JoystickScheme@{JoystickScheme}}
+\index{JoystickScheme@{JoystickScheme}!SolarDivers@{SolarDivers}}
+\doxysubsubsection{\texorpdfstring{JoystickScheme}{JoystickScheme}}
+{\footnotesize\ttfamily \label{class_solar_divers_a2779dde0c7484945e62e83e5ad003a08} 
+Input\+Control\+Scheme Solar\+Divers.\+Joystick\+Scheme\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the input control scheme. 
+
+\begin{DoxySeeAlso}{See also}
+Unity\+Engine.\+Input\+System.\+Input\+Control\+Scheme
+
+
+\end{DoxySeeAlso}
+\Hypertarget{class_solar_divers_a5a728c1c4b0155a75ef6721c84e68a56}\index{SolarDivers@{SolarDivers}!KeyboardMouseScheme@{KeyboardMouseScheme}}
+\index{KeyboardMouseScheme@{KeyboardMouseScheme}!SolarDivers@{SolarDivers}}
+\doxysubsubsection{\texorpdfstring{KeyboardMouseScheme}{KeyboardMouseScheme}}
+{\footnotesize\ttfamily \label{class_solar_divers_a5a728c1c4b0155a75ef6721c84e68a56} 
+Input\+Control\+Scheme Solar\+Divers.\+Keyboard\+Mouse\+Scheme\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the input control scheme. 
+
+\begin{DoxySeeAlso}{See also}
+Unity\+Engine.\+Input\+System.\+Input\+Control\+Scheme
+
+
+\end{DoxySeeAlso}
+\Hypertarget{class_solar_divers_ad1109674c60fda05d05ff89097613cfd}\index{SolarDivers@{SolarDivers}!TouchScheme@{TouchScheme}}
+\index{TouchScheme@{TouchScheme}!SolarDivers@{SolarDivers}}
+\doxysubsubsection{\texorpdfstring{TouchScheme}{TouchScheme}}
+{\footnotesize\ttfamily \label{class_solar_divers_ad1109674c60fda05d05ff89097613cfd} 
+Input\+Control\+Scheme Solar\+Divers.\+Touch\+Scheme\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the input control scheme. 
+
+\begin{DoxySeeAlso}{See also}
+Unity\+Engine.\+Input\+System.\+Input\+Control\+Scheme
+
+
+\end{DoxySeeAlso}
+\Hypertarget{class_solar_divers_aa99b4bcee189d0e298072fafcb9c1ef4}\index{SolarDivers@{SolarDivers}!XRScheme@{XRScheme}}
+\index{XRScheme@{XRScheme}!SolarDivers@{SolarDivers}}
+\doxysubsubsection{\texorpdfstring{XRScheme}{XRScheme}}
+{\footnotesize\ttfamily \label{class_solar_divers_aa99b4bcee189d0e298072fafcb9c1ef4} 
+Input\+Control\+Scheme Solar\+Divers.\+XRScheme\hspace{0.3cm}{\ttfamily [get]}}
+
+
+
+Provides access to the input control scheme. 
+
+\begin{DoxySeeAlso}{See also}
+Unity\+Engine.\+Input\+System.\+Input\+Control\+Scheme
+
+
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/Solar\+Divers.\+cs\end{DoxyCompactItemize}

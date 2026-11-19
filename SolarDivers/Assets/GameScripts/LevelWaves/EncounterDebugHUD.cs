@@ -64,6 +64,9 @@ public class EncounterDebugHUD : MonoBehaviour
     private Text resultTitle;
     private Text resultBody;
     private RectTransform resultRect;
+    private GameObject weaponPanel;
+    private Text[] weaponLabels = new Text[3];
+    private int lastHighlightedWeapon = -1;
     private RawImage edgeFlash;
     private Texture2D edgeTexture;
 
@@ -82,6 +85,18 @@ public class EncounterDebugHUD : MonoBehaviour
     public float DamageFlashAlpha => edgeFlash != null ? edgeFlash.color.a : 0f;
     public float CurrentScale => scaler != null ? scaler.scaleFactor : 1f;
     public Canvas HudCanvas => canvas;
+
+    [SerializeField] GameObject playerObject;
+    private int currentWeapon;
+    enum weapons
+    {
+        laser,
+        plasma,
+        missiles
+    }
+
+    private Text missileAmmoText;
+    private int lastMissileAmmo = -1;
 
     public void SetDebugVisible(bool visible)
     {
@@ -163,6 +178,13 @@ public class EncounterDebugHUD : MonoBehaviour
         RefreshHull();
         RefreshWave();
         RefreshResult();
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) currentWeapon = (int)weapons.laser;
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) currentWeapon = (int)weapons.plasma;
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) currentWeapon = (int)weapons.missiles;
+        }
+        RefreshWeapon();
         if (showDebugCounters)
         {
             debugText.text =
@@ -293,6 +315,83 @@ public class EncounterDebugHUD : MonoBehaviour
         resultRect.sizeDelta = new Vector2(820f, 132f + resultBody.preferredHeight + 40f);
     }
 
+    private TestPlayerShip cachedShip;
+    private GameObject lastShipObject;
+
+    private TestPlayerShip GetPlayerShip()
+    {
+        if (playerObject != lastShipObject)
+        {
+            lastShipObject = playerObject;
+            cachedShip = playerObject != null ? playerObject.GetComponentInChildren<TestPlayerShip>(true) : null;
+        }
+        return cachedShip;
+    }
+
+    private void RefreshWeapon()
+    {
+        if (weaponPanel == null || weaponLabels[0] == null)
+        {
+            return;
+        }
+
+        TestPlayerShip ship = GetPlayerShip();
+        if (playerObject == null || ship == null)
+        {
+            weaponPanel.SetActive(false);
+            if (missileAmmoText != null)
+            {
+                missileAmmoText.transform.parent.gameObject.SetActive(false);
+            }
+            lastHighlightedWeapon = -1;
+            lastMissileAmmo = -1;
+            return;
+        }
+
+        weaponPanel.SetActive(true);
+        currentWeapon = ship.GetSelectedWeapon();
+        int ammo = ship.MissileAmmo;
+        if (missileAmmoText != null)
+        {
+            GameObject ammoBox = missileAmmoText.transform.parent.gameObject;
+            ammoBox.SetActive(true);
+            
+            if (ammo != lastMissileAmmo)
+            {
+                lastMissileAmmo = ammo;
+                missileAmmoText.text = ammo <= 0
+                    ? $"<color=#FF6657>Missiles:{ammo}</color>"
+                    : $"<color=#FFC74D>Missiles:{ammo}</color>";
+            }
+        }
+
+        if (currentWeapon == lastHighlightedWeapon)
+        {
+            return;
+        }
+
+        lastHighlightedWeapon = currentWeapon;
+        string[] weaponNames = { "Lasers", "Plasma", "Missiles" };
+        for (int i = 0; i < weaponLabels.Length; i++)
+        {
+            weaponLabels[i].text = FormatWeaponSlot(weaponNames[i], i + 1, i == currentWeapon);
+        }
+
+        
+
+        if (ammo != lastMissileAmmo)
+        {
+            lastMissileAmmo = ammo;
+            missileAmmoText.text = ammo <= 0
+                ? $"<color=#FF6657>Missiles:{ammo}</color>"
+                : $"<color=#FFC74D>Missiles:{ammo}</color>";
+            if (missileAmmoText.transform.parent is RectTransform rt)
+            {
+                rt.sizeDelta = new Vector2(missileAmmoText.preferredWidth + 32f, 42f);
+            }
+        }
+    }
+
     private static string ShortName(string waveName)
     {
         // "Wave 2 - V Formation" -> "V Formation"
@@ -397,6 +496,58 @@ public class EncounterDebugHUD : MonoBehaviour
         debugText.lineSpacing = 1.05f;
         debugPanel = dbg.gameObject;
 
+        // Bottom-right weapon slots (Lasers / Plasma / Missiles + 1 / 2 / 3).
+        string[] weaponNames = { "Lasers", "Plasma", "Missiles" };
+        float slotWidth = 140f;
+        float boxWidth = slotWidth * weaponNames.Length + 32f;
+
+        RectTransform wpn = Panel(
+            root,
+            "WeaponPanel",
+            new Vector2(1f, 0f),
+            new Vector2(-32f, 24f),
+            new Vector2(boxWidth, 84f),
+            PanelColour);
+
+        for (int i = 0; i < weaponNames.Length; i++)
+        {
+            float x = 16f + i * slotWidth;
+            weaponLabels[i] = Label(
+                wpn,
+                FormatWeaponSlot(weaponNames[i], i + 1, i == currentWeapon),
+                24,
+                TextAnchor.MiddleCenter,
+                TextColour,
+                new Vector2(x, -8f),
+                new Vector2(slotWidth, 68f),
+                centred: false);
+        }
+
+        weaponPanel = wpn.gameObject;
+        lastHighlightedWeapon = currentWeapon;
+
+        
+        // Missile ammo counter on the right above the weapon selector, sized to its text.
+        RectTransform ammoPanel = Panel(
+            root,
+            "MissileAmmoPanel",
+            new Vector2(1f, 0f),
+            new Vector2(-32f, 116f),
+            new Vector2(240f, 42f),
+            PanelColour);
+        missileAmmoText = Label(
+            ammoPanel,
+            "Missiles:0",
+            24,
+            TextAnchor.MiddleRight,
+            TextColour,
+            new Vector2(16f, -5f),
+            new Vector2(400f, 32f),
+            centred: false,
+            bold: true);
+        ammoPanel.sizeDelta = new Vector2(missileAmmoText.preferredWidth + 32f, 42f);
+        ammoPanel.gameObject.SetActive(false);
+
         // Centre results.
         RectTransform result = Panel(root, "ResultPanel", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(820f, 440f), new Color(0.015f, 0.025f, 0.06f, 0.9f));
         resultTitle = Label(result, "", 56, TextAnchor.MiddleCenter, Good, new Vector2(0f, -30f), new Vector2(780f, 80f), true, bold: true);
@@ -480,5 +631,16 @@ public class EncounterDebugHUD : MonoBehaviour
         tex.SetPixels32(pixels);
         tex.Apply(false, true);
         return tex;
+    }
+
+    private static string FormatWeaponSlot(string name, int slotNumber, bool selected)
+    {
+        string title = selected
+            ? $"<color=#FFC74D><b>{name}</b></color>"
+            : $"<color=#B8C6D8>{name}</color>";
+        string key = selected
+            ? $"<color=#FFFFFF><b>{slotNumber}</b></color>"
+            : $"<color=#727E8C>{slotNumber}</color>";
+        return $"{title}\n{key}";
     }
 }

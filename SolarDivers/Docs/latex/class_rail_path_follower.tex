@@ -1,0 +1,45 @@
+\doxysection{Rail\+Path\+Follower Class Reference}
+\hypertarget{class_rail_path_follower}{}\label{class_rail_path_follower}\index{RailPathFollower@{RailPathFollower}}
+
+
+Integrated demo: makes the Rail\+Rig (camera, player, boundaries, spawns, bounds space) follow a path object that Abel\textquotesingle{}s \doxylink{class_level_camera}{Level\+Camera} moves along its Key\+Frames. His component is used as-\/is; this adapter only adds what the encounter needs on top of it:  
+
+
+Inheritance diagram for Rail\+Path\+Follower:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_rail_path_follower}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rail_path_follower_aa11d918e6bc4a919413951f2af686c9c}\label{class_rail_path_follower_aa11d918e6bc4a919413951f2af686c9c} 
+void {\bfseries Configure} (Transform path\+Object)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_rail_path_follower_af89d29bda058615d3c498e4843ed49e9}\label{class_rail_path_follower_af89d29bda058615d3c498e4843ed49e9} 
+void {\bfseries Reset\+To\+Start} ()
+\begin{DoxyCompactList}\small\item\em Back to where the path and the rig started (restart). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rail_path_follower_a7509ff2a5ff3a73f95a7d514aa2be211}\label{class_rail_path_follower_a7509ff2a5ff3a73f95a7d514aa2be211} 
+Transform {\bfseries Path}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_rail_path_follower_aba7282e0a99ea55b0a897ff85b56bf27}\label{class_rail_path_follower_aba7282e0a99ea55b0a897ff85b56bf27} 
+float {\bfseries Travelled}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Integrated demo: makes the Rail\+Rig (camera, player, boundaries, spawns, bounds space) follow a path object that Abel\textquotesingle{}s \doxylink{class_level_camera}{Level\+Camera} moves along its Key\+Frames. His component is used as-\/is; this adapter only adds what the encounter needs on top of it: 
+
+
+\begin{DoxyItemize}
+\item it runs before other scripts and calls Physics.\+Sync\+Transforms() after moving the rig, so the player\textquotesingle{}s Character\+Controller (Abel\textquotesingle{}s \doxylink{class_player_controller}{Player\+Controller}) rides along instead of being left behind (auto-\/sync is off);
+\item Reset\+To\+Start (wired to R) puts the path and the rig back at the start, since \doxylink{class_level_camera}{Level\+Camera} has no reset. The rig lags the path by at most one frame (it reads the position \doxylink{class_level_camera}{Level\+Camera} set last frame). 
+\end{DoxyItemize}
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Integration/Rail\+Path\+Follower.\+cs\end{DoxyCompactItemize}

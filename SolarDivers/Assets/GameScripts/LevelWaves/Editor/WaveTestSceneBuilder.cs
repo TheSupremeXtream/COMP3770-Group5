@@ -411,21 +411,21 @@ public static partial class WaveTestSceneBuilder
             {
                 waveName = "Wave 1 - Basic Line", formation = WaveFormationType.Line,
                 enemyPrefabs = new[] { basic }, enemiesPerGroup = 4, groupCount = 3, spacing = 2.5f,
-                spawnStyle = WaveSpawnStyle.Formation, spawnInterval = 0f, delayBetweenGroups = 3.5f,
+                spawnStyle = WaveSpawnStyle.Formation, spawnInterval = 0f, delayBetweenGroups = 4f,
                 groupEntryOffsets = new[] { -4f, 4f, 0f }, delayBeforeWave = 2f, clearTimeout = 15f
             },
             new EnemyWave
             {
                 waveName = "Wave 2 - V Formation", formation = WaveFormationType.VFormation,
                 enemyPrefabs = new[] { basic, basic, basic, basic, interceptor }, enemiesPerGroup = 5, groupCount = 3, spacing = 1.8f,
-                spawnStyle = WaveSpawnStyle.Formation, spawnInterval = 0f, delayBetweenGroups = 3f,
-                groupEntryOffsets = new[] { 4.5f, -4.5f, 0f }, delayBeforeWave = 2.5f, clearTimeout = 15f
+                spawnStyle = WaveSpawnStyle.Formation, spawnInterval = 0f, delayBetweenGroups = 3.5f,
+                groupEntryOffsets = new[] { 4.5f, -4.5f, 0f }, delayBeforeWave = 2.5f, clearTimeout = 18f
             },
             new EnemyWave
             {
                 waveName = "Wave 3 - Mixed", formation = WaveFormationType.Mixed,
                 enemyPrefabs = new[] { basic, interceptor, weaver }, enemiesPerGroup = 6, groupCount = 3, spacing = 2f,
-                spawnStyle = WaveSpawnStyle.Stream, spawnInterval = 0.5f, delayBetweenGroups = 2f,
+                spawnStyle = WaveSpawnStyle.Stream, spawnInterval = 0.5f, delayBetweenGroups = 3f,
                 groupEntryOffsets = new[] { -2f, 2f, 0f }, delayBeforeWave = 2.5f, clearTimeout = 26f
             }
         };

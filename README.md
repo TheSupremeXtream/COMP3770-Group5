@@ -16,3 +16,5 @@
   - Bosses
 - Leonardo Sato.
   - Enemy behaviour.
+  
+The documentation can be found in the ./Doc folder.

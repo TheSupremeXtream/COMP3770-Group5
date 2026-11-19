@@ -1,0 +1,60 @@
+\doxysection{Test\+Homing\+Rocket Class Reference}
+\hypertarget{class_test_homing_rocket}{}\label{class_test_homing_rocket}\index{TestHomingRocket@{TestHomingRocket}}
+
+
+PLACEHOLDER homing rocket for the test enemies (not Taha\textquotesingle{}s weapons or Leonardo\textquotesingle{}s AI). Dodgeable by design: it flies straight for Arming Seconds, then turns towards the player at no more than Turn Rate while it speeds up to Max Speed, stops homing after Homing Seconds (burn-\/out: flies straight) and is removed after Lifetime or when it leaves its area. A sharp sideways move inside its turning circle makes it miss. It can be shot down (\doxylink{class_test_enemy_health}{Test\+Enemy\+Health} on the same object) and hurts on contact (\doxylink{class_test_contact_damage}{Test\+Contact\+Damage}). Moves in its parent\textquotesingle{}s space, so it follows a moving rig. Needs a trigger collider and a kinematic Rigidbody.  
+
+
+Inheritance diagram for Test\+Homing\+Rocket:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_homing_rocket}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_homing_rocket_ab91d07e4b722281d74b9466f9c4bb63c}\label{class_test_homing_rocket_ab91d07e4b722281d74b9466f9c4bb63c} 
+void {\bfseries Launch} (Vector3 direction, Transform home\+On)
+\begin{DoxyCompactList}\small\item\em Starts the rocket heading \textquotesingle{}direction\textquotesingle{} (world) towards \textquotesingle{}home\+On\textquotesingle{}. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_homing_rocket_a00ba18570a191c277b7f04ec797fc21f}\label{class_test_homing_rocket_a00ba18570a191c277b7f04ec797fc21f} 
+void {\bfseries Step} (float dt)
+\begin{DoxyCompactList}\small\item\em Advances the rocket by dt (fixed sub-\/steps, so the path is the same at any frame rate). Public for tests. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_homing_rocket_adc107bc6242a3959b98e0e6616088478}\label{class_test_homing_rocket_adc107bc6242a3959b98e0e6616088478} 
+float {\bfseries Speed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_ad2bc596b3cbe6a32d0b1a26c6e5bfb78}\label{class_test_homing_rocket_ad2bc596b3cbe6a32d0b1a26c6e5bfb78} 
+float {\bfseries Max\+Speed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_a960310e1068414f7b1b48710da8b1d46}\label{class_test_homing_rocket_a960310e1068414f7b1b48710da8b1d46} 
+float {\bfseries Turn\+Rate}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_af80db8d3bed37185cad4110c6c189ee0}\label{class_test_homing_rocket_af80db8d3bed37185cad4110c6c189ee0} 
+float {\bfseries Age}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_a401e8017f344fb22dc3db1b024644977}\label{class_test_homing_rocket_a401e8017f344fb22dc3db1b024644977} 
+float {\bfseries Lifetime}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_a9c0efb93babc72aa8207bf9e141d0400}\label{class_test_homing_rocket_a9c0efb93babc72aa8207bf9e141d0400} 
+float {\bfseries Arming\+Seconds}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_af1a31e9c9eda54588477d32d50096862}\label{class_test_homing_rocket_af1a31e9c9eda54588477d32d50096862} 
+float {\bfseries Homing\+Seconds}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_aba267554c48c6a6910987f6913f8f0eb}\label{class_test_homing_rocket_aba267554c48c6a6910987f6913f8f0eb} 
+bool {\bfseries Is\+Homing}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_homing_rocket_a02c8d5623f73e02852971a4f33d7bf29}\label{class_test_homing_rocket_a02c8d5623f73e02852971a4f33d7bf29} 
+Vector2 {\bfseries Heading}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER homing rocket for the test enemies (not Taha\textquotesingle{}s weapons or Leonardo\textquotesingle{}s AI). Dodgeable by design: it flies straight for Arming Seconds, then turns towards the player at no more than Turn Rate while it speeds up to Max Speed, stops homing after Homing Seconds (burn-\/out: flies straight) and is removed after Lifetime or when it leaves its area. A sharp sideways move inside its turning circle makes it miss. It can be shot down (\doxylink{class_test_enemy_health}{Test\+Enemy\+Health} on the same object) and hurts on contact (\doxylink{class_test_contact_damage}{Test\+Contact\+Damage}). Moves in its parent\textquotesingle{}s space, so it follows a moving rig. Needs a trigger collider and a kinematic Rigidbody. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Homing\+Rocket.\+cs\end{DoxyCompactItemize}

@@ -31,7 +31,7 @@ public static partial class WaveTestSceneBuilder
     const string DemoPrefabFolder = PrefabFolder + "/Demo";
     const string LeonardoEnemyPrefab = "Assets/Prefabs/Enemy_model.prefab";
     const string MissionTitle = "Mars Orbit Breakout";
-    const string Objective = "Survive the Marquis's patrols and keep the route to Earth open";
+    const string Objective = "Survive the Martioness' patrols and keep the route to Earth open";
     const string ClearedTitle = "ROUTE CLEAR";
     const string ClearedMessage = "<color=#B8C6D8>Next: the frigate (boss encounter not built yet)</color>";
     // Abel's PlayerController moves by Speed per frame; at the demo's fixed 60 fps this is ~9 units/s,
@@ -101,7 +101,7 @@ public static partial class WaveTestSceneBuilder
                 }
             }
         }
-        string[] waveNames = { "Wave 1 - Patrol Screen", "Wave 2 - Interceptor Dives", "Wave 3 - Marquis Escort" };
+        string[] waveNames = { "Wave 1 - Patrol Screen", "Wave 2 - Interceptor Dives", "Wave 3 - Martioness Escort" };
         for (int w = 0; w < encounter.Waves.Count; w++)
         {
             EnemyWave wave = encounter.Waves[w];

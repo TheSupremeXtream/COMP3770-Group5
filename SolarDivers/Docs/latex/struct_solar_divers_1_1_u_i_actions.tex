@@ -1,0 +1,139 @@
+\doxysection{Solar\+Divers.\+UIActions Struct Reference}
+\hypertarget{struct_solar_divers_1_1_u_i_actions}{}\label{struct_solar_divers_1_1_u_i_actions}\index{SolarDivers.UIActions@{SolarDivers.UIActions}}
+
+
+Provides access to input actions defined in input action map "{}\+UI"{}.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_aa581d04e00e0b3be01b0f684922fa74e}\label{struct_solar_divers_1_1_u_i_actions_aa581d04e00e0b3be01b0f684922fa74e} 
+{\bfseries UIActions} (@\doxymbox{\hyperlink{class_solar_divers}{Solar\+Divers}} wrapper)
+\begin{DoxyCompactList}\small\item\em Construct a new instance of the input action map wrapper class. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_ab9a03105287b5a712f2bebd6a070d93b}\label{struct_solar_divers_1_1_u_i_actions_ab9a03105287b5a712f2bebd6a070d93b} 
+Input\+Action\+Map {\bfseries Get} ()
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action map instance. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a29209838e12aa92fd17f9098e824f424}\label{struct_solar_divers_1_1_u_i_actions_a29209838e12aa92fd17f9098e824f424} 
+void {\bfseries Enable} ()
+\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_add232ae81dfa768a2b2b952d118ca1f7}\label{struct_solar_divers_1_1_u_i_actions_add232ae81dfa768a2b2b952d118ca1f7} 
+void {\bfseries Disable} ()
+\item 
+void \doxymbox{\hyperlink{struct_solar_divers_1_1_u_i_actions_a2320228be08d8f5347e78deae9c8b229}{Add\+Callbacks}} (\doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}} instance)
+\begin{DoxyCompactList}\small\item\em Adds Input\+Action.\+started, Input\+Action.\+performed and Input\+Action.\+canceled callbacks provided via  on all input actions contained in this map. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_solar_divers_1_1_u_i_actions_a008b799ccc206c5ea33153101a9e181c}{Remove\+Callbacks}} (\doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}} instance)
+\begin{DoxyCompactList}\small\item\em Unregisters  and unregisters all input action callbacks via UIActions.\+Unregister\+Callbacks(\+IUIActions). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_solar_divers_1_1_u_i_actions_ab17b83e14b9097009ebba652721844ac}{Set\+Callbacks}} (\doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}} instance)
+\begin{DoxyCompactList}\small\item\em Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via . \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a54eeca878a181e1596b79fdbac3edbaa}\label{struct_solar_divers_1_1_u_i_actions_a54eeca878a181e1596b79fdbac3edbaa} 
+static implicit {\bfseries operator Input\+Action\+Map} (\doxymbox{\hyperlink{struct_solar_divers_1_1_u_i_actions_aa581d04e00e0b3be01b0f684922fa74e}{UIActions}} set)
+\begin{DoxyCompactList}\small\item\em Implicitly converts an  to an  instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_ad9280e4de3936d7dd3018a77b58b55fb}\label{struct_solar_divers_1_1_u_i_actions_ad9280e4de3936d7dd3018a77b58b55fb} 
+Input\+Action {\bfseries Navigate}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Navigate"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a0ba0a95e0a737192526368e56b98f402}\label{struct_solar_divers_1_1_u_i_actions_a0ba0a95e0a737192526368e56b98f402} 
+Input\+Action {\bfseries Submit}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Submit"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a5066da388abb47f334f43013b5887aee}\label{struct_solar_divers_1_1_u_i_actions_a5066da388abb47f334f43013b5887aee} 
+Input\+Action {\bfseries Cancel}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Cancel"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_ab355fbce9d8afcfd5c893c7ad0118628}\label{struct_solar_divers_1_1_u_i_actions_ab355fbce9d8afcfd5c893c7ad0118628} 
+Input\+Action {\bfseries Point}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Point"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a06b3f1e7f9567a4da0f5d4cfba47b2c2}\label{struct_solar_divers_1_1_u_i_actions_a06b3f1e7f9567a4da0f5d4cfba47b2c2} 
+Input\+Action {\bfseries Click}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Click"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_ad898a5bddc2d63e4978a3d8c044b562e}\label{struct_solar_divers_1_1_u_i_actions_ad898a5bddc2d63e4978a3d8c044b562e} 
+Input\+Action {\bfseries Scroll\+Wheel}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Scroll\+Wheel"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a4073b8334c26dded0e6ff32e90c90bda}\label{struct_solar_divers_1_1_u_i_actions_a4073b8334c26dded0e6ff32e90c90bda} 
+Input\+Action {\bfseries Middle\+Click}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Middle\+Click"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a3e9f377494056981cabc78bc4c89bbfd}\label{struct_solar_divers_1_1_u_i_actions_a3e9f377494056981cabc78bc4c89bbfd} 
+Input\+Action {\bfseries Right\+Click}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Right\+Click"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a60cea837edf4f2e6d38269a33c2b6071}\label{struct_solar_divers_1_1_u_i_actions_a60cea837edf4f2e6d38269a33c2b6071} 
+Input\+Action {\bfseries Tracked\+Device\+Position}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Tracked\+Device\+Position"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a8bf1fbe73d93da888e40f04eb165540e}\label{struct_solar_divers_1_1_u_i_actions_a8bf1fbe73d93da888e40f04eb165540e} 
+Input\+Action {\bfseries Tracked\+Device\+Orientation}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+UI/\+\+Tracked\+Device\+Orientation"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a10d64b7f4d3f9614ee7ad5d2d51de9ef}\label{struct_solar_divers_1_1_u_i_actions_a10d64b7f4d3f9614ee7ad5d2d51de9ef} 
+bool {\bfseries enabled}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides access to input actions defined in input action map "{}\+UI"{}. 
+
+\label{struct_solar_divers_1_1_u_i_actions_doc-func-members}
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a2320228be08d8f5347e78deae9c8b229}\index{SolarDivers.UIActions@{SolarDivers.UIActions}!AddCallbacks@{AddCallbacks}}
+\index{AddCallbacks@{AddCallbacks}!SolarDivers.UIActions@{SolarDivers.UIActions}}
+\doxysubsubsection{\texorpdfstring{AddCallbacks()}{AddCallbacks()}}
+{\footnotesize\ttfamily \label{struct_solar_divers_1_1_u_i_actions_a2320228be08d8f5347e78deae9c8b229} 
+void Solar\+Divers.\+UIActions.\+Add\+Callbacks (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}}}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Adds Input\+Action.\+started, Input\+Action.\+performed and Input\+Action.\+canceled callbacks provided via  on all input actions contained in this map. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & Callback instance.\\
+\hline
+\end{DoxyParams}
+
+
+If {\itshape instance}  is {\ttfamily null} or {\itshape instance}  have already been added this method does nothing. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{struct_solar_divers_1_1_u_i_actions}{UIActions}
+
+
+\end{DoxySeeAlso}
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_a008b799ccc206c5ea33153101a9e181c}\index{SolarDivers.UIActions@{SolarDivers.UIActions}!RemoveCallbacks@{RemoveCallbacks}}
+\index{RemoveCallbacks@{RemoveCallbacks}!SolarDivers.UIActions@{SolarDivers.UIActions}}
+\doxysubsubsection{\texorpdfstring{RemoveCallbacks()}{RemoveCallbacks()}}
+{\footnotesize\ttfamily \label{struct_solar_divers_1_1_u_i_actions_a008b799ccc206c5ea33153101a9e181c} 
+void Solar\+Divers.\+UIActions.\+Remove\+Callbacks (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}}}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Unregisters  and unregisters all input action callbacks via UIActions.\+Unregister\+Callbacks(\+IUIActions). 
+
+\begin{DoxySeeAlso}{See also}
+UIActions.\+Unregister\+Callbacks(\+IUIActions)
+
+
+\end{DoxySeeAlso}
+\Hypertarget{struct_solar_divers_1_1_u_i_actions_ab17b83e14b9097009ebba652721844ac}\index{SolarDivers.UIActions@{SolarDivers.UIActions}!SetCallbacks@{SetCallbacks}}
+\index{SetCallbacks@{SetCallbacks}!SolarDivers.UIActions@{SolarDivers.UIActions}}
+\doxysubsubsection{\texorpdfstring{SetCallbacks()}{SetCallbacks()}}
+{\footnotesize\ttfamily \label{struct_solar_divers_1_1_u_i_actions_ab17b83e14b9097009ebba652721844ac} 
+void Solar\+Divers.\+UIActions.\+Set\+Callbacks (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{interface_solar_divers_1_1_i_u_i_actions}{IUIActions}}}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via . 
+
+If {\itshape instance}  is {\ttfamily null}, calling this method will only unregister all existing callbacks but not register any new callbacks. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{struct_solar_divers_1_1_u_i_actions_a2320228be08d8f5347e78deae9c8b229}{UIActions.\+Add\+Callbacks(\+IUIActions)}, \doxylink{struct_solar_divers_1_1_u_i_actions_a008b799ccc206c5ea33153101a9e181c}{UIActions.\+Remove\+Callbacks(\+IUIActions)}, UIActions.\+Unregister\+Callbacks(\+IUIActions)
+
+
+\end{DoxySeeAlso}
+
+
+The documentation for this struct was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/Solar\+Divers.\+cs\end{DoxyCompactItemize}

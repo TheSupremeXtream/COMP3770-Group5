@@ -1,0 +1,63 @@
+\doxysection{Encounter\+Debug\+HUD Class Reference}
+\hypertarget{class_encounter_debug_h_u_d}{}\label{class_encounter_debug_h_u_d}\index{EncounterDebugHUD@{EncounterDebugHUD}}
+
+
+TEMPORARY test-\/scene HUD for the wave prototype. Not the game\textquotesingle{}s UI (Ronit owns UI); delete it once the real HUD listens to \doxylink{class_wave_encounter}{Wave\+Encounter}\textquotesingle{}s events. Built at runtime with u\+GUI (built-\/in font, no extra assets). Layout is authored at 1920x1080. Readability: draw it through a UI-\/only camera with post-\/processing off (or leave UI Camera empty for Screen Space -\/ Overlay), so anti-\/aliasing, bloom and vignette never touch the text. Text is pixel-\/snapped and never scales below Minimum Scale, so it stays legible in a small Game view. Hull/\+wave panel (top-\/left), wave banner (top-\/centre), controls (bottom-\/left), result panel (centre), detailed counters behind Tab (top-\/right), red edge flash and pip pulse when the player is hit.  
+
+
+Inheritance diagram for Encounter\+Debug\+HUD:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_encounter_debug_h_u_d}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_af679a4198145d5e42ea13db8bd00e1b6}\label{class_encounter_debug_h_u_d_af679a4198145d5e42ea13db8bd00e1b6} 
+void {\bfseries Set\+Debug\+Visible} (bool visible)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a164d63b4b877f4ca9d703591f60c8689}\label{class_encounter_debug_h_u_d_a164d63b4b877f4ca9d703591f60c8689} 
+const float {\bfseries Reference\+Width} = 1920f
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_ad96d510b947273bdf5992d327a7aa72b}\label{class_encounter_debug_h_u_d_ad96d510b947273bdf5992d327a7aa72b} 
+const float {\bfseries Reference\+Height} = 1080f
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_abd507a93ddc76ea60de0258181e3e33b}\label{class_encounter_debug_h_u_d_abd507a93ddc76ea60de0258181e3e33b} 
+bool {\bfseries Debug\+Visible}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a5faa246d3772387322fa8328559183dd}\label{class_encounter_debug_h_u_d_a5faa246d3772387322fa8328559183dd} 
+bool {\bfseries Result\+Visible}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a32c7cc49432136e9a537f3dc6e2930a0}\label{class_encounter_debug_h_u_d_a32c7cc49432136e9a537f3dc6e2930a0} 
+string {\bfseries Result\+Title}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a5ea8a6f8ec103ccfdb93226125e93a3c}\label{class_encounter_debug_h_u_d_a5ea8a6f8ec103ccfdb93226125e93a3c} 
+string {\bfseries Objective\+Shown}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_ad31fb8dac0eba264ca179e75d647adc6}\label{class_encounter_debug_h_u_d_ad31fb8dac0eba264ca179e75d647adc6} 
+string {\bfseries Banner\+Shown}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a6cdf7877ea8a015f4faba13bad812808}\label{class_encounter_debug_h_u_d_a6cdf7877ea8a015f4faba13bad812808} 
+float {\bfseries Damage\+Flash\+Alpha}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a04a9bff0b1fced26ac2479ac617d3c6d}\label{class_encounter_debug_h_u_d_a04a9bff0b1fced26ac2479ac617d3c6d} 
+float {\bfseries Current\+Scale}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_debug_h_u_d_a8e2d3f9a3346b68ad0befec39ef0ba0e}\label{class_encounter_debug_h_u_d_a8e2d3f9a3346b68ad0befec39ef0ba0e} 
+Canvas {\bfseries Hud\+Canvas}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+TEMPORARY test-\/scene HUD for the wave prototype. Not the game\textquotesingle{}s UI (Ronit owns UI); delete it once the real HUD listens to \doxylink{class_wave_encounter}{Wave\+Encounter}\textquotesingle{}s events. Built at runtime with u\+GUI (built-\/in font, no extra assets). Layout is authored at 1920x1080. Readability: draw it through a UI-\/only camera with post-\/processing off (or leave UI Camera empty for Screen Space -\/ Overlay), so anti-\/aliasing, bloom and vignette never touch the text. Text is pixel-\/snapped and never scales below Minimum Scale, so it stays legible in a small Game view. Hull/\+wave panel (top-\/left), wave banner (top-\/centre), controls (bottom-\/left), result panel (centre), detailed counters behind Tab (top-\/right), red edge flash and pip pulse when the player is hit. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/Encounter\+Debug\+HUD.\+cs\end{DoxyCompactItemize}
