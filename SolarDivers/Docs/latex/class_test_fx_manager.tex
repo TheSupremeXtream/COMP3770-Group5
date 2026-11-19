@@ -1,0 +1,114 @@
+\doxysection{Test\+Fx\+Manager Class Reference}
+\hypertarget{class_test_fx_manager}{}\label{class_test_fx_manager}\index{TestFxManager@{TestFxManager}}
+
+
+TEMPORARY effects and sound for the wave scenes until the team has an audio system (Ronit has none in the repository yet); not the team\textquotesingle{}s audio/\+\+VFX system. Spawned effects are parented here so a restart can remove them. Sounds are edited CC0 recordings from a \doxylink{class_test_sound_bank}{Test\+Sound\+Bank}: several variants per sound, never the same variant twice in a row, small pitch changes, a voice pool with per-\/sound limits, separate weapons / impacts / explosions / engines / warnings volumes, and explosions that duck each other (and duck under attack warnings) instead of stacking up. Everything is stopped on restart and when Play mode ends. Engine and flyby sounds live in \doxylink{class_test_flight_audio}{Test\+Flight\+Audio}.  
+
+
+Inheritance diagram for Test\+Fx\+Manager:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_fx_manager}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_fx_manager_a852a4ca624339bc2861ea504434371f6}\label{class_test_fx_manager_a852a4ca624339bc2861ea504434371f6} 
+enum {\bfseries Sound} \{ \newline
+{\bfseries Shot}
+, {\bfseries Impact}
+, {\bfseries Enemy\+Destroyed}
+, {\bfseries Player\+Hit}
+, \newline
+{\bfseries Player\+Destroyed}
+, {\bfseries Enemy\+Charge}
+, {\bfseries Enemy\+Shot}
+, {\bfseries Rocket\+Launch}
+, \newline
+{\bfseries Rocket\+Blast}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_fx_manager_a27b3269336bf55dedb913a0507ba82c2}\label{class_test_fx_manager_a27b3269336bf55dedb913a0507ba82c2} 
+void {\bfseries Set\+Sounds} (\doxymbox{\hyperlink{class_test_sound_bank}{Test\+Sound\+Bank}} bank)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_a083189da9f61123452211b6e38d1d343}\label{class_test_fx_manager_a083189da9f61123452211b6e38d1d343} 
+void {\bfseries Play\+Shot} ()
+\item 
+\Hypertarget{class_test_fx_manager_ae8dd8ad379966cca034237070c4c39e5}\label{class_test_fx_manager_ae8dd8ad379966cca034237070c4c39e5} 
+void {\bfseries Play\+Impact} (Vector3 position)
+\item 
+\Hypertarget{class_test_fx_manager_abf7edf149a8e49a11ca6dcaba1720349}\label{class_test_fx_manager_abf7edf149a8e49a11ca6dcaba1720349} 
+void {\bfseries Play\+Explosion} (Vector3 position, float scale)
+\item 
+\Hypertarget{class_test_fx_manager_a3be7f15acfec361d96611265b43c5760}\label{class_test_fx_manager_a3be7f15acfec361d96611265b43c5760} 
+void {\bfseries Play\+Player\+Hit} (Vector3 position)
+\item 
+\Hypertarget{class_test_fx_manager_ab574cc187e8b2b8424abd9528e97cf04}\label{class_test_fx_manager_ab574cc187e8b2b8424abd9528e97cf04} 
+void {\bfseries Play\+Player\+Destroyed} (Vector3 position)
+\item 
+\Hypertarget{class_test_fx_manager_a13433ea4d4ddcccc59313833b0b930a8}\label{class_test_fx_manager_a13433ea4d4ddcccc59313833b0b930a8} 
+void {\bfseries Play\+Enemy\+Charge} (bool rocket=false)
+\begin{DoxyCompactList}\small\item\em Attack warning: the turbine whine for guns, the same whine a little lower for a rocket lock. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_a1334b8b730447ef266fb6511e1c9ea3a}\label{class_test_fx_manager_a1334b8b730447ef266fb6511e1c9ea3a} 
+void {\bfseries Play\+Enemy\+Shot} (Vector3 from=default)
+\item 
+\Hypertarget{class_test_fx_manager_a601a29012fe236f9cb22bf50d3b15441}\label{class_test_fx_manager_a601a29012fe236f9cb22bf50d3b15441} 
+void {\bfseries Play\+Rocket\+Launch} (Vector3 from)
+\item 
+\Hypertarget{class_test_fx_manager_adab390d345c8b38c7cd77fd27daf77dd}\label{class_test_fx_manager_adab390d345c8b38c7cd77fd27daf77dd} 
+void {\bfseries Play\+Rocket\+Blast} (Vector3 position)
+\begin{DoxyCompactList}\small\item\em A rocket detonating on the player: a small blast effect and the rocket\textquotesingle{}s own detonation sound. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_a7c6c0b1ef518d06ff5bef74cc9f36a08}\label{class_test_fx_manager_a7c6c0b1ef518d06ff5bef74cc9f36a08} 
+void {\bfseries Clear\+All} ()
+\begin{DoxyCompactList}\small\item\em Removes every effect still playing and silences all sounds. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_a0501e20a4060012a9bc185ecd4ca8099}\label{class_test_fx_manager_a0501e20a4060012a9bc185ecd4ca8099} 
+int {\bfseries Active\+Voice\+Count} (Sound? sound=null)
+\begin{DoxyCompactList}\small\item\em Sounds currently playing (all, or of one kind). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_a6399b789ae42a55b0cad98d8497f827f}\label{class_test_fx_manager_a6399b789ae42a55b0cad98d8497f827f} 
+float {\bfseries Last\+Volume} (Sound sound)
+\begin{DoxyCompactList}\small\item\em Volume the newest voice of this sound was started at (tests: ducking). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_ad807153af17794ba3143f7ece712853d}\label{class_test_fx_manager_ad807153af17794ba3143f7ece712853d} 
+float {\bfseries Volume} (Sound sound)
+\begin{DoxyCompactList}\small\item\em Group volume x a fixed balance within the group. The balance values were set from the clips\textquotesingle{} measured loudness (all clips peak at -\/1 d\+BFS): the player\textquotesingle{}s cannon sits above enemy gunfire, which fires in bursts. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_fx_manager_ac51e7668af78fea347a114749cf206a0}\label{class_test_fx_manager_ac51e7668af78fea347a114749cf206a0} 
+static \doxymbox{\hyperlink{class_test_fx_manager}{Test\+Fx\+Manager}} {\bfseries Active}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_a86a058ee9ce6d9ec1d907c1965c17c6c}\label{class_test_fx_manager_a86a058ee9ce6d9ec1d907c1965c17c6c} 
+int {\bfseries Active\+Effect\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_a1b8b47d62c5bd5009871294ea75ad8ca}\label{class_test_fx_manager_a1b8b47d62c5bd5009871294ea75ad8ca} 
+int {\bfseries Max\+Voices}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_a6e10bce5c60599ac4e8009c77abb95d5}\label{class_test_fx_manager_a6e10bce5c60599ac4e8009c77abb95d5} 
+int {\bfseries Max\+Per\+Sound}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_a16a9f515a4f8b4b36bbfc979700e807f}\label{class_test_fx_manager_a16a9f515a4f8b4b36bbfc979700e807f} 
+int {\bfseries Max\+Explosions}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_a246ef3969c32c4e1d371a8f891bf7f8d}\label{class_test_fx_manager_a246ef3969c32c4e1d371a8f891bf7f8d} 
+float {\bfseries Master\+Volume}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_afc6176ac8221bc02eae249eef876d6ee}\label{class_test_fx_manager_afc6176ac8221bc02eae249eef876d6ee} 
+float {\bfseries Engine\+Volume}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Master x Engines: what looping engine sounds (player engine, flybys, rocket motor) are scaled by. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_fx_manager_ae1e879e4d3d77af3728ed0f983fce0f3}\label{class_test_fx_manager_ae1e879e4d3d77af3728ed0f983fce0f3} 
+float {\bfseries Duck\+Under\+Warnings}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_fx_manager_ab7577d6a604095f95da62395d2ccb722}\label{class_test_fx_manager_ab7577d6a604095f95da62395d2ccb722} 
+\doxymbox{\hyperlink{class_test_sound_bank}{Test\+Sound\+Bank}} {\bfseries Sounds}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+TEMPORARY effects and sound for the wave scenes until the team has an audio system (Ronit has none in the repository yet); not the team\textquotesingle{}s audio/\+\+VFX system. Spawned effects are parented here so a restart can remove them. Sounds are edited CC0 recordings from a \doxylink{class_test_sound_bank}{Test\+Sound\+Bank}: several variants per sound, never the same variant twice in a row, small pitch changes, a voice pool with per-\/sound limits, separate weapons / impacts / explosions / engines / warnings volumes, and explosions that duck each other (and duck under attack warnings) instead of stacking up. Everything is stopped on restart and when Play mode ends. Engine and flyby sounds live in \doxylink{class_test_flight_audio}{Test\+Flight\+Audio}. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Fx\+Manager.\+cs\end{DoxyCompactItemize}

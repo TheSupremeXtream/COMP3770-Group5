@@ -1,0 +1,57 @@
+\doxysection{Test\+Player\+Health Class Reference}
+\hypertarget{class_test_player_health}{}\label{class_test_player_health}\index{TestPlayerHealth@{TestPlayerHealth}}
+
+
+PLACEHOLDER player health for the wave prototype only (no team damage system exists yet). Needs a trigger collider and a kinematic Rigidbody on the same object. Values (3 hits, 1 s invulnerability) are proposals to tune with the team.  
+
+
+Inheritance diagram for Test\+Player\+Health:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_player_health}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_player_health_aa452fd9d2625f2e3c625ae101359d964}\label{class_test_player_health_aa452fd9d2625f2e3c625ae101359d964} 
+void {\bfseries Configure} (int hits, float invulnerability)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_player_health_ab011227ee17e7f1ae4f2ccbe61d25776}\label{class_test_player_health_ab011227ee17e7f1ae4f2ccbe61d25776} 
+void {\bfseries Reset\+Health} ()
+\item 
+\Hypertarget{class_test_player_health_a4b8307b670eae6bbef1a026143400d91}\label{class_test_player_health_a4b8307b670eae6bbef1a026143400d91} 
+bool {\bfseries Try\+Take\+Hit} (int amount)
+\begin{DoxyCompactList}\small\item\em Returns true if the hit counted (not invulnerable and not already defeated). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_player_health_a143a8c1ab43bb6c894985af2072f9d27}\label{class_test_player_health_a143a8c1ab43bb6c894985af2072f9d27} 
+Unity\+Event {\bfseries on\+Damaged} = new Unity\+Event()
+\item 
+\Hypertarget{class_test_player_health_a5637cc796a3daa7f06fd70e64edb7c16}\label{class_test_player_health_a5637cc796a3daa7f06fd70e64edb7c16} 
+Unity\+Event {\bfseries on\+Defeated} = new Unity\+Event()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_player_health_a3d526341c71dc07840742c2c30f7b22c}\label{class_test_player_health_a3d526341c71dc07840742c2c30f7b22c} 
+int {\bfseries Max\+Hits}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_player_health_a1ee69e6d2aa568b6793a5df1011ca4c0}\label{class_test_player_health_a1ee69e6d2aa568b6793a5df1011ca4c0} 
+int {\bfseries Hits\+Remaining}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_player_health_aff61f044f7eb57043bb8f72a2edac262}\label{class_test_player_health_aff61f044f7eb57043bb8f72a2edac262} 
+bool {\bfseries Is\+Defeated}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_player_health_a0b084019465c3732173134d7fe5ea359}\label{class_test_player_health_a0b084019465c3732173134d7fe5ea359} 
+bool {\bfseries Is\+Invulnerable}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER player health for the wave prototype only (no team damage system exists yet). Needs a trigger collider and a kinematic Rigidbody on the same object. Values (3 hits, 1 s invulnerability) are proposals to tune with the team. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Player\+Health.\+cs\end{DoxyCompactItemize}

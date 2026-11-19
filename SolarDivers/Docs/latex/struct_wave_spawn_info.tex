@@ -1,0 +1,42 @@
+\doxysection{Wave\+Spawn\+Info Struct Reference}
+\hypertarget{struct_wave_spawn_info}{}\label{struct_wave_spawn_info}\index{WaveSpawnInfo@{WaveSpawnInfo}}
+
+
+What \doxylink{class_wave_encounter}{Wave\+Encounter} knows about a spawned enemy\textquotesingle{}s place in its wave. Passed once, right after spawning, to any component on the enemy that implements \doxylink{interface_i_wave_spawn_receiver}{IWave\+Spawn\+Receiver}. Optional: enemies without one are unaffected. Offsets are in the spawn origin\textquotesingle{}s local space (+X = origin\textquotesingle{}s right).  
+
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_wave_spawn_info_a598e5fd4fc8b0f01ed137fc12b63c1d1}\label{struct_wave_spawn_info_a598e5fd4fc8b0f01ed137fc12b63c1d1} 
+int {\bfseries wave\+Index}
+\item 
+\Hypertarget{struct_wave_spawn_info_aea3f49189cb6b669665c94bc151b1dcc}\label{struct_wave_spawn_info_aea3f49189cb6b669665c94bc151b1dcc} 
+int {\bfseries group\+Index}
+\item 
+\Hypertarget{struct_wave_spawn_info_a6eb85b20bbb75c86980d2def12acee53}\label{struct_wave_spawn_info_a6eb85b20bbb75c86980d2def12acee53} 
+int {\bfseries slot\+Index}
+\item 
+\Hypertarget{struct_wave_spawn_info_a989a7800d2fc4ed8047811795dbf99a6}\label{struct_wave_spawn_info_a989a7800d2fc4ed8047811795dbf99a6} 
+int {\bfseries slot\+Count}
+\item 
+\Hypertarget{struct_wave_spawn_info_ad1bba212913cba1ef791752bf0795ebe}\label{struct_wave_spawn_info_ad1bba212913cba1ef791752bf0795ebe} 
+float {\bfseries slot\+OffsetX}
+\begin{DoxyCompactList}\small\item\em Sideways position of this slot inside its formation (before the group\textquotesingle{}s entry offset). \end{DoxyCompactList}\item 
+\Hypertarget{struct_wave_spawn_info_a2e755b723404dd9d7ad2cc3569b23aae}\label{struct_wave_spawn_info_a2e755b723404dd9d7ad2cc3569b23aae} 
+float {\bfseries group\+Shift}
+\begin{DoxyCompactList}\small\item\em The group\textquotesingle{}s sideways entry offset (Enemy\+Wave.\+group\+Entry\+Offsets). \end{DoxyCompactList}\item 
+\Hypertarget{struct_wave_spawn_info_a21675f7df8eed4059130955476f5a636}\label{struct_wave_spawn_info_a21675f7df8eed4059130955476f5a636} 
+float {\bfseries group\+MinX}
+\begin{DoxyCompactList}\small\item\em Sideways extent of the whole group (leftmost / rightmost slot, including Group Shift). \end{DoxyCompactList}\item 
+\Hypertarget{struct_wave_spawn_info_ab2736d05a628fe44fb8c5574f31eea2d}\label{struct_wave_spawn_info_ab2736d05a628fe44fb8c5574f31eea2d} 
+float {\bfseries group\+MaxX}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+What \doxylink{class_wave_encounter}{Wave\+Encounter} knows about a spawned enemy\textquotesingle{}s place in its wave. Passed once, right after spawning, to any component on the enemy that implements \doxylink{interface_i_wave_spawn_receiver}{IWave\+Spawn\+Receiver}. Optional: enemies without one are unaffected. Offsets are in the spawn origin\textquotesingle{}s local space (+X = origin\textquotesingle{}s right). 
+
+The documentation for this struct was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/Wave\+Spawn\+Info.\+cs\end{DoxyCompactItemize}

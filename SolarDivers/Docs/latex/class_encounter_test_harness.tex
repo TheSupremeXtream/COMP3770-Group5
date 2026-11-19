@@ -1,0 +1,48 @@
+\doxysection{Encounter\+Test\+Harness Class Reference}
+\hypertarget{class_encounter_test_harness}{}\label{class_encounter_test_harness}\index{EncounterTestHarness@{EncounterTestHarness}}
+
+
+PLACEHOLDER game-\/flow glue for the wave test scene (Ronit owns real game management). Player defeated -\/\texorpdfstring{$>$}{>} encounter fails, ship stops. R -\/\texorpdfstring{$>$}{>} full restart of ship, health, shots (player and enemy), effects, sounds and encounter.  
+
+
+Inheritance diagram for Encounter\+Test\+Harness:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_encounter_test_harness}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_encounter_test_harness_a991535973b9937f960869f39f6fadb7c}\label{class_encounter_test_harness_a991535973b9937f960869f39f6fadb7c} 
+void {\bfseries Configure} (\doxymbox{\hyperlink{class_wave_encounter}{Wave\+Encounter}} new\+Encounter, \doxymbox{\hyperlink{class_test_player_health}{Test\+Player\+Health}} health, \doxymbox{\hyperlink{class_test_player_ship}{Test\+Player\+Ship}} ship, \doxymbox{\hyperlink{class_test_fx_manager}{Test\+Fx\+Manager}} effects=null, \doxymbox{\hyperlink{class_test_camera_shake}{Test\+Camera\+Shake}} shake=null, \doxymbox{\hyperlink{class_test_entry_warnings}{Test\+Entry\+Warnings}} warnings=null, \doxymbox{\hyperlink{class_test_attack_director}{Test\+Attack\+Director}} director=null, \doxymbox{\hyperlink{class_test_flight_audio}{Test\+Flight\+Audio}} flight=null)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_encounter_test_harness_aa7067e1a9415d8eae8ca5fb8eb486e17}\label{class_encounter_test_harness_aa7067e1a9415d8eae8ca5fb8eb486e17} 
+void {\bfseries Set\+Disable\+On\+Defeat} (params Behaviour\+[$\,$]\+ behaviours)
+\begin{DoxyCompactList}\small\item\em Used by the demo scene builder: components switched off on defeat and back on at restart. \end{DoxyCompactList}\item 
+\Hypertarget{class_encounter_test_harness_aebd095d2366150cd3a1c45d12a953447}\label{class_encounter_test_harness_aebd095d2366150cd3a1c45d12a953447} 
+void {\bfseries Restart\+All} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_encounter_test_harness_a5a8992f7bf4e2cd380d02715f0a4b189}\label{class_encounter_test_harness_a5a8992f7bf4e2cd380d02715f0a4b189} 
+Unity\+Engine.\+Events.\+Unity\+Event {\bfseries on\+Restart} = new Unity\+Engine.\+Events.\+Unity\+Event()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_encounter_test_harness_ac1f96d05ba1142b68c5202e8ee754f16}\label{class_encounter_test_harness_ac1f96d05ba1142b68c5202e8ee754f16} 
+\doxymbox{\hyperlink{class_wave_encounter}{Wave\+Encounter}} {\bfseries Encounter}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_encounter_test_harness_a46aa05770b3102431cf9260932cf6c70}\label{class_encounter_test_harness_a46aa05770b3102431cf9260932cf6c70} 
+\doxymbox{\hyperlink{class_test_player_health}{Test\+Player\+Health}} {\bfseries Player\+Health}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER game-\/flow glue for the wave test scene (Ronit owns real game management). Player defeated -\/\texorpdfstring{$>$}{>} encounter fails, ship stops. R -\/\texorpdfstring{$>$}{>} full restart of ship, health, shots (player and enemy), effects, sounds and encounter. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Encounter\+Test\+Harness.\+cs\end{DoxyCompactItemize}

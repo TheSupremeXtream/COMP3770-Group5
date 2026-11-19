@@ -1,0 +1,105 @@
+\doxysection{Test\+Attack\+Director Class Reference}
+\hypertarget{class_test_attack_director}{}\label{class_test_attack_director}\index{TestAttackDirector@{TestAttackDirector}}
+
+
+PLACEHOLDER: referee for the test enemies\textquotesingle{} attacks (not Leonardo\textquotesingle{}s AI). Enemies ask before charging a shot, burst or rocket; the director enforces the fairness rules of the difficulty profile (attacks and rockets in flight, gaps between attacks, distance, on-\/screen window, no attacks while the player recovers or after defeat). Enemy shots and rockets are parented here so a restart can remove them. Also tells the test movers where the player is and how it is moving (for limited prediction), and holds the run seed for bounded run-\/to-\/run variation.  
+
+
+Inheritance diagram for Test\+Attack\+Director:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_attack_director}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_attack_director_af843de89989b29432458388a8ac2dd1b}\label{class_test_attack_director_af843de89989b29432458388a8ac2dd1b} 
+void {\bfseries Configure} (\doxymbox{\hyperlink{class_test_difficulty_profile}{Test\+Difficulty\+Profile}} new\+Profile, Transform target, \doxymbox{\hyperlink{class_test_player_health}{Test\+Player\+Health}} health, \doxymbox{\hyperlink{class_wave_encounter}{Wave\+Encounter}} new\+Encounter, Game\+Object shot, Game\+Object rocket=null)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_aea09ae4caebb02cbee62ae7c1a5226b4}\label{class_test_attack_director_aea09ae4caebb02cbee62ae7c1a5226b4} 
+int {\bfseries Try\+Begin\+Attack} (Vector3 from)
+\begin{DoxyCompactList}\small\item\em Reserves a gun attack (single shot or burst) if every fairness rule allows it. Returns its id, or 0. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a698586579948b962154d744e8c22db02}\label{class_test_attack_director_a698586579948b962154d744e8c22db02} 
+void {\bfseries End\+Attack} (int attack\+Id)
+\begin{DoxyCompactList}\small\item\em A gun attack finished firing (its shots may still be flying) or its enemy was removed before firing. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a0845b080599fb276a62d880bfa012d0e}\label{class_test_attack_director_a0845b080599fb276a62d880bfa012d0e} 
+Vector3 {\bfseries Predicted\+Aim} (Vector3 from, float shot\+Speed, float lead\+Factor, float max\+Lead)
+\begin{DoxyCompactList}\small\item\em Where to aim at the player, leading them by \textquotesingle{}lead\+Factor\textquotesingle{} of their motion during the shot\textquotesingle{}s flight (capped). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a22999e2ad5d580e0b62eedd4a62b1439}\label{class_test_attack_director_a22999e2ad5d580e0b62eedd4a62b1439} 
+void {\bfseries Fire} (Vector3 from, Vector3 aim\+Point, float speed, int attack\+Id=0)
+\begin{DoxyCompactList}\small\item\em Fires one straight (non-\/homing) shot from \textquotesingle{}from\textquotesingle{} towards \textquotesingle{}aim\+Point\textquotesingle{}, as part of attack \textquotesingle{}attack\+Id\textquotesingle{}. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_abc98606c42a440e40333189cb791abfc}\label{class_test_attack_director_abc98606c42a440e40333189cb791abfc} 
+bool {\bfseries Try\+Begin\+Rocket} (Vector3 from)
+\begin{DoxyCompactList}\small\item\em Reserves a rocket launch if the rocket rules allow it (cap, gap, distance and the shared rules). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_aa0b045cd81ea030d27d891fac6069593}\label{class_test_attack_director_aa0b045cd81ea030d27d891fac6069593} 
+void {\bfseries Cancel\+Rocket} ()
+\begin{DoxyCompactList}\small\item\em A rocket carrier was removed during its warning. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_ad62be7b35e086b26b7f59344f6faa158}\label{class_test_attack_director_ad62be7b35e086b26b7f59344f6faa158} 
+\doxymbox{\hyperlink{class_test_homing_rocket}{Test\+Homing\+Rocket}} {\bfseries Launch\+Rocket} (Vector3 from, Vector3 direction)
+\begin{DoxyCompactList}\small\item\em Launches a homing rocket from \textquotesingle{}from\textquotesingle{} heading \textquotesingle{}direction\textquotesingle{}; it homes on the player within its limits. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_abba2df17b3e28005aa685744a0592256}\label{class_test_attack_director_abba2df17b3e28005aa685744a0592256} 
+void {\bfseries Clear\+All} ()
+\begin{DoxyCompactList}\small\item\em Removes every enemy shot and rocket and starts a new run seed (restart). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_attack_director_aa83d247457b6a88ccb51ca2eeaebbe3d}\label{class_test_attack_director_aa83d247457b6a88ccb51ca2eeaebbe3d} 
+static \doxymbox{\hyperlink{class_test_attack_director}{Test\+Attack\+Director}} {\bfseries Active}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_a960f314ed5759b317eaeae4e414670dd}\label{class_test_attack_director_a960f314ed5759b317eaeae4e414670dd} 
+\doxymbox{\hyperlink{class_test_difficulty_profile}{Test\+Difficulty\+Profile}} {\bfseries Profile}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_ac290d3e15dcf9af66b2ee101cc61a7da}\label{class_test_attack_director_ac290d3e15dcf9af66b2ee101cc61a7da} 
+bool {\bfseries Has\+Player}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_aecd5d3fca2836adfbbf6794ea0eef627}\label{class_test_attack_director_aecd5d3fca2836adfbbf6794ea0eef627} 
+Vector3 {\bfseries Player\+Position}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_a3187367220b46a86ef1d768dcbbb18be}\label{class_test_attack_director_a3187367220b46a86ef1d768dcbbb18be} 
+Vector3 {\bfseries Player\+Velocity}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em The player\textquotesingle{}s measured velocity on the play plane (from how its transform moved). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a1c9bdb6c086b834235f96a854840786f}\label{class_test_attack_director_a1c9bdb6c086b834235f96a854840786f} 
+int {\bfseries Run\+Seed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Seed for this run\textquotesingle{}s bounded variation; new on every enable and restart unless the profile fixes it. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a2e954be09a54ed3dd7d3f8459649bcc3}\label{class_test_attack_director_a2e954be09a54ed3dd7d3f8459649bcc3} 
+int {\bfseries Active\+Shot\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_a91578efd5ba9018d3ef0d9ec848393af}\label{class_test_attack_director_a91578efd5ba9018d3ef0d9ec848393af} 
+int {\bfseries Active\+Rocket\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_a003e1f9b7a7fdd1b9e50981425eb6be5}\label{class_test_attack_director_a003e1f9b7a7fdd1b9e50981425eb6be5} 
+int {\bfseries Pending\+Attacks}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_acb775e63523cd461f4cc1bf5ee93389f}\label{class_test_attack_director_acb775e63523cd461f4cc1bf5ee93389f} 
+int {\bfseries Pending\+Rockets}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_adb14c606ddd69406ff4a10cfdefb5353}\label{class_test_attack_director_adb14c606ddd69406ff4a10cfdefb5353} 
+Game\+Object {\bfseries Rocket\+Prefab}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_attack_director_a6ae86e7c1fe8791bfe330daad28029da}\label{class_test_attack_director_a6ae86e7c1fe8791bfe330daad28029da} 
+int {\bfseries Busy\+Attacks}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Gun attacks busy at once: attacks charging or firing, plus earlier bursts whose shots are still flying. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_attack_director_a63a98f40402b8fb5e2e244cd7870f284}\label{class_test_attack_director_a63a98f40402b8fb5e2e244cd7870f284} 
+Action$<$ Vector3 $>$ {\bfseries Attack\+Started}
+\begin{DoxyCompactList}\small\item\em An enemy started charging a gun attack (enemy position). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a1514fe82447b9620f80298b86a64c89b}\label{class_test_attack_director_a1514fe82447b9620f80298b86a64c89b} 
+Action$<$ Vector3, Vector3, Vector3 $>$ {\bfseries Shot\+Fired}
+\begin{DoxyCompactList}\small\item\em A shot left (origin, direction, aim point). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_aed492a1bb4b9c48f8c67cd92cb4e2c95}\label{class_test_attack_director_aed492a1bb4b9c48f8c67cd92cb4e2c95} 
+Action$<$ Vector3 $>$ {\bfseries Rocket\+Warning\+Started}
+\begin{DoxyCompactList}\small\item\em An enemy started its rocket warning (enemy position). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_attack_director_a1a962717e0bfd381785e83fe1d11594c}\label{class_test_attack_director_a1a962717e0bfd381785e83fe1d11594c} 
+Action$<$ \doxymbox{\hyperlink{class_test_homing_rocket}{Test\+Homing\+Rocket}} $>$ {\bfseries Rocket\+Launched}
+\begin{DoxyCompactList}\small\item\em A rocket was launched. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER: referee for the test enemies\textquotesingle{} attacks (not Leonardo\textquotesingle{}s AI). Enemies ask before charging a shot, burst or rocket; the director enforces the fairness rules of the difficulty profile (attacks and rockets in flight, gaps between attacks, distance, on-\/screen window, no attacks while the player recovers or after defeat). Enemy shots and rockets are parented here so a restart can remove them. Also tells the test movers where the player is and how it is moving (for limited prediction), and holds the run seed for bounded run-\/to-\/run variation. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Attack\+Director.\+cs\end{DoxyCompactItemize}

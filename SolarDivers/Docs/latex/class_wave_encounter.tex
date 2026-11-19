@@ -1,0 +1,138 @@
+\doxysection{Wave\+Encounter Class Reference}
+\hypertarget{class_wave_encounter}{}\label{class_wave_encounter}\index{WaveEncounter@{WaveEncounter}}
+
+
+Runs a list of enemy waves in order. Spawning only: enemy movement/\+\+AI lives on the enemy prefabs. An enemy stops counting toward its wave when it is destroyed/\+disabled, leaves the encounter bounds, or is force-\/removed by the clear timeout. "{}\+Cleared"{} means every wave finished; it does not mean every enemy was destroyed (see All\+Enemies\+Destroyed). \doxylink{class_wave_encounter_a8dd9180d1efdca5f120c2980328a9278}{Fail\+Encounter()} ends it without victory.  
+
+
+Inheritance diagram for Wave\+Encounter:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_wave_encounter}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_wave_encounter_1_1_wave_event}{Wave\+Event}}
+\item 
+class \doxymbox{\hyperlink{class_wave_encounter_1_1_group_warning_event}{Group\+Warning\+Event}}
+\begin{DoxyCompactList}\small\item\em Group about to enter: world centre of its spawn positions, width across them, seconds until it spawns. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_wave_encounter_affbe623e4352354279e01091d3c8f9a4}\label{class_wave_encounter_affbe623e4352354279e01091d3c8f9a4} 
+enum {\bfseries Encounter\+State} \{ \newline
+{\bfseries Idle}
+, {\bfseries Waiting\+For\+Wave}
+, {\bfseries Spawning}
+, {\bfseries Clearing}
+, \newline
+{\bfseries Completed}
+, {\bfseries Failed}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_wave_encounter_ab0e39ba601dab628e3b746df51d88fab}\label{class_wave_encounter_ab0e39ba601dab628e3b746df51d88fab} 
+void {\bfseries Configure} (List$<$ \doxymbox{\hyperlink{class_enemy_wave}{Enemy\+Wave}} $>$ new\+Waves, Transform origin, Bounds bounds, bool start\+Automatically, Transform parent=null)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests to set up an encounter from code. \end{DoxyCompactList}\item 
+\Hypertarget{class_wave_encounter_a0480fd51982c685562d1e65a7bd9afc7}\label{class_wave_encounter_a0480fd51982c685562d1e65a7bd9afc7} 
+void {\bfseries Set\+Bounds\+Space} (Transform space)
+\begin{DoxyCompactList}\small\item\em Makes the bounds relative to \textquotesingle{}space\textquotesingle{} (e.\+g. a moving rail rig). Null = world space. \end{DoxyCompactList}\item 
+\Hypertarget{class_wave_encounter_af9c1b8b2d75ec7adb0b6bf2e8bc47032}\label{class_wave_encounter_af9c1b8b2d75ec7adb0b6bf2e8bc47032} 
+bool {\bfseries Is\+Inside\+Bounds} (Vector3 world\+Position)
+\begin{DoxyCompactList}\small\item\em Whether a world position is inside the encounter bounds (following Bounds Space if set). \end{DoxyCompactList}\item 
+\Hypertarget{class_wave_encounter_a68a16dd200fd9ce8ee0f11c7b3f3f1bf}\label{class_wave_encounter_a68a16dd200fd9ce8ee0f11c7b3f3f1bf} 
+void {\bfseries Start\+Encounter} ()
+\item 
+\Hypertarget{class_wave_encounter_ac46b5a4de92c97bb52e6f9fd34335b04}\label{class_wave_encounter_ac46b5a4de92c97bb52e6f9fd34335b04} 
+void {\bfseries Restart\+Encounter} ()
+\begin{DoxyCompactList}\small\item\em Removes every enemy this encounter spawned and starts again from wave 1. \end{DoxyCompactList}\item 
+\Hypertarget{class_wave_encounter_a12d3443db6b18dffda08e907cd611ab4}\label{class_wave_encounter_a12d3443db6b18dffda08e907cd611ab4} 
+void {\bfseries Stop\+Encounter} ()
+\item 
+\Hypertarget{class_wave_encounter_a8dd9180d1efdca5f120c2980328a9278}\label{class_wave_encounter_a8dd9180d1efdca5f120c2980328a9278} 
+void {\bfseries Fail\+Encounter} (string reason)
+\begin{DoxyCompactList}\small\item\em Ends the encounter without victory (e.\+g. player defeated): no more spawns, and on\+Encounter\+Completed can no longer fire. Enemies already on screen keep flying until they leave. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_wave_encounter_a0805f550f487a14ddae6ec3b2e465dda}\label{class_wave_encounter_a0805f550f487a14ddae6ec3b2e465dda} 
+\doxymbox{\hyperlink{class_wave_encounter_1_1_wave_event}{Wave\+Event}} {\bfseries on\+Wave\+Started} = new \doxymbox{\hyperlink{class_wave_encounter_1_1_wave_event}{Wave\+Event}}()
+\item 
+\Hypertarget{class_wave_encounter_af51e81613a5c02731903ac90949c0854}\label{class_wave_encounter_af51e81613a5c02731903ac90949c0854} 
+\doxymbox{\hyperlink{class_wave_encounter_1_1_wave_event}{Wave\+Event}} {\bfseries on\+Wave\+Cleared} = new \doxymbox{\hyperlink{class_wave_encounter_1_1_wave_event}{Wave\+Event}}()
+\item 
+\Hypertarget{class_wave_encounter_a55b0a1f8e604f4d5941853782709634f}\label{class_wave_encounter_a55b0a1f8e604f4d5941853782709634f} 
+Unity\+Event {\bfseries on\+Encounter\+Completed} = new Unity\+Event()
+\item 
+\Hypertarget{class_wave_encounter_a62ffcda5cb073ea815d0a337eacf4857}\label{class_wave_encounter_a62ffcda5cb073ea815d0a337eacf4857} 
+Unity\+Event {\bfseries on\+Encounter\+Failed} = new Unity\+Event()
+\item 
+\Hypertarget{class_wave_encounter_aa6ff9947e9abfec86cc95245e983ff28}\label{class_wave_encounter_aa6ff9947e9abfec86cc95245e983ff28} 
+\doxymbox{\hyperlink{class_wave_encounter_1_1_group_warning_event}{Group\+Warning\+Event}} {\bfseries on\+Group\+Incoming} = new \doxymbox{\hyperlink{class_wave_encounter_1_1_group_warning_event}{Group\+Warning\+Event}}()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_wave_encounter_ac1bbb2dafb56d22167882e6bb7fffc47}\label{class_wave_encounter_ac1bbb2dafb56d22167882e6bb7fffc47} 
+Encounter\+State {\bfseries State}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_add4ea0cffac869d40713baea665022e0}\label{class_wave_encounter_add4ea0cffac869d40713baea665022e0} 
+int {\bfseries Current\+Wave\+Index}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a85e328ad9d59cd7b8337623cabb405a0}\label{class_wave_encounter_a85e328ad9d59cd7b8337623cabb405a0} 
+int {\bfseries Wave\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a98dcf84c41fbf4c3d30d7443bd21438b}\label{class_wave_encounter_a98dcf84c41fbf4c3d30d7443bd21438b} 
+int {\bfseries Alive\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a8d26d8131d5e2beb6dbbf1a68637bf2d}\label{class_wave_encounter_a8d26d8131d5e2beb6dbbf1a68637bf2d} 
+int {\bfseries Spawned\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a8fae59d9c77540b46bbf1491b19f2a28}\label{class_wave_encounter_a8fae59d9c77540b46bbf1491b19f2a28} 
+int {\bfseries Destroyed\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_aadbef0e1a9bfb801c27bdcd3824e9ed5}\label{class_wave_encounter_aadbef0e1a9bfb801c27bdcd3824e9ed5} 
+int {\bfseries Escaped\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a4ec637bf2ba3a2e43f39350138e6d346}\label{class_wave_encounter_a4ec637bf2ba3a2e43f39350138e6d346} 
+int {\bfseries Timed\+Out\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a7a6bb26de6645fb9ebdae454b9feed1c}\label{class_wave_encounter_a7a6bb26de6645fb9ebdae454b9feed1c} 
+int {\bfseries Config\+Error\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a226c09d64d88fe49ffd87ad8cd917292}\label{class_wave_encounter_a226c09d64d88fe49ffd87ad8cd917292} 
+bool {\bfseries Is\+Completed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_ab4e50f5c5ab0523755b101282158f283}\label{class_wave_encounter_ab4e50f5c5ab0523755b101282158f283} 
+bool {\bfseries Is\+Failed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a0887efec7c685468446652033c720b18}\label{class_wave_encounter_a0887efec7c685468446652033c720b18} 
+bool {\bfseries All\+Enemies\+Destroyed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a985dfb3ea0c5882b0d47778c875f5f6d}\label{class_wave_encounter_a985dfb3ea0c5882b0d47778c875f5f6d} 
+float {\bfseries State\+Timer}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a6dfc91a7a4b4ad3043cca46241d0c446}\label{class_wave_encounter_a6dfc91a7a4b4ad3043cca46241d0c446} 
+float {\bfseries Elapsed\+Time}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_a8da4b6ac3f3384d0d9e6e62c3636ed85}\label{class_wave_encounter_a8da4b6ac3f3384d0d9e6e62c3636ed85} 
+IRead\+Only\+List$<$ \doxymbox{\hyperlink{class_enemy_wave}{Enemy\+Wave}} $>$ {\bfseries Waves}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em The configured waves (read-\/only list; the waves themselves can be tuned from code, e.\+g. by a scene builder). \end{DoxyCompactList}\item 
+\Hypertarget{class_wave_encounter_aa08212a4db3cffd8ba7e4815d57fdb75}\label{class_wave_encounter_aa08212a4db3cffd8ba7e4815d57fdb75} 
+\doxymbox{\hyperlink{class_enemy_wave}{Enemy\+Wave}} {\bfseries Current\+Wave}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_wave_encounter_aa267e6b02181db39440a52f29a337b10}\label{class_wave_encounter_aa267e6b02181db39440a52f29a337b10} 
+Transform {\bfseries Bounds\+Space}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Runs a list of enemy waves in order. Spawning only: enemy movement/\+\+AI lives on the enemy prefabs. An enemy stops counting toward its wave when it is destroyed/\+disabled, leaves the encounter bounds, or is force-\/removed by the clear timeout. "{}\+Cleared"{} means every wave finished; it does not mean every enemy was destroyed (see All\+Enemies\+Destroyed). \doxylink{class_wave_encounter_a8dd9180d1efdca5f120c2980328a9278}{Fail\+Encounter()} ends it without victory. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/Wave\+Encounter.\+cs\end{DoxyCompactItemize}

@@ -1,0 +1,42 @@
+\doxysection{Test\+Camera\+Shake Class Reference}
+\hypertarget{class_test_camera_shake}{}\label{class_test_camera_shake}\index{TestCameraShake@{TestCameraShake}}
+
+
+PLACEHOLDER camera shake for the wave test scene. Short, decaying, optional (untick Shake Enabled). The offset is added on top of wherever the camera is and removed again, so it never drifts the camera. The HUD renders through its own camera and does not shake.  
+
+
+Inheritance diagram for Test\+Camera\+Shake:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_camera_shake}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_camera_shake_a9a93edc2ad4b9bd68b99f6bea8cbc3e8}\label{class_test_camera_shake_a9a93edc2ad4b9bd68b99f6bea8cbc3e8} 
+void {\bfseries Shake} (float strength)
+\begin{DoxyCompactList}\small\item\em 0..1. Strength is squared, so small hits stay subtle. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_camera_shake_a9a993da7c63722c3e6d2976afa8423ac}\label{class_test_camera_shake_a9a993da7c63722c3e6d2976afa8423ac} 
+void {\bfseries Reset\+Shake} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_camera_shake_af7efee2d518a43a4a471d43c2bd2687d}\label{class_test_camera_shake_af7efee2d518a43a4a471d43c2bd2687d} 
+bool {\bfseries Shake\+Enabled}\hspace{0.3cm}{\ttfamily  \+[get, set]}
+\item 
+\Hypertarget{class_test_camera_shake_ac3eb02c9e10f2087f2e21789998b46b6}\label{class_test_camera_shake_ac3eb02c9e10f2087f2e21789998b46b6} 
+float {\bfseries Strength}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_camera_shake_a85580e8c0b556031c3a7e68fde61bd5a}\label{class_test_camera_shake_a85580e8c0b556031c3a7e68fde61bd5a} 
+Vector3 {\bfseries Current\+Offset}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER camera shake for the wave test scene. Short, decaying, optional (untick Shake Enabled). The offset is added on top of wherever the camera is and removed again, so it never drifts the camera. The HUD renders through its own camera and does not shake. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Camera\+Shake.\+cs\end{DoxyCompactItemize}

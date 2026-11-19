@@ -41,6 +41,7 @@ public class TestPlayerShip : MonoBehaviour
     [SerializeField] private GameObject missileProjectilePrefab;
     [SerializeField] private float missileFireCooldown = 2f;
     [SerializeField] private int missileAmmo = 6;
+    public int MissileAmmo => missileAmmo;
 
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireCooldown = 0.2f;

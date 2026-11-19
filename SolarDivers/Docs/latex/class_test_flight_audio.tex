@@ -1,0 +1,72 @@
+\doxysection{Test\+Flight\+Audio Class Reference}
+\hypertarget{class_test_flight_audio}{}\label{class_test_flight_audio}\index{TestFlightAudio@{TestFlightAudio}}
+
+
+PLACEHOLDER engine sound for the wave test scene (cinematic, not a flight-\/physics simulation). Player engine: one recorded jet loop whose level, pitch and brightness follow the ship\textquotesingle{}s speed and acceleration smoothly (spools up faster than it winds down), fading out on defeat. Enemy flybys: when a test enemy is about to pass close to the player, a recorded jet pass is started so its loudest point lines up with the closest approach. The voice then follows the enemy: level and brightness from distance, stereo position from its side, and a small, capped Doppler-\/style pitch change from the closing speed. Restart and leaving Play mode stop every loop.  
+
+
+Inheritance diagram for Test\+Flight\+Audio:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_flight_audio}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_flight_audio_a6bcca531e9beb377499b7a1bd6605d3a}\label{class_test_flight_audio_a6bcca531e9beb377499b7a1bd6605d3a} 
+IEnumerable$<$ float $>$ {\bfseries Flyby\+Pitches} ()
+\begin{DoxyCompactList}\small\item\em Pitch of every flyby voice that is playing (tests). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_flight_audio_a3aa20c9d8cd2fcbcf9b223db84b9998c}\label{class_test_flight_audio_a3aa20c9d8cd2fcbcf9b223db84b9998c} 
+void {\bfseries Configure} (\doxymbox{\hyperlink{class_test_sound_bank}{Test\+Sound\+Bank}} bank, \doxymbox{\hyperlink{class_test_player_ship}{Test\+Player\+Ship}} ship, \doxymbox{\hyperlink{class_test_player_health}{Test\+Player\+Health}} health=null)
+\begin{DoxyCompactList}\small\item\em Used by the scene builder and tests. \end{DoxyCompactList}\item 
+\Hypertarget{class_test_flight_audio_a3f74c5c6375ca287f16d5439b6ff6f27}\label{class_test_flight_audio_a3f74c5c6375ca287f16d5439b6ff6f27} 
+void {\bfseries Clear\+All} ()
+\begin{DoxyCompactList}\small\item\em Stops the engine and every flyby (restart). The engine fades back in on the next frame if the ship is active. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_flight_audio_a5ee7965839cc92ce3972a5d8388d2926}\label{class_test_flight_audio_a5ee7965839cc92ce3972a5d8388d2926} 
+static bool {\bfseries Predict\+Pass} (Vector3 enemy, Vector3 enemy\+Velocity, Vector3 player, Vector3 player\+Velocity, out float time, out float distance)
+\begin{DoxyCompactList}\small\item\em Time until two points moving in a straight line are closest (\texorpdfstring{$>$}{>}= 0) and that closest distance (on the play plane). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_flight_audio_a5c3bdb14f4295c1bc5d462c7955b86a2}\label{class_test_flight_audio_a5c3bdb14f4295c1bc5d462c7955b86a2} 
+static \doxymbox{\hyperlink{class_test_flight_audio}{Test\+Flight\+Audio}} {\bfseries Active}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_a14dd9636f6053f0bbc3c34e7951de137}\label{class_test_flight_audio_a14dd9636f6053f0bbc3c34e7951de137} 
+float {\bfseries Throttle}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_a2e29d288388ae0098536ef712c17dc70}\label{class_test_flight_audio_a2e29d288388ae0098536ef712c17dc70} 
+float {\bfseries Engine\+Volume\+Now}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_a52fef715b616e8b632a1307ac410e95e}\label{class_test_flight_audio_a52fef715b616e8b632a1307ac410e95e} 
+float {\bfseries Engine\+Pitch\+Now}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_a6c46ec661b7a40b38a4fb17d180c85d7}\label{class_test_flight_audio_a6c46ec661b7a40b38a4fb17d180c85d7} 
+bool {\bfseries Engine\+Running}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_afd5b0ba7ca5d823c7bba3b09735b62df}\label{class_test_flight_audio_afd5b0ba7ca5d823c7bba3b09735b62df} 
+int {\bfseries Max\+Flybys}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_a4cdcd3ceb24ec2f5bd5951baeda8722f}\label{class_test_flight_audio_a4cdcd3ceb24ec2f5bd5951baeda8722f} 
+float {\bfseries Doppler\+Amount}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_flight_audio_ad41cd031312d683c2c551b2ddc795c0f}\label{class_test_flight_audio_ad41cd031312d683c2c551b2ddc795c0f} 
+int {\bfseries Active\+Flyby\+Count}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_flight_audio_a86c293f59037b9eef679942ec795cd11}\label{class_test_flight_audio_a86c293f59037b9eef679942ec795cd11} 
+Action$<$ \doxymbox{\hyperlink{class_test_enemy_mover}{Test\+Enemy\+Mover}}, float, float $>$ {\bfseries Flyby\+Started}
+\begin{DoxyCompactList}\small\item\em A flyby started: enemy, predicted closest distance, seconds until closest approach. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER engine sound for the wave test scene (cinematic, not a flight-\/physics simulation). Player engine: one recorded jet loop whose level, pitch and brightness follow the ship\textquotesingle{}s speed and acceleration smoothly (spools up faster than it winds down), fading out on defeat. Enemy flybys: when a test enemy is about to pass close to the player, a recorded jet pass is started so its loudest point lines up with the closest approach. The voice then follows the enemy: level and brightness from distance, stereo position from its side, and a small, capped Doppler-\/style pitch change from the closing speed. Restart and leaving Play mode stop every loop. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Flight\+Audio.\+cs\end{DoxyCompactItemize}

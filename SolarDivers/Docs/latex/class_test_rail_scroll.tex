@@ -1,0 +1,36 @@
+\doxysection{Test\+Rail\+Scroll Class Reference}
+\hypertarget{class_test_rail_scroll}{}\label{class_test_rail_scroll}\index{TestRailScroll@{TestRailScroll}}
+
+
+PLACEHOLDER rail motion for the integrated demo: moves this rig (camera, player, spawn origin, bounds space) forward at a constant speed, standing in for Abel\textquotesingle{}s \doxylink{class_level_camera}{Level\+Camera} until its keyframe movement is finished. Speed 0 = static (the default). Lets us check that spawns, bounds and enemy routes follow a moving rig. Reset\+To\+Start is wired to R. Runs before other scripts and syncs physics after moving: a Character\+Controller child (Abel\textquotesingle{}s player) keeps its own physics position and would otherwise be left behind, because this project does not auto-\/sync transforms. The real rail camera will need the same Physics.\+Sync\+Transforms() call (or to move the player explicitly).  
+
+
+Inheritance diagram for Test\+Rail\+Scroll:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_rail_scroll}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_rail_scroll_acddff5d7571b79b19a28a95d165d0033}\label{class_test_rail_scroll_acddff5d7571b79b19a28a95d165d0033} 
+void {\bfseries Reset\+To\+Start} ()
+\begin{DoxyCompactList}\small\item\em Back to where the rig started (restart). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_rail_scroll_a141a85e4af8487654362379fcd9d8a70}\label{class_test_rail_scroll_a141a85e4af8487654362379fcd9d8a70} 
+float {\bfseries Speed}\hspace{0.3cm}{\ttfamily  \+[get, set]}
+\item 
+\Hypertarget{class_test_rail_scroll_ae3d02de5e11d6f28881b0ec5504ce0bf}\label{class_test_rail_scroll_ae3d02de5e11d6f28881b0ec5504ce0bf} 
+float {\bfseries Travelled}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER rail motion for the integrated demo: moves this rig (camera, player, spawn origin, bounds space) forward at a constant speed, standing in for Abel\textquotesingle{}s \doxylink{class_level_camera}{Level\+Camera} until its keyframe movement is finished. Speed 0 = static (the default). Lets us check that spawns, bounds and enemy routes follow a moving rig. Reset\+To\+Start is wired to R. Runs before other scripts and syncs physics after moving: a Character\+Controller child (Abel\textquotesingle{}s player) keeps its own physics position and would otherwise be left behind, because this project does not auto-\/sync transforms. The real rail camera will need the same Physics.\+Sync\+Transforms() call (or to move the player explicitly). 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Integration/Test\+Rail\+Scroll.\+cs\end{DoxyCompactItemize}

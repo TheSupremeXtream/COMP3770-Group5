@@ -1,0 +1,115 @@
+\doxysection{Solar\+Divers.\+Player\+Actions Struct Reference}
+\hypertarget{struct_solar_divers_1_1_player_actions}{}\label{struct_solar_divers_1_1_player_actions}\index{SolarDivers.PlayerActions@{SolarDivers.PlayerActions}}
+
+
+Provides access to input actions defined in input action map "{}\+Player"{}.  
+
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_a95388d36783a94a09fe27be0cf5c630f}\label{struct_solar_divers_1_1_player_actions_a95388d36783a94a09fe27be0cf5c630f} 
+{\bfseries Player\+Actions} (@\doxymbox{\hyperlink{class_solar_divers}{Solar\+Divers}} wrapper)
+\begin{DoxyCompactList}\small\item\em Construct a new instance of the input action map wrapper class. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_a898d86ad81dd94dbfe9f0f257353daa9}\label{struct_solar_divers_1_1_player_actions_a898d86ad81dd94dbfe9f0f257353daa9} 
+Input\+Action\+Map {\bfseries Get} ()
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action map instance. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_ad37bdbb41bc1b7de71fcee3d9f61f911}\label{struct_solar_divers_1_1_player_actions_ad37bdbb41bc1b7de71fcee3d9f61f911} 
+void {\bfseries Enable} ()
+\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_a1ac241952610639fd841a440dec61ce5}\label{struct_solar_divers_1_1_player_actions_a1ac241952610639fd841a440dec61ce5} 
+void {\bfseries Disable} ()
+\item 
+void \doxymbox{\hyperlink{struct_solar_divers_1_1_player_actions_a6a309a34db6ab86f6afd18c86ce7a511}{Add\+Callbacks}} (\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}} instance)
+\begin{DoxyCompactList}\small\item\em Adds Input\+Action.\+started, Input\+Action.\+performed and Input\+Action.\+canceled callbacks provided via  on all input actions contained in this map. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_solar_divers_1_1_player_actions_af88c65d003d2091111b5d03adc8fda71}{Remove\+Callbacks}} (\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}} instance)
+\begin{DoxyCompactList}\small\item\em Unregisters  and unregisters all input action callbacks via Player\+Actions.\+Unregister\+Callbacks(\+IPlayer\+Actions). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{struct_solar_divers_1_1_player_actions_ab6f92e70c0e1b63d8584f7138d2b87e6}{Set\+Callbacks}} (\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}} instance)
+\begin{DoxyCompactList}\small\item\em Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via . \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_a63fac06e3f3c876e4292f93d20d23fc9}\label{struct_solar_divers_1_1_player_actions_a63fac06e3f3c876e4292f93d20d23fc9} 
+static implicit {\bfseries operator Input\+Action\+Map} (\doxymbox{\hyperlink{struct_solar_divers_1_1_player_actions_a95388d36783a94a09fe27be0cf5c630f}{Player\+Actions}} set)
+\begin{DoxyCompactList}\small\item\em Implicitly converts an  to an  instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_aa94b09e9bc7a03222f9fe1f44a65c3f3}\label{struct_solar_divers_1_1_player_actions_aa94b09e9bc7a03222f9fe1f44a65c3f3} 
+Input\+Action {\bfseries Move}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+Player/\+\+Move"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_a4f9cbbe7454131d9691d2f403e036959}\label{struct_solar_divers_1_1_player_actions_a4f9cbbe7454131d9691d2f403e036959} 
+Input\+Action {\bfseries Fire}\hspace{0.3cm}{\ttfamily  \+[get]}
+\begin{DoxyCompactList}\small\item\em Provides access to the underlying input action "{}\+Player/\+\+Fire"{}. \end{DoxyCompactList}\item 
+\Hypertarget{struct_solar_divers_1_1_player_actions_aeb580ab081358110ed52752fb127365a}\label{struct_solar_divers_1_1_player_actions_aeb580ab081358110ed52752fb127365a} 
+bool {\bfseries enabled}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Provides access to input actions defined in input action map "{}\+Player"{}. 
+
+\label{struct_solar_divers_1_1_player_actions_doc-func-members}
+\Hypertarget{struct_solar_divers_1_1_player_actions_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{struct_solar_divers_1_1_player_actions_a6a309a34db6ab86f6afd18c86ce7a511}\index{SolarDivers.PlayerActions@{SolarDivers.PlayerActions}!AddCallbacks@{AddCallbacks}}
+\index{AddCallbacks@{AddCallbacks}!SolarDivers.PlayerActions@{SolarDivers.PlayerActions}}
+\doxysubsubsection{\texorpdfstring{AddCallbacks()}{AddCallbacks()}}
+{\footnotesize\ttfamily \label{struct_solar_divers_1_1_player_actions_a6a309a34db6ab86f6afd18c86ce7a511} 
+void Solar\+Divers.\+Player\+Actions.\+Add\+Callbacks (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}}}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Adds Input\+Action.\+started, Input\+Action.\+performed and Input\+Action.\+canceled callbacks provided via  on all input actions contained in this map. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & Callback instance.\\
+\hline
+\end{DoxyParams}
+
+
+If {\itshape instance}  is {\ttfamily null} or {\itshape instance}  have already been added this method does nothing. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{struct_solar_divers_1_1_player_actions}{Player\+Actions}
+
+
+\end{DoxySeeAlso}
+\Hypertarget{struct_solar_divers_1_1_player_actions_af88c65d003d2091111b5d03adc8fda71}\index{SolarDivers.PlayerActions@{SolarDivers.PlayerActions}!RemoveCallbacks@{RemoveCallbacks}}
+\index{RemoveCallbacks@{RemoveCallbacks}!SolarDivers.PlayerActions@{SolarDivers.PlayerActions}}
+\doxysubsubsection{\texorpdfstring{RemoveCallbacks()}{RemoveCallbacks()}}
+{\footnotesize\ttfamily \label{struct_solar_divers_1_1_player_actions_af88c65d003d2091111b5d03adc8fda71} 
+void Solar\+Divers.\+Player\+Actions.\+Remove\+Callbacks (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}}}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Unregisters  and unregisters all input action callbacks via Player\+Actions.\+Unregister\+Callbacks(\+IPlayer\+Actions). 
+
+\begin{DoxySeeAlso}{See also}
+Player\+Actions.\+Unregister\+Callbacks(\+IPlayer\+Actions)
+
+
+\end{DoxySeeAlso}
+\Hypertarget{struct_solar_divers_1_1_player_actions_ab6f92e70c0e1b63d8584f7138d2b87e6}\index{SolarDivers.PlayerActions@{SolarDivers.PlayerActions}!SetCallbacks@{SetCallbacks}}
+\index{SetCallbacks@{SetCallbacks}!SolarDivers.PlayerActions@{SolarDivers.PlayerActions}}
+\doxysubsubsection{\texorpdfstring{SetCallbacks()}{SetCallbacks()}}
+{\footnotesize\ttfamily \label{struct_solar_divers_1_1_player_actions_ab6f92e70c0e1b63d8584f7138d2b87e6} 
+void Solar\+Divers.\+Player\+Actions.\+Set\+Callbacks (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{interface_solar_divers_1_1_i_player_actions}{IPlayer\+Actions}}}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via . 
+
+If {\itshape instance}  is {\ttfamily null}, calling this method will only unregister all existing callbacks but not register any new callbacks. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{struct_solar_divers_1_1_player_actions_a6a309a34db6ab86f6afd18c86ce7a511}{Player\+Actions.\+Add\+Callbacks(\+IPlayer\+Actions)}, \doxylink{struct_solar_divers_1_1_player_actions_af88c65d003d2091111b5d03adc8fda71}{Player\+Actions.\+Remove\+Callbacks(\+IPlayer\+Actions)}, Player\+Actions.\+Unregister\+Callbacks(\+IPlayer\+Actions)
+
+
+\end{DoxySeeAlso}
+
+
+The documentation for this struct was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/Solar\+Divers.\+cs\end{DoxyCompactItemize}

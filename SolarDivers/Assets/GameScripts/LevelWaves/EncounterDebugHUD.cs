@@ -95,6 +95,9 @@ public class EncounterDebugHUD : MonoBehaviour
         missiles
     }
 
+    private Text missileAmmoText;
+    private int lastMissileAmmo = -1;
+
     public void SetDebugVisible(bool visible)
     {
         showDebugCounters = visible;
@@ -312,6 +315,19 @@ public class EncounterDebugHUD : MonoBehaviour
         resultRect.sizeDelta = new Vector2(820f, 132f + resultBody.preferredHeight + 40f);
     }
 
+    private TestPlayerShip cachedShip;
+    private GameObject lastShipObject;
+
+    private TestPlayerShip GetPlayerShip()
+    {
+        if (playerObject != lastShipObject)
+        {
+            lastShipObject = playerObject;
+            cachedShip = playerObject != null ? playerObject.GetComponentInChildren<TestPlayerShip>(true) : null;
+        }
+        return cachedShip;
+    }
+
     private void RefreshWeapon()
     {
         if (weaponPanel == null || weaponLabels[0] == null)
@@ -319,14 +335,36 @@ public class EncounterDebugHUD : MonoBehaviour
             return;
         }
 
-        if (playerObject == null)
+        TestPlayerShip ship = GetPlayerShip();
+        if (playerObject == null || ship == null)
         {
             weaponPanel.SetActive(false);
+            if (missileAmmoText != null)
+            {
+                missileAmmoText.transform.parent.gameObject.SetActive(false);
+            }
             lastHighlightedWeapon = -1;
+            lastMissileAmmo = -1;
             return;
         }
 
         weaponPanel.SetActive(true);
+        currentWeapon = ship.GetSelectedWeapon();
+        int ammo = ship.MissileAmmo;
+        if (missileAmmoText != null)
+        {
+            GameObject ammoBox = missileAmmoText.transform.parent.gameObject;
+            ammoBox.SetActive(true);
+            
+            if (ammo != lastMissileAmmo)
+            {
+                lastMissileAmmo = ammo;
+                missileAmmoText.text = ammo <= 0
+                    ? $"<color=#FF6657>Missiles:{ammo}</color>"
+                    : $"<color=#FFC74D>Missiles:{ammo}</color>";
+            }
+        }
+
         if (currentWeapon == lastHighlightedWeapon)
         {
             return;
@@ -337,6 +375,20 @@ public class EncounterDebugHUD : MonoBehaviour
         for (int i = 0; i < weaponLabels.Length; i++)
         {
             weaponLabels[i].text = FormatWeaponSlot(weaponNames[i], i + 1, i == currentWeapon);
+        }
+
+        
+
+        if (ammo != lastMissileAmmo)
+        {
+            lastMissileAmmo = ammo;
+            missileAmmoText.text = ammo <= 0
+                ? $"<color=#FF6657>Missiles:{ammo}</color>"
+                : $"<color=#FFC74D>Missiles:{ammo}</color>";
+            if (missileAmmoText.transform.parent is RectTransform rt)
+            {
+                rt.sizeDelta = new Vector2(missileAmmoText.preferredWidth + 32f, 42f);
+            }
         }
     }
 
@@ -473,6 +525,28 @@ public class EncounterDebugHUD : MonoBehaviour
 
         weaponPanel = wpn.gameObject;
         lastHighlightedWeapon = currentWeapon;
+
+        
+        // Missile ammo counter on the right above the weapon selector, sized to its text.
+        RectTransform ammoPanel = Panel(
+            root,
+            "MissileAmmoPanel",
+            new Vector2(1f, 0f),
+            new Vector2(-32f, 116f),
+            new Vector2(240f, 42f),
+            PanelColour);
+        missileAmmoText = Label(
+            ammoPanel,
+            "Missiles:0",
+            24,
+            TextAnchor.MiddleRight,
+            TextColour,
+            new Vector2(16f, -5f),
+            new Vector2(400f, 32f),
+            centred: false,
+            bold: true);
+        ammoPanel.sizeDelta = new Vector2(missileAmmoText.preferredWidth + 32f, 42f);
+        ammoPanel.gameObject.SetActive(false);
 
         // Centre results.
         RectTransform result = Panel(root, "ResultPanel", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(820f, 440f), new Color(0.015f, 0.025f, 0.06f, 0.9f));

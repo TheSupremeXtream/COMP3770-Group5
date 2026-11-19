@@ -1,0 +1,77 @@
+\doxysection{Test\+Enemy\+Shooter Class Reference}
+\hypertarget{class_test_enemy_shooter}{}\label{class_test_enemy_shooter}\index{TestEnemyShooter@{TestEnemyShooter}}
+
+
+PLACEHOLDER attacks for the test enemies (not Leonardo\textquotesingle{}s AI or Taha\textquotesingle{}s weapons). Each armed ship attacks once, only when \doxylink{class_test_attack_director}{Test\+Attack\+Director} allows it, and always with a warning:  
+
+
+Inheritance diagram for Test\+Enemy\+Shooter:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_test_enemy_shooter}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{class_test_enemy_shooter_ae07aa08cb6111390485359a3e6e2d29d}{On\+Wave\+Spawn}} (\doxymbox{\hyperlink{struct_wave_spawn_info}{Wave\+Spawn\+Info}} info)
+\item 
+\Hypertarget{class_test_enemy_shooter_a0bf90b260d1e6a41f1f2648f3a40d57f}\label{class_test_enemy_shooter_a0bf90b260d1e6a41f1f2648f3a40d57f} 
+void {\bfseries Configure} (\doxymbox{\hyperlink{class_test_wave_difficulty}{Test\+Wave\+Difficulty}} wave, Test\+Enemy\+Class enemy\+Class, int slot\+Index)
+\begin{DoxyCompactList}\small\item\em Chooses this ship\textquotesingle{}s role for a wave (used by On\+Wave\+Spawn and tests). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_shooter_a6aea699d23806dc9ccdcf59ff9c0e7c1}\label{class_test_enemy_shooter_a6aea699d23806dc9ccdcf59ff9c0e7c1} 
+void {\bfseries Arm} (bool can\+Shoot, float telegraph, float speed, int shots=1, float interval=0.\+14f, float lead=0f, float lead\+Cap=1.\+5f)
+\begin{DoxyCompactList}\small\item\em Arms a gun attack directly (tests). \end{DoxyCompactList}\item 
+\Hypertarget{class_test_enemy_shooter_a84121b0b31d03826a1eeedbd252bf8c6}\label{class_test_enemy_shooter_a84121b0b31d03826a1eeedbd252bf8c6} 
+void {\bfseries Arm\+Rocket} (float warning\+Seconds)
+\begin{DoxyCompactList}\small\item\em Arms a rocket attack directly (tests). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Properties}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_test_enemy_shooter_afb8c87e8fd5bf5d4eca0c06dc91021d0}\label{class_test_enemy_shooter_afb8c87e8fd5bf5d4eca0c06dc91021d0} 
+Test\+Shooter\+Role {\bfseries Role}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_shooter_a3969184a1387dcbfec6929ead78cb029}\label{class_test_enemy_shooter_a3969184a1387dcbfec6929ead78cb029} 
+bool {\bfseries Armed}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_shooter_a332f6fb9a484b5f58de51215b812ccc0}\label{class_test_enemy_shooter_a332f6fb9a484b5f58de51215b812ccc0} 
+bool {\bfseries Is\+Charging}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_shooter_abb8f6dc7ee7376e37441242446356f64}\label{class_test_enemy_shooter_abb8f6dc7ee7376e37441242446356f64} 
+bool {\bfseries Has\+Fired}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_shooter_a9fe6a3ac770ff444ff6ec8ab4d6ff30d}\label{class_test_enemy_shooter_a9fe6a3ac770ff444ff6ec8ab4d6ff30d} 
+int {\bfseries Shots\+Per\+Burst}\hspace{0.3cm}{\ttfamily  \+[get]}
+\item 
+\Hypertarget{class_test_enemy_shooter_a8c66c7ce43dc8c7c460319976849acd9}\label{class_test_enemy_shooter_a8c66c7ce43dc8c7c460319976849acd9} 
+float {\bfseries Telegraph\+Seconds}\hspace{0.3cm}{\ttfamily  \+[get]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PLACEHOLDER attacks for the test enemies (not Leonardo\textquotesingle{}s AI or Taha\textquotesingle{}s weapons). Each armed ship attacks once, only when \doxylink{class_test_attack_director}{Test\+Attack\+Director} allows it, and always with a warning: 
+
+
+\begin{DoxyItemize}
+\item Gun: the ship glows orange and shows an aim line that follows the player\textquotesingle{}s predicted position (limited lead), the line locks Aim Lock Seconds before firing, then a single shot or a short burst flies straight along it. Interceptors fire one quick shot with a little more lead; fighters fire bursts.
+\item Rocket: the ship pulses red with a red lock line for the rocket warning time, then launches one homing rocket (\doxylink{class_test_homing_rocket}{Test\+Homing\+Rocket}: limited turn rate, speed and homing time, so it can be dodged). The role comes from the wave\textquotesingle{}s \doxylink{class_test_difficulty_profile}{Test\+Difficulty\+Profile} entry and the ship\textquotesingle{}s class / formation slot. 
+\end{DoxyItemize}
+
+\label{class_test_enemy_shooter_doc-func-members}
+\Hypertarget{class_test_enemy_shooter_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_test_enemy_shooter_ae07aa08cb6111390485359a3e6e2d29d}\index{TestEnemyShooter@{TestEnemyShooter}!OnWaveSpawn@{OnWaveSpawn}}
+\index{OnWaveSpawn@{OnWaveSpawn}!TestEnemyShooter@{TestEnemyShooter}}
+\doxysubsubsection{\texorpdfstring{OnWaveSpawn()}{OnWaveSpawn()}}
+{\footnotesize\ttfamily \label{class_test_enemy_shooter_ae07aa08cb6111390485359a3e6e2d29d} 
+void Test\+Enemy\+Shooter.\+On\+Wave\+Spawn (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_wave_spawn_info}{Wave\+Spawn\+Info}}}]{info}{}\end{DoxyParamCaption})}
+
+
+
+Implements \doxymbox{\hyperlink{interface_i_wave_spawn_receiver}{IWave\+Spawn\+Receiver}}.
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Assets/\+\+Game\+Scripts/\+\+Level\+Waves/\+\+Placeholders/Test\+Enemy\+Shooter.\+cs\end{DoxyCompactItemize}
