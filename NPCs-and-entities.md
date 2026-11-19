@@ -206,7 +206,7 @@ Defines the amount of damage an enemy causes when it touches the player
 
 ```mermaid
 classDiagram
-    direction BT
+    direction RL
 
   class C1["WaveEncounter : MonoBehavior"] {
     +State : EncounterState
