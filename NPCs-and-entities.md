@@ -8,7 +8,7 @@ Basic enemy movement, single enemy type, two projectile types, basic wave config
 
 # Enemy mechanics architecture:
 
-## EnemyWave,cs
+## EnemyWave.cs
 
 Wave definition class:
 
@@ -37,10 +37,20 @@ Executes waves, spawns enemies, monitors their status and manages encounter comp
 
 ## WaveFormation.cs
 
+Calculates the initial positions of enemies within a group
+
+- Generating line formations
+- Generating V-shaped formations
+- Generating mixed formations
+- Calculating horizontal spacing between enemies
+- Determining each enemy's position relative to the spawn origin
+
 ## Class diagram
 
 ```mermaid
 classDiagram
+    direction BT
+
   class C1["WaveEncounter : MonoBehavior"] {
     +State : EncounterState
     +CurrentWaveIndex :  int
@@ -121,7 +131,7 @@ classDiagram
     +GetOffset(...) : Vector3
   }
 
-  class C6["WaveFormationType] {
+  class C6["WaveFormationType"] {
     <<Enumeration>>
     +Line
     +VFormation
@@ -130,7 +140,7 @@ classDiagram
   C6 <|-- C5
   C5 <|-- C1 : uses
 
-  class C7["WaveSpawnInfo (struct)"] {
+  class C7["WaveSpawnInfo"] {
     +waveIndex : int
     +groupIndex : int
     +slotIndex : int
@@ -143,8 +153,99 @@ classDiagram
   C7 <|-- C1
   C7 <|-- C5
 
-  class C8["IWaveSpawnReceiver (interface)"] {
+  class C8["IWaveSpawnReceiver"] {
+    <<Interface>>
     +OnWaveSpawn(info : WaveSpawnInfo)
   }
-  C8 <|-- C7 : passed to
+  C8 <.. C7 : passed to
+
+  class C9["TestEnemyMover : MonoBehavior"] {
+    <<IWaveSpawnReceiver>>
+    +OnEnable()
+    +OnDisable()
+    +OnWaveSpawn(...)
+    +Hash(...)
+    +ApplyDifficulty(...)
+    +ToMask(...)
+    +PlanRoute()
+    +Update()
+    +Step()
+    +SubStepMove()
+    +React()
+    +SetFlankLane()
+    +SetLane()
+    +SafeLane(...)
+  }
+  C9 <..> C8 : implements
+
+  class C10["TestEnemyShooter : MonoBehavior"] {
+    <<IWaveSpawnReceiver>>
+    +Awake()
+    +OnEnable()
+    +OnDisable()
+    +OnWaveSpawn(...)
+    +Configure()
+    +Arm()
+    +ArmRocket()
+    +Update()
+    +Finish()
+    +ShowTelegraph()
+    +HideTelegraph()
+  }
+  C10 <..> C8 : implements
+
+  class C11["TestShooterRole"] {
+    <<Enumeration>>
+    +None
+    +Gun
+    +Rocket
+  }
+  C10 <|-- C11
+
+  class C12["TaskAttackDirector : MonoBehavior"] {
+    +Configure()
+    +OnEnable()
+    +OnDisable()
+    +Update()
+    +ResetState()
+    +BasicRulesAllow()
+    +TryBeginAttack()
+    +EndAttack()
+    +PredictedAim()
+    +Fire()
+    +TryBeginRocket()
+    +CancelRocket()
+    +LaunchRocket()
+    +ClearAll()
+  }
+  C10 <|-- C12 : queries/uses
+
+  class C13["TestEnemyBullet : MonoBehavior"] {
+    +Launch()
+    +Update()
+    +OnTriggerEnter()
+  }
+  C12 <|--|> C13 : spawns
+
+  class C14["TestHomingRocket : MonoBehavior"] {
+    +Launch()
+    +Update()
+    +Step()
+    +UpdateSound()
+    +OnTriggerEnter()
+  }
+  C12 <|--|> C14 : spawns
+
+  class C15["TestEnemyHealth : MonoBehavior"] {
+    +Awake()
+    +OnEnable()
+    +TakeDamage()
+    +Update()
+    +SetFlash()
+  }
+
+  class C16["TestContactDamage : MonoBehavior"] {
+    +Damage : int
+  }
+  
 ```
