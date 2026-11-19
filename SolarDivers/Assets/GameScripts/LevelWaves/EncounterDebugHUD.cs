@@ -182,7 +182,6 @@ public class EncounterDebugHUD : MonoBehaviour
             if (Keyboard.current.digit3Key.wasPressedThisFrame) currentWeapon = (int)weapons.missiles;
         }
         RefreshWeapon();
-        RefreshWeapon();
         if (showDebugCounters)
         {
             debugText.text =
