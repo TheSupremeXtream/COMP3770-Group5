@@ -24,7 +24,6 @@ public class TestPlayerShip : MonoBehaviour
     [SerializeField] private Vector2 zLimits = new Vector2(-8f, 0f);
     [SerializeField] private GameObject projectilePrefab;
 
-
     // Taha Hammoud, added Nov-03
     // Adding the Plasma weapon settings, after this we have 2/3 weapons
     // Has its own projectile, cooldown, and limited ammo
@@ -43,13 +42,6 @@ public class TestPlayerShip : MonoBehaviour
     [SerializeField] private float missileFireCooldown = 2f;
     [SerializeField] private int missileAmmo = 6;
 
-
-
-
-
-
-
-
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireCooldown = 0.2f;
     [Tooltip("Presentation only: brief flash object at the fire point (starts inactive).")]
@@ -64,24 +56,53 @@ public class TestPlayerShip : MonoBehaviour
     private Vector3 baseFlashScale = Vector3.one;
     private Vector3 flashScale = Vector3.one;
 
+    // Keep the starting ammo so a scene restart restores a complete loadout.
+    private int startingPlasmaAmmo;
+    private int startingMissileAmmo;
+
     public Vector3 Velocity => velocity;
     public float MaxSpeed => speed;
     public Vector2 XLimits => xLimits;
     public Vector2 ZLimits => zLimits;
 
+    // Old Awake kept for review before the ammo reset was added.
+    //void Awake()
+    //{
+    //    startPosition = transform.position;
+    //    if (muzzleFlash != null)
+    //    {
+    //        baseFlashScale = muzzleFlash.transform.localScale;
+    //    }
+    //}
+
+    // New Awake remembers the configured plasma and missile ammunition.
     void Awake()
     {
         startPosition = transform.position;
+        startingPlasmaAmmo = plasmaAmmo;
+        startingMissileAmmo = missileAmmo;
         if (muzzleFlash != null)
         {
             baseFlashScale = muzzleFlash.transform.localScale;
         }
     }
 
+    // Old OnEnable kept for review. It reset movement but could keep the last weapon after Play Mode restarted.
+    //void OnEnable()
+    //{
+    //    cooldown = 0f;
+    //    velocity = Vector3.zero;
+    //    HideMuzzleFlash();
+    //}
+
+    // New OnEnable always starts a fresh run on the laser with full special ammo.
     void OnEnable()
     {
         cooldown = 0f;
         velocity = Vector3.zero;
+        plasmaAmmo = startingPlasmaAmmo;
+        missileAmmo = startingMissileAmmo;
+        SelectWeapon(0);
         HideMuzzleFlash();
     }
 
@@ -120,6 +141,12 @@ public class TestPlayerShip : MonoBehaviour
         velocity = Vector3.zero;
         ClearProjectiles();
         cooldown = 0f;
+
+        // Taha - restarting now restores special ammo and returns to the regular laser.
+        plasmaAmmo = startingPlasmaAmmo;
+        missileAmmo = startingMissileAmmo;
+        SelectWeapon(0);
+
         HideMuzzleFlash();
     }
 
@@ -144,11 +171,8 @@ public class TestPlayerShip : MonoBehaviour
         }
     }
 
-
-
-
     // Taha - manual edit
-    // Tracks which weapon is selected, 0 = laser, etc
+    // Tracks which weapon is selected, 0 = laser, 1 = plasma, 2 = missile
     // Switching weapons also resets the firing cooldown
     private int CurrentWeapon => usingMissiles ? 2 : usingPlasma ? 1 : 0;
     private void SelectWeapon(int weapon)
@@ -157,10 +181,6 @@ public class TestPlayerShip : MonoBehaviour
         usingMissiles = weapon == 2;
         cooldown = 0f;
     }
-
-
-
-
 
     void Update()
     {
@@ -178,15 +198,10 @@ public class TestPlayerShip : MonoBehaviour
             }
         }
 
-        Keyboard keyboard = Keyboard.current;
-        if (keyboard == null)
-        {
-            return;
-        }
-
         /*
         if (handleMovement)
         {
+            Keyboard keyboard = Keyboard.current;
             Vector2 move = Vector2.zero;
             if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) move.x -= 1f;
             if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) move.x += 1f;
@@ -196,43 +211,47 @@ public class TestPlayerShip : MonoBehaviour
         }
         */
 
+        // Old three-weapon controls kept for review.
+        // They returned early when no keyboard was connected and did not let a controller fire.
+        //Keyboard keyboard = Keyboard.current;
+        //if (keyboard == null)
+        //{
+        //    return;
+        //}
+        //Gamepad gamepad = Gamepad.current;
+        //if (keyboard.digit1Key.wasPressedThisFrame) SelectWeapon(0);
+        //if (keyboard.digit2Key.wasPressedThisFrame) SelectWeapon(1);
+        //if (keyboard.digit3Key.wasPressedThisFrame) SelectWeapon(2);
+        //if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
+        //    SelectWeapon((CurrentWeapon + 1) % 3);
+        //cooldown -= Time.deltaTime;
+        //bool fire = keyboard.spaceKey.isPressed || (Mouse.current != null && Mouse.current.leftButton.isPressed);
+        //if (fire && cooldown <= 0f)
+        //{
+        //    Fire();
+        //}
 
-
-                //// Switching from weapons using 1 and 2 on MNK, eventually 3 for missils. 
-                //// Reset the firing timer so switching feels responsive
-                //// place holder, need to ADD CONTROLER SUPPORT - done - Taha
-                //// The top face button on a controller toggles weapons (Y on Xbox, X on Nintendo, Square on PlayStation)
-                //// Reset the cooldown when switching
-                //Gamepad gamepad = Gamepad.current;
-                //if (keyboard.digit1Key.wasPressedThisFrame)
-                //    usingPlasma = false;
-                //if (keyboard.digit2Key.wasPressedThisFrame)
-                //    usingPlasma = true;
-                //if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
-                //    usingPlasma = !usingPlasma;
-        // Switch between laser, plasma, and missiles
-        // Keyboard uses 1, 2, 3
-        // Controller's top face button cycles through all three
+        // New controls work with keyboard/mouse, controller, or both.
+        // 1/2/3 select directly, the controller's top face button cycles, and bottom face/right trigger fires.
+        Keyboard keyboard = Keyboard.current;
         Gamepad gamepad = Gamepad.current;
 
-        if (keyboard.digit1Key.wasPressedThisFrame)
+        if (keyboard != null && keyboard.digit1Key.wasPressedThisFrame)
             SelectWeapon(0);
-
-        if (keyboard.digit2Key.wasPressedThisFrame)
+        if (keyboard != null && keyboard.digit2Key.wasPressedThisFrame)
             SelectWeapon(1);
-
-        if (keyboard.digit3Key.wasPressedThisFrame)
+        if (keyboard != null && keyboard.digit3Key.wasPressedThisFrame)
             SelectWeapon(2);
-
         if (gamepad != null && gamepad.buttonNorth.wasPressedThisFrame)
             SelectWeapon((CurrentWeapon + 1) % 3);
 
-
-
-
         cooldown -= Time.deltaTime;
-        bool fire = keyboard.spaceKey.isPressed || (Mouse.current != null && Mouse.current.leftButton.isPressed);
-        if (fire && cooldown <= 0f)
+        bool keyboardFire = keyboard != null && keyboard.spaceKey.isPressed;
+        bool mouseFire = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        bool controllerFire = gamepad != null &&
+            (gamepad.buttonSouth.isPressed || gamepad.rightTrigger.ReadValue() > 0.5f);
+
+        if ((keyboardFire || mouseFire || controllerFire) && cooldown <= 0f)
         {
             Fire();
         }
@@ -265,8 +284,6 @@ public class TestPlayerShip : MonoBehaviour
         transform.position = position;
     }
 
-    // Moves v towards target at a constant rate and returns the exact distance covered this step,
-    // so the result is the same at 30 or 240 fps.
     private float Integrate(ref float v, float target, float dt)
     {
         bool braking = Mathf.Approximately(target, 0f) || (v != 0f && Mathf.Sign(target) != Mathf.Sign(v));
@@ -291,59 +308,37 @@ public class TestPlayerShip : MonoBehaviour
 
     public void Fire()
     {
-        if (projectilePrefab == null)
-        {
-            return;
-        }
+        // Old check only looked at the laser prefab and could block the other selected weapons.
+        //if (projectilePrefab == null)
+        //{
+        //    return;
+        //}
+
         Transform from = firePoint != null ? firePoint : transform;
         projectiles.RemoveAll(p => p == null);
 
-
-
-
-        // projectiles.Add(Instantiate(projectilePrefab, from.position, from.rotation)); 
-        // updated to implement choosing the right projectile based on the selected weapon, right now in test we have the 1 plaster
-        // plasma uses its own prefab and has limited ammo
-        // GameObject selectedProjectile = usingPlasma ? plasmaProjectilePrefab : projectilePrefab;
-        // Pick the projectile for whichever weapon is selected
-        // Laser, plasma, and missiles each have their own prefab
+        // Pick the projectile for whichever weapon is selected.
+        // Laser, plasma, and missiles each have their own prefab.
         GameObject selectedProjectile = usingMissiles ? missileProjectilePrefab
             : usingPlasma ? plasmaProjectilePrefab : projectilePrefab;
-        //if (selectedProjectile == null || (usingPlasma && plasmaAmmo <= 0))
-        //    return;
-        //projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
-        //if (usingPlasma)
-        //    plasmaAmmo--;
 
-    // Check ammo before firing
-    // Each special weapon uses its own ammo supply
-    if (selectedProjectile == null ||
-        (usingPlasma && plasmaAmmo <= 0) ||
-        (usingMissiles && missileAmmo <= 0))
-        return;
+        // Check ammo before firing. Each special weapon uses its own ammo supply.
+        if (selectedProjectile == null ||
+            (usingPlasma && plasmaAmmo <= 0) ||
+            (usingMissiles && missileAmmo <= 0))
+            return;
 
-    projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
+        projectiles.Add(Instantiate(selectedProjectile, from.position, from.rotation));
 
-    if (usingPlasma)
-        plasmaAmmo--;
-    if (usingMissiles)
-        missileAmmo--;
+        if (usingPlasma)
+            plasmaAmmo--;
+        if (usingMissiles)
+            missileAmmo--;
 
-        //cooldown = fireCooldown;
-        // implementing the funtion so that each weapon has its own firing speed
-        // Plasma fires slower than the regular laser - remember to add MISSILES NEXT
-        // Each weapon has its own firing speed
-        // Missiles are the slowest, followed by plasma and laser
+        // Each weapon has its own firing speed.
+        // Missiles are the slowest, followed by plasma and laser.
         cooldown = usingMissiles ? missileFireCooldown
             : usingPlasma ? plasmaFireCooldown : fireCooldown;
-
-
-
-
-
-
-
-
 
         if (muzzleFlash != null)
         {
@@ -359,5 +354,4 @@ public class TestPlayerShip : MonoBehaviour
             TestFxManager.Active.PlayShot();
         }
     }
-    
 }
