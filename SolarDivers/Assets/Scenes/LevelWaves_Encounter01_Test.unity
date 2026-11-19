@@ -453,7 +453,7 @@ MonoBehaviour:
     spacing: 2.5
     spawnStyle: 0
     spawnInterval: 0
-    delayBetweenGroups: 3.5
+    delayBetweenGroups: 4
     groupEntryOffsets:
     - -4
     - 4
@@ -473,13 +473,13 @@ MonoBehaviour:
     spacing: 1.8
     spawnStyle: 0
     spawnInterval: 0
-    delayBetweenGroups: 3
+    delayBetweenGroups: 3.5
     groupEntryOffsets:
     - 4.5
     - -4.5
     - 0
     delayBeforeWave: 2.5
-    clearTimeout: 15
+    clearTimeout: 18
   - waveName: Wave 3 - Mixed
     formation: 2
     enemyPrefabs:
@@ -491,7 +491,7 @@ MonoBehaviour:
     spacing: 2
     spawnStyle: 1
     spawnInterval: 0.5
-    delayBetweenGroups: 2
+    delayBetweenGroups: 3
     groupEntryOffsets:
     - -2
     - 2

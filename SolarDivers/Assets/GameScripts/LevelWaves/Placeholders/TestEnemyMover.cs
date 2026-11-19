@@ -89,6 +89,9 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     [SerializeField] private float maxLifetime = 16f;
     [Tooltip("Half the ship's width, used when checking that an escape lane stays open.")]
     [SerializeField] private float halfWidth = 0.75f;
+    [Tooltip("Gap kept between this ship's hull and other ships' hulls (units): descent lanes are picked this far apart, " +
+             "ships steer apart above the straight descent and slow down behind a ship in their path.")]
+    [SerializeField] private float separation = 0.6f;
 
     private const float SubStep = 1f / 120f;
     private const float ExitZ = -30f;
@@ -122,6 +125,8 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     private bool pursuing;
     // Bounded run-to-run variation of the dive depth (units), from the run seed.
     private float diveOffset;
+    // Wave and group this ship was spawned in (-1 = none), so a spawn only re-spaces lanes within its own group.
+    private int groupKey = -1;
 
     public TestEnemyClass Class => enemyClass;
     public TestMovePattern Pattern => pattern;
@@ -177,6 +182,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         reacted = flanking = retreating = everRetreated = pursuing = false;
         diveOffset = 0f;
         trackTimer = 0f;
+        groupKey = -1;
         // Spawned without an encounter (e.g. dropped in the scene): curve towards the centre.
         side = Mathf.Abs(transform.localPosition.x) > 0.5f ? -Mathf.Sign(transform.localPosition.x) : 1f;
         currentSpeed = Speed;
@@ -253,6 +259,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             speedMultiplier *= shipSpeed;
         }
         currentSpeed = Speed;
+        groupKey = info.waveIndex * 1000 + info.groupIndex;
         PlanRoute(chosen, transform.localPosition.x, groupMin, groupMax);
     }
 
@@ -363,8 +370,167 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             route[i] = new Vector2(Mathf.Clamp(route[i].x, -limit, limit), route[i].y);
         }
         laneX = route[route.Count - 1].x;
-        plannedLaneX = laneX;
         route.Add(new Vector2(laneX, ExitZ));
+        // Group mates spawned just before this ship already hold their lanes; edge clamping can put two on one lane.
+        SetLane(FreeLane(laneX, true));
+        plannedLaneX = laneX;
+    }
+
+    // Ships at a similar height whose hulls could meet this one's.
+    private bool Near(TestEnemyMover other, float window)
+    {
+        return other != this && other.isActiveAndEnabled && other.transform.parent == transform.parent &&
+               Mathf.Abs(other.transform.localPosition.z - transform.localPosition.z) < window;
+    }
+
+    private float LaneGap(TestEnemyMover other) => halfWidth + other.halfWidth + separation;
+
+    // Nearest x to 'wanted' (inside the lane limits) whose descent lane keeps a hull gap to the lanes of ships at a
+    // similar height (optionally only ships of the same group). Returns 'wanted' when every lane is taken.
+    private float FreeLane(float wanted, bool ownGroupOnly = false)
+    {
+        wanted = Mathf.Clamp(wanted, -laneLimitX, laneLimitX);
+        for (int i = 0; i <= 64; i++)
+        {
+            float x = wanted + (i % 2 == 0 ? 1f : -1f) * ((i + 1) / 2) * 0.25f;
+            if (x < -laneLimitX || x > laneLimitX)
+            {
+                continue;
+            }
+            bool free = true;
+            foreach (TestEnemyMover other in active)
+            {
+                if (Near(other, 6f) && (!ownGroupOnly || other.groupKey == groupKey) && Mathf.Abs(other.laneX - x) < LaneGap(other))
+                {
+                    free = false;
+                    break;
+                }
+            }
+            if (free)
+            {
+                return x;
+            }
+        }
+        return wanted;
+    }
+
+    // Slide (units/s) to this ship's own side, away from ships closer than 1.4 hull gaps. Heading and route are
+    // unchanged, and the slide is never along the flight path, so it cannot hold a ship back.
+    private Vector2 MakeRoom(Vector2 pos)
+    {
+        const float slideSpeed = 3f;
+        Vector2 normal = new Vector2(-heading.y, heading.x);
+        float amount = 0f;
+        foreach (TestEnemyMover other in active)
+        {
+            if (!Near(other, 4f))
+            {
+                continue;
+            }
+            Vector3 o = other.transform.localPosition;
+            Vector2 away = pos - new Vector2(o.x, o.z);
+            float distance = away.magnitude;
+            float radius = LaneGap(other) * 1.4f;
+            if (distance < radius)
+            {
+                // Ships exactly in line (handled by braking too) split by spawn order so the two go opposite ways.
+                float lateral = Vector2.Dot(away, normal);
+                float side = Mathf.Abs(lateral) > 0.05f ? Mathf.Sign(lateral) : (active.IndexOf(this) < active.IndexOf(other) ? -1f : 1f);
+                amount += side * (1f - distance / radius);
+            }
+        }
+        Vector2 push = normal * (Mathf.Clamp(amount, -1f, 1f) * slideSpeed);
+        // Stay inside the lane limits.
+        if ((pos.x <= -laneLimitX && push.x < 0f) || (pos.x >= laneLimitX && push.x > 0f))
+        {
+            push.x = 0f;
+        }
+        return push;
+    }
+
+    // Speed that keeps a hull gap behind any ship in this one's path.
+    private float SpeedBehindOthers(Vector2 pos)
+    {
+        float limit = float.MaxValue;
+        foreach (TestEnemyMover other in active)
+        {
+            // Only ships going the same way (head-on meetings are resolved by steering, not by both braking).
+            if (!Near(other, 4f) || Vector2.Dot(other.heading, heading) < 0.5f)
+            {
+                continue;
+            }
+            Vector3 o = other.transform.localPosition;
+            Vector2 offset = new Vector2(o.x, o.z) - pos;
+            float ahead = Vector2.Dot(offset, heading);
+            float sideways = Mathf.Abs(offset.x * heading.y - offset.y * heading.x);
+            float gap = LaneGap(other);
+            // More in front than beside, so two ships flying side by side never both brake for each other.
+            if (ahead > sideways && ahead < gap + 1.5f && sideways < gap)
+            {
+                limit = Mathf.Min(limit, other.currentSpeed * (ahead < gap ? 0.7f : 1f));
+            }
+        }
+        return Mathf.Max(limit, 0.35f * Speed);
+    }
+
+    // Earlier groups have right of way; within a group, the earlier spawn does.
+    private bool GivesWayTo(TestEnemyMover other)
+    {
+        return other.groupKey != groupKey ? other.groupKey < groupKey : active.IndexOf(other) < active.IndexOf(this);
+    }
+
+    // Speed that lets a ship with right of way cross this one's path first: the fastest of a few speeds whose predicted
+    // closest approach (next 1.5 s, both flying straight on) keeps a hull gap. Ships moving apart are ignored. If the
+    // ship giving way cannot avoid the contact even at its slowest, the ship with right of way slows down as well.
+    private float GiveWaySpeed(Vector2 pos)
+    {
+        float limit = Speed;
+        foreach (TestEnemyMover other in active)
+        {
+            if (!Near(other, 6f))
+            {
+                continue;
+            }
+            Vector3 o = other.transform.localPosition;
+            Vector2 otherPos = new Vector2(o.x, o.z);
+            Vector2 otherVelocity = other.heading * other.currentSpeed;
+            float gap = LaneGap(other);
+            if (ClosestApproach(pos, heading * Speed, otherPos, otherVelocity) >= gap)
+            {
+                continue;
+            }
+            // With right of way, still give way when the other ship could not avoid this one even at its slowest.
+            if (!GivesWayTo(other) && ClosestApproach(pos, heading * Speed, otherPos, other.heading * (0.2f * other.Speed)) >= gap)
+            {
+                continue;
+            }
+            float bestSpeed = Speed, bestMiss = -1f;
+            for (int i = 4; i >= 0; i--)
+            {
+                float s = Speed * (0.2f + 0.2f * i); // 1.0, 0.8, ... 0.2 of full speed
+                float miss = ClosestApproach(pos, heading * s, otherPos, otherVelocity);
+                if (miss >= gap)
+                {
+                    bestSpeed = s;
+                    break;
+                }
+                if (miss > bestMiss)
+                {
+                    bestMiss = miss;
+                    bestSpeed = s;
+                }
+            }
+            limit = Mathf.Min(limit, bestSpeed);
+        }
+        return limit;
+    }
+
+    private static float ClosestApproach(Vector2 p, Vector2 v, Vector2 q, Vector2 w)
+    {
+        Vector2 r = q - p;
+        Vector2 dv = w - v;
+        float t = dv.sqrMagnitude > 1e-6f ? Mathf.Clamp(-Vector2.Dot(r, dv) / dv.sqrMagnitude, 0f, 1.5f) : 0f;
+        return (r + dv * t).magnitude;
     }
 
     void Update()
@@ -442,7 +608,8 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         bool descending = heading.y < 0f;
         // Faster ships need a longer run-up to finish turning before the straight zone.
         float lineUp = Mathf.Max(lineUpBand, 2f * turnRadius);
-        if (descending && pos.y < straightBelowZ + lineUp && waypoint >= route.Count - 1)
+        bool liningUp = descending && pos.y < straightBelowZ + lineUp && waypoint >= route.Count - 1;
+        if (liningUp)
         {
             desired = Vector2.down; // line up for the straight descent
         }
@@ -461,10 +628,22 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             heading = Rotate(heading, angularVelocity * h).normalized;
         }
 
-        currentSpeed = Mathf.MoveTowards(currentSpeed, Speed, acceleration * h);
+        // Never run into a ship in the path: match its speed, and (upper screen only, so ships approaching the player
+        // never bunch into a wall) let crossing ships with right of way pass first. Brake harder than normal when needed.
+        float wantedSpeed = Mathf.Min(Speed, SpeedBehindOthers(pos));
+        if (pos.y > straightBelowZ + lineUp)
+        {
+            wantedSpeed = Mathf.Min(wantedSpeed, GiveWaySpeed(pos));
+        }
+        currentSpeed = Mathf.MoveTowards(currentSpeed, wantedSpeed, acceleration * (wantedSpeed < currentSpeed ? 3f : 1f) * h);
         float step = currentSpeed * h;
         travelled += step;
-        return pos + heading * step;
+        Vector2 next = pos + heading * step;
+        if (!(descending && pos.y < straightBelowZ))
+        {
+            next += MakeRoom(pos) * h; // slide apart without turning; the straight descent stays untouched
+        }
+        return next;
     }
 
     // Limited reactions to the player (never during the straight descent, never longer than Tracking Seconds).
@@ -543,6 +722,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
     }
 
     // The reaction is pulled back towards 'from' until the widest free gap among descending ships stays open.
+    // Every candidate is first moved to the nearest lane no other ship at a similar height is using.
     private float SafeLane(float from, float to)
     {
         float need = difficulty != null && TestAttackDirector.Active != null && TestAttackDirector.Active.Profile != null
@@ -550,7 +730,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
             : 0f;
         if (need <= 0f)
         {
-            return to;
+            return FreeLane(to);
         }
         var lanes = new List<Vector2>();
         foreach (TestEnemyMover other in active)
@@ -562,7 +742,7 @@ public class TestEnemyMover : MonoBehaviour, IWaveSpawnReceiver
         }
         for (int i = 0; i <= 4; i++)
         {
-            float x = Mathf.Lerp(to, from, i / 4f);
+            float x = FreeLane(Mathf.Lerp(to, from, i / 4f));
             lanes.Add(new Vector2(x, halfWidth));
             float gap = LargestGap(lanes, -9.5f, 9.5f);
             lanes.RemoveAt(lanes.Count - 1);

@@ -25,7 +25,7 @@ The isolated test scene `LevelWaves_Encounter01_Test` is kept for development an
 **Controls:** **WASD / Arrow keys** move (Abel's controller, project-wide *Move* action), **Space / Left mouse**
 fire (test weapon), **R** restart, **Tab** debug counters. Click the Game view once after pressing Play.
 
-**The encounter - "Mars Orbit Breakout"** (about 73 s if nothing is shot down, shorter when enemies are destroyed):
+**The encounter - "Mars Orbit Breakout"** (about 77 s if nothing is shot down, shorter when enemies are destroyed):
 
 1. **Introduction:** the mission banner and an objective line ("Survive the Martioness' patrols.").
 2. **Wave 1 - Patrol Screen (introduces the patterns):**
@@ -108,9 +108,9 @@ the last group of each wave comes down the middle.
 
 | Wave | Formation / style | Enemies | Entry positions (x) | Gap between groups | Idea |
 | --- | --- | --- | --- | --- | --- |
-| 1 - Basic Line | Line, whole row at once | 3 groups x 4 basic | -4, +4, 0 | 3.5 s | Warm-up: "shoot what's in front of you", dodge to the open side. |
-| 2 - V Formation | V, whole V at once | 3 groups x 5 basic | +4.5, -4.5, 0 | 3 s | Focus the leader or sweep across the arms. |
-| 3 - Mixed | Mixed flanks, streamed in one by one (0.5 s) | 3 groups x 6, alternating basic + weaver | -2, +2, 0 | 2 s | Peak pressure: two enemy types, wider spread, player must move. |
+| 1 - Basic Line | Line, whole row at once | 3 groups x 4 basic | -4, +4, 0 | 4 s | Warm-up: "shoot what's in front of you", dodge to the open side. |
+| 2 - V Formation | V, whole V at once | 3 groups x 5 basic | +4.5, -4.5, 0 | 3.5 s | Focus the leader or sweep across the arms. |
+| 3 - Mixed | Mixed flanks, streamed in one by one (0.5 s) | 3 groups x 6, alternating basic + weaver | -2, +2, 0 | 3 s | Peak pressure: two enemy types, wider spread, player must move. |
 
 Total: 45 enemies. Short pauses before waves (2 / 2.5 / 2.5 s) show an "INCOMING" banner.
 
@@ -584,6 +584,82 @@ encounter can be played on `main`, which currently has no player, weapons, enemi
 The test scene is a wave-system prototype. The integrated demo is a short playable level built from the
 team's current pieces; its weapon, health, HUD and sounds are still placeholders.
 
+### Milestone 3 enemy spacing pass (Nov 17-18)
+
+**Problem:** enemies flew inside each other in waves 2 and 3, especially when the player moved to one side.
+Measurements in Unity 6000.6.3f1 with a scripted moving player (centre, hugging the left edge, weaving, dodging into
+the widest gap; several fixed seeds each) showed that spawn timing and formation spacing were not the cause. All
+three groups of a wave are on screen together anyway, and wider spacing made it worse near the edges. The cause was
+the placeholder movement in `TestEnemyMover`:
+
+- **Reactions picked the same lane:** lane seek moves every ship within range onto the player's x, pursuers all follow
+  the player's x, and flankers on one side all use player x +/- 2.4. `SafeLane` only protected the player's escape
+  gap, not the space between ships.
+- **Edge clamping:** route points are clamped to the lane limit, so outer ships of a wide formation were clamped onto
+  the same x.
+- **Nothing kept ships apart while they fly:** groups share route heights (sweep 6.5, retreat 7, dive 4.8), so a
+  retreating group flies through the next group's sweep. Dive & Regroup squeezes its formation to 35-45 %, and fast
+  ships (interceptors, 4 units/s) catch up with slow ones (heavies, 1.7) in the same lane.
+
+**Fix (only `TestEnemyMover`, the stand-in until Leonardo's AI is used; no teammate files changed):**
+
+- New Inspector setting **Separation** (0.6 units of space between hulls).
+- Lanes: a ship's descent lane keeps a hull gap to the lanes of other ships at a similar height, both after a reaction
+  (inside `SafeLane`, which still keeps the player's escape gap) and at spawn (against its own group, which undoes edge
+  clamping).
+- In flight: above the straight-descent line, ships closer than 1.4 hull gaps slide apart to their own side (up to
+  3 units/s, perpendicular to their heading, so they are never held back), and a ship slows to the speed of a ship
+  in front of it (at least 35 % of its own speed). Below the straight-descent line nothing changes: ships still fly
+  dead straight through the player's zone.
+- Crossing paths (added after the Nov 18 retest, which still showed wave 2 overlaps): in the upper screen (above the
+  line-up band), each ship predicts its closest approach to nearby ships over the next 1.5 s. If they would touch, the
+  ship of the later group gives way by slowing down (to as little as 20 % of its speed) until the other has passed.
+  If the ship giving way cannot avoid it even at its slowest, the ship with right of way slows too. This is what
+  removed the sweeping group flying through the diving and retreating groups in wave 2. A 40 % floor was tried and
+  left more overlap (wave 2: 1.8 s).
+
+Inspector changes (both scenes, and `WaveTestSceneBuilder.cs`, so a rebuild keeps them):
+
+| Setting | Original | Revised | Why |
+| --- | --- | --- | --- |
+| Delay Between Groups | 3.5 / 3 / 2 s | 4 / 3.5 / 3 s | Space out group entries and warnings. Small effect on overlap (wave 2: 2.5 s gave 3.0 s overlap, 3.5 s gave 1.8 s, 4.5 s gave 1.7 s). |
+| Wave 2 Clear Timeout | 15 s | 18 s | Safety net only. The slowest wave 2 ships (Pass & Retreat) now need just over 15 s, and were force-removed on screen. |
+
+Spacing and Encounter Bounds were tried, measured and reverted (spacing 2.5 / 1.8 / 2, bounds z -12 to 14).
+
+Results: averages over 4 player movements x 4-6 seeds, seconds per wave in which any two hulls overlapped:
+
+| Wave | Before (as played on Nov 18) | Lanes + slide (first fix) | + give way at crossings |
+| --- | --- | --- | --- |
+| 1 | 0 | 0 | 0 |
+| 2 | 7.6 | 2.7 | 0.3 (worst run 1.3) |
+| 3 | 9.2 | 0.7 | 0.0 (worst run 0.3) |
+
+After the give-way change, in 24 runs (6 seeds x centre / left edge / weave / dodge) all 45 enemies spawned and left
+with no timeouts, and never more than one pair touched at once. The encounter takes about 78 s (was 77). **Watch:** the
+narrowest moment of the escape-lane check (all ships within 5 units above the player counted as one row) fell from
+3.6 to 2.4 units in one wave 2 run. The ships were spread across the screen at staggered heights rather than in a line,
+and at the player's own height there was a 5-unit gap. These are automated measurements with screenshots of the most
+crowded moments, not a claim about how the game feels.
+
+**Enemies briefly turning blue in the Editor:** this is Unity's asynchronous shader compilation. While a shader
+variant compiles for the first time, the Editor draws the object with a plain cyan placeholder. The shader cache
+was rebuilt after the upgrade to 6000.6.3f1. In over 2,000 rendered samples (laser and plasma, with hits), no enemy
+was rendered blue, and the only colour overrides were the white hit flash and the orange/red attack warnings. Builds
+are not affected, and the effect disappears once the variants are compiled. Nothing in the model, materials or
+lighting was changed.
+
+Manual play-test checklist (`LevelWaves_Demo_Integrated`, Unity 6000.6.3f1):
+
+- [ ] **Dodge space:** play all three waves while dodging, without shooting. Note any moment with no free lane, and
+  whether a new group appears while the previous one is still beside your ship.
+- [ ] **Pacing:** note whether any gap between groups feels empty or slow, and whether wave 3 still feels like the hardest wave.
+- [ ] **Completion:** survive to **ROUTE CLEAR**. The Tab counters should show 45 spawned and alive 0.
+- [ ] **Restart:** press **R** mid-wave 2 and again mid-wave 3. All enemies, shots and rockets should disappear and
+  wave 1 should start again from its first group.
+- [ ] **Compare:** play once hugging the left edge in wave 2 (as in the Nov 18 screenshot). Ships should no longer fly inside each other; note any pairs that still touch, and whether ships visibly slowing down to let others cross looks odd.
+- [ ] **Blue placeholder:** press Play twice. If enemies show cyan only the first time, it is shader compilation; if it persists, report it.
+
 ---
 
 ## Test scene and controls
@@ -635,7 +711,7 @@ What you should see:
 | Waves | List of waves, run top to bottom. Add/remove/reorder freely. |
 | Spawn Origin | Where formations are centred. Its blue arrow = the direction enemies face when spawned. |
 | Spawn Parent | Optional Hierarchy parent for spawned enemies (test scene uses `SpawnedEnemies`). |
-| Encounter Bounds | Play area (orange box gizmo). Leaving it = escaped. Must contain the Spawn Origin. |
+| Encounter Bounds | Play area (orange box gizmo). Leaving it = escaped. Must contain the Spawn Origin and every formation slot. The demo uses centre z 1, extent (12, 5, 13): z from -12 to 14. |
 | Bounds Space | Optional transform the bounds move with (the demo uses `RailRig`). Empty = world space. |
 | Auto Start | Start on Play. Untick to start it from another script with `StartEncounter()`. |
 | Entry Warning Seconds | 1.2. How early `onGroupIncoming` fires before each group (taken from the existing delays). |
@@ -650,13 +726,13 @@ Each wave:
 | Enemy Prefabs | Basic / Basic ×4 + Interceptor / Basic + Interceptor + Weaver | Cycled per enemy (a list as long as the group gives each slot a class). |
 | Enemies Per Group | 4 / 5 / 6 | Enemy count per group. |
 | Group Count | 3 / 3 / 3 | Total enemies = per group x groups. |
-| Spacing | 2.5 / 1.8 / 2 | Distance between enemies. |
+| Spacing | 2.5 / 1.8 / 2 | Distance between enemies. The V also gets deeper with spacing, so its rear ships must still spawn inside the bounds. |
 | Spawn Style | Formation / Formation / Stream | Formation = whole group at once; Stream = one by one. |
 | Spawn Interval | 0 / 0 / 0.5 s | Stream only: gap between single spawns. |
-| Delay Between Groups | 3.5 / 3 / 2 s | Gap between groups. |
+| Delay Between Groups | 4 / 3.5 / 3 s | Gap after one group finishes spawning and before the next group starts. |
 | Group Entry Offsets | (-4, 4, 0) / (4.5, -4.5, 0) / (-2, 2, 0) | Sideways entry position of group 1, 2, 3... (cycled). |
 | Delay Before Wave | 2 / 2.5 / 2.5 s | Pause before the wave (after the previous one clears). |
-| Clear Timeout | 15 / 15 / 20 s | Safeguard after the last spawn. |
+| Clear Timeout | 15 / 18 / 26 s | Safeguard after the last spawn. |
 
 Placeholder settings added in this pass. Values are the scene defaults. Change them on the scene objects or in
 the prefabs in `Assets/Prefabs/LevelWaves/`. Rebuilding the scene from the menu resets them.
