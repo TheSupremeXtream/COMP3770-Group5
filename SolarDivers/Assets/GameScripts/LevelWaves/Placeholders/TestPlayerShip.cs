@@ -182,6 +182,11 @@ public class TestPlayerShip : MonoBehaviour
         cooldown = 0f;
     }
 
+    public int GetSelectedWeapon()
+    {
+        return CurrentWeapon;
+    }
+
     void Update()
     {
         if (flashTimer > 0f)
